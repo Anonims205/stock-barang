@@ -3,24 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Barang Tracker Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>StockPro – Inventory Management</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- SheetJS for XLSX export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
-  --bg-0:#090b0f;--bg-1:#0f1218;--bg-2:#161b24;--bg-3:#1e2533;--bg-4:#252d3d;
-  --bdr:rgba(255,255,255,.07);--bdr-b:rgba(255,255,255,.14);
-  --tp:#eef1f8;--ts:#8892a4;--tm:#4f5b72;
-  --ac:#3b82f6;--ac-g:rgba(59,130,246,.25);--ac-d:rgba(59,130,246,.12);
-  --gr:#22c55e;--gr-d:rgba(34,197,94,.12);
-  --ye:#eab308;--ye-d:rgba(234,179,8,.12);
-  --re:#ef4444;--re-d:rgba(239,68,68,.12);
-  --or:#f97316;--or-d:rgba(249,115,22,.12);
-  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+  --bg-0:#07090e;--bg-1:#0d1017;--bg-2:#131720;--bg-3:#1a1f2c;--bg-4:#222838;
+  --bdr:rgba(255,255,255,.06);--bdr-b:rgba(255,255,255,.12);
+  --tp:#e8ecf5;--ts:#7a869e;--tm:#485165;
+  --ac:#4f7cff;--ac-g:rgba(79,124,255,.22);--ac-d:rgba(79,124,255,.1);
+  --gr:#2dd4a0;--gr-d:rgba(45,212,160,.1);
+  --ye:#f5c542;--ye-d:rgba(245,197,66,.1);
+  --re:#ff5c5c;--re-d:rgba(255,92,92,.1);
+  --or:#ff8c42;--or-d:rgba(255,140,66,.1);
+  --pu:#a78bfa;--pu-d:rgba(167,139,250,.1);
+  --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
   --r:12px;--rs:8px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg-1)}
 ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:3px}
 
@@ -28,111 +31,117 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 .app{display:flex;min-height:100vh}
 
 /* SIDEBAR */
-.sidebar{width:240px;min-width:240px;background:var(--bg-1);border-right:1px solid var(--bdr);
+.sidebar{width:230px;min-width:230px;background:var(--bg-1);border-right:1px solid var(--bdr);
   display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s}
-.sb-logo{padding:22px 20px 18px;border-bottom:1px solid var(--bdr)}
-.sb-logo-t{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ac);letter-spacing:.06em;text-transform:uppercase}
-.sb-logo-s{font-size:11px;color:var(--tm);margin-top:2px}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.sb-logo-ic{width:32px;height:32px;background:var(--ac);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-logo-ic svg{width:17px;height:17px;color:#fff}
+.sb-logo-t{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--tp);letter-spacing:-.01em}
+.sb-logo-s{font-size:10px;color:var(--tm);margin-top:1px}
 .sb-nav{padding:10px 8px;flex:1;overflow-y:auto}
-.nav-lbl{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.1em;padding:8px 10px 4px}
+.nav-lbl{font-size:9.5px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.12em;padding:10px 10px 4px}
 .ni{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rs);cursor:pointer;
-  font-size:13.5px;font-weight:500;color:var(--ts);transition:all .15s;margin-bottom:2px;user-select:none}
+  font-size:13px;font-weight:500;color:var(--ts);transition:all .15s;margin-bottom:1px;user-select:none}
 .ni:hover{background:var(--bg-3);color:var(--tp)}
-.ni.active{background:var(--ac-d);color:var(--ac)}
+.ni.active{background:var(--ac-d);color:var(--ac);border:1px solid rgba(79,124,255,.18)}
 .ni svg{width:15px;height:15px;flex-shrink:0}
-.ni-badge{margin-left:auto;font-size:10px;font-family:var(--mono);background:var(--re-d);color:var(--re);padding:1px 6px;border-radius:99px}
-.sb-foot{padding:14px 16px;border-top:1px solid var(--bdr);font-size:11px;color:var(--tm)}
-.sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99}
+.ni-badge{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--re-d);color:var(--re);
+  padding:1px 6px;border-radius:99px;border:1px solid rgba(255,92,92,.2)}
+.sb-foot{padding:12px 16px;border-top:1px solid var(--bdr);font-size:10.5px;color:var(--tm)}
+.sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99}
 
 /* MAIN */
-.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
-.topbar{height:60px;background:var(--bg-1);border-bottom:1px solid var(--bdr);
-  display:flex;align-items:center;padding:0 26px;gap:14px;position:sticky;top:0;z-index:90}
-.tb-title{font-size:15px;font-weight:600;flex:1}
-.tb-actions{display:flex;gap:8px;align-items:center}
-.icon-btn{width:34px;height:34px;border-radius:var(--rs);background:var(--bg-3);border:1px solid var(--bdr);
+.main{margin-left:230px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:58px;background:var(--bg-1);border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:90}
+.tb-title{font-size:14.5px;font-weight:600;flex:1;letter-spacing:-.01em}
+.tb-actions{display:flex;gap:7px;align-items:center}
+.icon-btn{width:33px;height:33px;border-radius:var(--rs);background:var(--bg-3);border:1px solid var(--bdr);
   display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ts);transition:all .15s;flex-shrink:0}
 .icon-btn:hover{background:var(--bg-4);color:var(--tp);border-color:var(--bdr-b)}
-.icon-btn svg{width:15px;height:15px}
+.icon-btn svg{width:14px;height:14px}
 .ham{display:none}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--rs);
-  font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:var(--sans);white-space:nowrap}
-.btn svg{width:14px;height:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--rs);
+  font-size:12.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:var(--sans);white-space:nowrap}
+.btn svg{width:13px;height:13px}
 .btn-p{background:var(--ac);color:#fff}
-.btn-p:hover{background:#2563eb;box-shadow:0 0 18px var(--ac-g)}
+.btn-p:hover{background:#3d6df0;box-shadow:0 0 20px var(--ac-g)}
 .btn-s{background:var(--bg-3);color:var(--tp);border:1px solid var(--bdr)}
 .btn-s:hover{background:var(--bg-4);border-color:var(--bdr-b)}
-.btn-d{background:var(--re-d);color:var(--re);border:1px solid rgba(239,68,68,.2)}
-.btn-d:hover{background:rgba(239,68,68,.2)}
+.btn-d{background:var(--re-d);color:var(--re);border:1px solid rgba(255,92,92,.2)}
+.btn-d:hover{background:rgba(255,92,92,.18)}
 .btn-g{background:transparent;color:var(--ts);border:1px solid var(--bdr)}
 .btn-g:hover{background:var(--bg-3);color:var(--tp)}
-.btn-sm{padding:6px 12px;font-size:12px}
+.btn-gr{background:var(--gr-d);color:var(--gr);border:1px solid rgba(45,212,160,.2)}
+.btn-gr:hover{background:rgba(45,212,160,.18)}
+.btn-sm{padding:6px 11px;font-size:11.5px}
 
 /* CONTENT */
-.content{padding:24px;flex:1}
+.content{padding:22px;flex:1}
 .page{display:none}
 .page.active{display:block;animation:fi .2s ease}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
 /* STATS */
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.sc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;transition:border-color .15s}
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.sc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;transition:border-color .15s}
 .sc:hover{border-color:var(--bdr-b)}
-.sc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.sc-lbl{font-size:11px;font-weight:500;color:var(--tm);text-transform:uppercase;letter-spacing:.06em}
-.sc-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center}
-.sc-ic svg{width:15px;height:15px}
+.sc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.sc-lbl{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em}
+.sc-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.sc-ic svg{width:14px;height:14px}
 .ic-b{background:var(--ac-d);color:var(--ac)}.ic-g{background:var(--gr-d);color:var(--gr)}
 .ic-y{background:var(--ye-d);color:var(--ye)}.ic-r{background:var(--re-d);color:var(--re)}
-.sc-v{font-size:24px;font-weight:700;font-family:var(--mono);letter-spacing:-.02em}
-.sc-s{font-size:11px;color:var(--tm);margin-top:3px}
+.ic-p{background:var(--pu-d);color:var(--pu)}
+.sc-v{font-size:22px;font-weight:700;font-family:var(--mono);letter-spacing:-.03em}
+.sc-s{font-size:10.5px;color:var(--tm);margin-top:3px}
 
-/* CHART */
-.cs{display:grid;grid-template-columns:1fr 270px;gap:14px;margin-bottom:20px}
-.cc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px}
-.cc-t{font-size:12px;font-weight:600;color:var(--ts);margin-bottom:14px}
-.bc{display:flex;align-items:flex-end;gap:7px;height:110px}
-.bg{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+/* CHART SECTION */
+.cs{display:grid;grid-template-columns:1fr 260px;gap:12px;margin-bottom:18px}
+.cc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px}
+.cc-t{font-size:11.5px;font-weight:600;color:var(--ts);margin-bottom:12px}
+.bc{display:flex;align-items:flex-end;gap:6px;height:100px}
+.bg{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 .bw{flex:1;width:100%;display:flex;align-items:flex-end}
 .bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s cubic-bezier(.4,0,.2,1)}
-.bar.b0{background:linear-gradient(180deg,var(--ac),rgba(59,130,246,.4))}
-.bar.b1{background:linear-gradient(180deg,var(--gr),rgba(34,197,94,.4))}
-.bar.b2{background:linear-gradient(180deg,var(--ye),rgba(234,179,8,.4))}
-.bar.b3{background:linear-gradient(180deg,var(--re),rgba(239,68,68,.4))}
-.bar.b4{background:linear-gradient(180deg,var(--or),rgba(249,115,22,.4))}
-.bar.b5{background:linear-gradient(180deg,#a855f7,rgba(168,85,247,.4))}
-.bl{font-size:9px;color:var(--tm);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.bar.b0{background:linear-gradient(180deg,var(--ac),rgba(79,124,255,.3))}
+.bar.b1{background:linear-gradient(180deg,var(--gr),rgba(45,212,160,.3))}
+.bar.b2{background:linear-gradient(180deg,var(--ye),rgba(245,197,66,.3))}
+.bar.b3{background:linear-gradient(180deg,var(--re),rgba(255,92,92,.3))}
+.bar.b4{background:linear-gradient(180deg,var(--or),rgba(255,140,66,.3))}
+.bar.b5{background:linear-gradient(180deg,var(--pu),rgba(167,139,250,.3))}
+.bl{font-size:8.5px;color:var(--tm);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
 .dw{position:relative;display:flex;justify-content:center;align-items:center}
 .dc{position:absolute;text-align:center}
-.dv{font-family:var(--mono);font-size:17px;font-weight:700}
-.dl{font-size:10px;color:var(--tm)}
-.leg{margin-top:12px;display:flex;flex-direction:column;gap:7px}
-.li{display:flex;align-items:center;gap:7px;font-size:11px}
-.ld{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.dv{font-family:var(--mono);font-size:16px;font-weight:700}
+.dl{font-size:9.5px;color:var(--tm)}
+.leg{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.li{display:flex;align-items:center;gap:7px;font-size:10.5px}
+.ld{width:6px;height:6px;border-radius:2px;flex-shrink:0}
 .ln{color:var(--ts);flex:1}.lv{font-family:var(--mono);font-size:10px}
 
 /* ALERT */
-.ab{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);border-radius:var(--r);
-  padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.ab svg{color:var(--ye);width:17px;height:17px;flex-shrink:0}
-.at{font-size:13px;color:var(--ye);font-weight:500}.as{font-size:12px;color:var(--tm);margin-top:1px}
+.ab{background:rgba(245,197,66,.06);border:1px solid rgba(245,197,66,.18);border-radius:var(--r);
+  padding:11px 15px;display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.ab svg{color:var(--ye);width:16px;height:16px;flex-shrink:0}
+.at{font-size:12.5px;color:var(--ye);font-weight:600}.as{font-size:11px;color:var(--tm);margin-top:1px}
 
 /* SECTION */
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.st{font-size:15px;font-weight:600}.ss{font-size:12px;color:var(--tm);margin-top:2px}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:8px}
+.st{font-size:14.5px;font-weight:600}.ss{font-size:11px;color:var(--tm);margin-top:2px}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.sw{position:relative;flex:1;min-width:180px}
-.sw svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--tm);pointer-events:none}
+.toolbar{display:flex;gap:7px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.sw{position:relative;flex:1;min-width:170px}
+.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--tm);pointer-events:none}
 .si{width:100%;background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);
-  padding:8px 11px 8px 33px;color:var(--tp);font-size:13px;font-family:var(--sans);outline:none;transition:border-color .15s}
+  padding:7px 10px 7px 31px;color:var(--tp);font-size:12.5px;font-family:var(--sans);outline:none;transition:border-color .15s}
 .si::placeholder{color:var(--tm)}
 .si:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-d)}
-.fsl{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 10px;
-  color:var(--tp);font-size:13px;font-family:var(--sans);outline:none;cursor:pointer;min-width:120px;transition:border-color .15s}
+.fsl{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);padding:7px 9px;
+  color:var(--tp);font-size:12.5px;font-family:var(--sans);outline:none;cursor:pointer;min-width:110px;transition:border-color .15s}
 .fsl:focus{border-color:var(--ac)}
 .fsl option{background:var(--bg-2)}
 
@@ -140,25 +149,31 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 .tc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-thead th{font-size:10.5px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;
-  padding:11px 13px;text-align:left;background:var(--bg-1);border-bottom:1px solid var(--bdr);white-space:nowrap}
-thead th:last-child{text-align:right}
+thead th{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;
+  padding:10px 12px;text-align:left;background:var(--bg-1);border-bottom:1px solid var(--bdr);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--tp)}
+thead th:last-child{text-align:right;cursor:default}
+thead th .sort-ic{display:inline-block;margin-left:4px;opacity:.4;font-size:9px}
+thead th.asc .sort-ic::after{content:'↑';opacity:1}
+thead th.desc .sort-ic::after{content:'↓';opacity:1}
+thead th:not(.asc):not(.desc) .sort-ic::after{content:'↕'}
 tbody tr{transition:background .1s}
-tbody tr:hover{background:rgba(255,255,255,.02)}
-tbody td{padding:12px 13px;font-size:13px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+tbody tr:hover{background:rgba(255,255,255,.015)}
+tbody td{padding:11px 12px;font-size:12.5px;border-bottom:1px solid var(--bdr);vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
-.cn{font-weight:500;color:var(--tp)}.csb{font-size:11px;color:var(--tm);margin-top:2px}
-.cm{font-family:var(--mono);font-size:12px}
-.ca{display:flex;gap:5px;justify-content:flex-end}
-.ib{width:28px;height:28px;border-radius:5px;background:var(--bg-3);border:1px solid var(--bdr);
+.cn{font-weight:500;color:var(--tp)}.csb{font-size:10.5px;color:var(--tm);margin-top:2px}
+.cm{font-family:var(--mono);font-size:11.5px}
+.ca{display:flex;gap:4px;justify-content:flex-end}
+.ib{width:27px;height:27px;border-radius:5px;background:var(--bg-3);border:1px solid var(--bdr);
   display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tm);transition:all .15s}
 .ib:hover{background:var(--bg-4);color:var(--tp);border-color:var(--bdr-b)}
-.ib.d:hover{background:var(--re-d);color:var(--re);border-color:rgba(239,68,68,.3)}
-.ib svg{width:12px;height:12px}
+.ib.d:hover{background:var(--re-d);color:var(--re);border-color:rgba(255,92,92,.25)}
+.ib.e:hover{background:var(--ac-d);color:var(--ac);border-color:rgba(79,124,255,.25)}
+.ib svg{width:11px;height:11px}
 
 /* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;
-  font-size:10.5px;font-weight:600;font-family:var(--mono)}
+  font-size:10px;font-weight:600;font-family:var(--mono)}
 .bdot{width:5px;height:5px;border-radius:50%}
 .badge.aman{background:var(--gr-d);color:var(--gr)}.badge.aman .bdot{background:var(--gr)}
 .badge.menipis{background:var(--ye-d);color:var(--ye)}.badge.menipis .bdot{background:var(--ye);animation:pu 1.5s infinite}
@@ -166,145 +181,165 @@ tbody tr:last-child td{border-bottom:none}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* CAT TAG */
-.ct{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500;background:var(--ac-d);color:var(--ac)}
+.ct{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:500;
+  background:var(--ac-d);color:var(--ac);border:1px solid rgba(79,124,255,.15)}
 
 /* PRICE */
 .pg{font-family:var(--mono);font-size:11px;color:var(--or)}
 .pg-lbl{font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.04em}
-.pw{display:flex;flex-direction:column;gap:2px}
+.pw{display:flex;flex-direction:column;gap:1px}
+
+/* MIN STOCK BADGE */
+.ms-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;color:var(--pu);
+  background:var(--pu-d);border:1px solid rgba(167,139,250,.2);padding:1px 6px;border-radius:99px}
 
 /* EMPTY */
-.empty{padding:50px 20px;text-align:center;color:var(--tm)}
-.empty svg{width:44px;height:44px;margin:0 auto 14px;opacity:.3}
-.empty h3{font-size:14px;font-weight:600;color:var(--ts);margin-bottom:5px}
-.empty p{font-size:12px}
+.empty{padding:48px 20px;text-align:center;color:var(--tm)}
+.empty svg{width:42px;height:42px;margin:0 auto 12px;opacity:.25}
+.empty h3{font-size:13.5px;font-weight:600;color:var(--ts);margin-bottom:4px}
+.empty p{font-size:11.5px}
 
 /* TABLE FOOTER */
-.tf{padding:11px 13px;background:var(--bg-1);border-top:1px solid var(--bdr);
-  display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--tm)}
+.tf{padding:10px 12px;background:var(--bg-1);border-top:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--tm)}
 
 /* STOCK BAR */
-.skw{display:flex;align-items:center;gap:7px}
-.skb{flex:1;height:3px;background:var(--bg-4);border-radius:2px;overflow:hidden;max-width:70px}
+.skw{display:flex;align-items:center;gap:6px}
+.skb{flex:1;height:3px;background:var(--bg-4);border-radius:2px;overflow:hidden;max-width:60px}
 .skf{height:100%;border-radius:2px;transition:width .4s}
 
 /* MODAL */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
-  z-index:200;display:none;align-items:flex-start;justify-content:center;padding:36px 16px;overflow-y:auto}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);
+  z-index:200;display:none;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto}
 .mo.open{display:flex;animation:ov .2s ease}
 @keyframes ov{from{opacity:0}to{opacity:1}}
-.modal{background:var(--bg-2);border:1px solid var(--bdr-b);border-radius:16px;
-  width:100%;max-width:640px;box-shadow:0 8px 48px rgba(0,0,0,.6);animation:mi .25s cubic-bezier(.4,0,.2,1)}
-@keyframes mi{from{opacity:0;transform:translateY(-14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.mh{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
-.mt{font-size:15px;font-weight:700}
-.mb{padding:22px;max-height:calc(100vh - 200px);overflow-y:auto}
-.mf{padding:14px 22px;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end}
+.modal{background:var(--bg-2);border:1px solid var(--bdr-b);border-radius:14px;
+  width:100%;max-width:660px;box-shadow:0 12px 60px rgba(0,0,0,.7);animation:mi .22s cubic-bezier(.4,0,.2,1)}
+@keyframes mi{from{opacity:0;transform:translateY(-12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mh{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.mt{font-size:14px;font-weight:700}
+.mb{padding:20px;max-height:calc(100vh - 180px);overflow-y:auto}
+.mf{padding:12px 20px;border-top:1px solid var(--bdr);display:flex;gap:7px;justify-content:flex-end}
 
 /* FORM */
-.fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.fg{display:flex;flex-direction:column;gap:5px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px}
 .fg.full{grid-column:1/-1}
-.flbl{font-size:11.5px;font-weight:600;color:var(--ts)}
+.flbl{font-size:11px;font-weight:600;color:var(--ts)}
 .req{color:var(--re)}
 .fi,.fs2,.fta{background:var(--bg-1);border:1px solid var(--bdr);border-radius:var(--rs);
-  padding:9px 11px;color:var(--tp);font-size:13px;font-family:var(--sans);outline:none;transition:all .15s;width:100%}
+  padding:8px 10px;color:var(--tp);font-size:12.5px;font-family:var(--sans);outline:none;transition:all .15s;width:100%}
 .fi:focus,.fs2:focus,.fta:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-d)}
 .fi.err,.fs2.err{border-color:var(--re);box-shadow:0 0 0 3px var(--re-d)}
-.ferr{font-size:11px;color:var(--re)}
-.fta{resize:vertical;min-height:70px}
+.ferr{font-size:10.5px;color:var(--re)}
+.fta{resize:vertical;min-height:65px}
 .fs2 option{background:var(--bg-2)}
 .pfx{position:relative}
-.pfx-lbl{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--tm);pointer-events:none}
-.pfx-lbl+.fi{padding-left:30px}
+.pfx-lbl{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12.5px;color:var(--tm);pointer-events:none}
+.pfx-lbl+.fi{padding-left:28px}
 
-/* GROSIR SECTION */
-.gbox{background:var(--bg-3);border:1px solid rgba(249,115,22,.2);border-radius:var(--rs);padding:14px;margin-top:4px}
-.gt{font-size:11px;font-weight:600;color:var(--or);text-transform:uppercase;letter-spacing:.05em;
-  margin-bottom:10px;display:flex;align-items:center;gap:5px}
-.gt svg{width:13px;height:13px}
-.gr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* GROSIR BOX */
+.gbox{background:var(--bg-3);border:1px solid rgba(255,140,66,.18);border-radius:var(--rs);padding:13px;margin-top:3px}
+.gt{font-size:10px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.07em;
+  margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.gt svg{width:12px;height:12px}
+.gr2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+/* MIN STOCK BOX */
+.msbox{background:var(--bg-3);border:1px solid rgba(167,139,250,.18);border-radius:var(--rs);padding:13px;margin-top:3px}
+.mst{font-size:10px;font-weight:700;color:var(--pu);text-transform:uppercase;letter-spacing:.07em;
+  margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.mst svg{width:12px;height:12px}
 
 /* CAT ADD */
 .car{display:flex;gap:6px}
 .car .fi{flex:1}
 
-/* LABEL */
+/* LABELS */
 .il{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:4px;
-  font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;border:1px solid transparent}
+  font-size:10.5px;font-weight:600;letter-spacing:.02em;white-space:nowrap;border:1px solid transparent}
 .il .ld2{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .lw{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
-
-.lp{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.lp{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
 .lo{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;cursor:pointer;
-  font-size:11.5px;font-weight:600;border:1.5px solid transparent;transition:all .15s;user-select:none}
+  font-size:11px;font-weight:600;border:1.5px solid transparent;transition:all .15s;user-select:none}
 .lo:hover{opacity:.85}
 .lo.sel{outline:2px solid currentColor;outline-offset:1px}
-.lo .lod{width:6px;height:6px;border-radius:50%}
+.lo .lod{width:5px;height:5px;border-radius:50%}
 
-.lmg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:12px}
+.lmg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px;margin-top:10px}
 .lmc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);
-  padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:border-color .15s}
+  padding:12px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:border-color .15s}
 .lmc:hover{border-color:var(--bdr-b)}
 .lmcl{display:flex;align-items:center;gap:8px}
-.lsw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-.lmn{font-size:13px;font-weight:600}.lmct{font-size:11px;color:var(--tm)}
-.lmcr{display:flex;gap:5px;align-items:center}
+.lsw{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+.lmn{font-size:12.5px;font-weight:600}.lmct{font-size:10.5px;color:var(--tm)}
+.lmcr{display:flex;gap:4px;align-items:center}
 
-.cp{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-.csw{width:20px;height:20px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:all .12s;flex-shrink:0}
+.cp{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.csw{width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:all .12s;flex-shrink:0}
 .csw:hover{transform:scale(1.15)}
-.csw.pk{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.3);transform:scale(1.1)}
+.csw.pk{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25);transform:scale(1.1)}
 
 /* CATEGORIES */
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px}
 .ccard{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);
-  padding:16px;display:flex;align-items:center;justify-content:space-between;transition:border-color .15s}
+  padding:14px;display:flex;align-items:center;justify-content:space-between;transition:border-color .15s}
 .ccard:hover{border-color:var(--bdr-b)}
-.ccard-i h4{font-size:13px;font-weight:600}
-.ccard-i p{font-size:11px;color:var(--tm);margin-top:2px}
+.ccard-i h4{font-size:12.5px;font-weight:600}
+.ccard-i p{font-size:10.5px;color:var(--tm);margin-top:2px}
 
 /* IMPORT */
-.idrop{border:2px dashed var(--bdr-b);border-radius:var(--r);padding:36px;text-align:center;
+.idrop{border:2px dashed var(--bdr-b);border-radius:var(--r);padding:34px;text-align:center;
   cursor:pointer;transition:all .15s;color:var(--tm)}
 .idrop:hover,.idrop.dv{border-color:var(--ac);color:var(--ac);background:var(--ac-d)}
-.idrop svg{width:32px;height:32px;margin:0 auto 10px}
-.idrop p{font-size:13px}
+.idrop svg{width:30px;height:30px;margin:0 auto 9px}
+.idrop p{font-size:12.5px}
 .idrop input{display:none}
 
 /* CONFIRM */
 .conf-ov{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(4px)}
+  background:rgba(0,0,0,.8);backdrop-filter:blur(6px)}
 .conf-ov.open{display:flex}
 .cbox{background:var(--bg-2);border:1px solid var(--bdr-b);border-radius:14px;
-  padding:26px;width:340px;text-align:center;box-shadow:0 8px 48px rgba(0,0,0,.6)}
-.ci{width:46px;height:46px;border-radius:11px;background:var(--re-d);
-  display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-.ci svg{width:21px;height:21px;color:var(--re)}
-.ctit{font-size:15px;font-weight:700;margin-bottom:7px}
-.csb2{font-size:13px;color:var(--ts);margin-bottom:22px;line-height:1.5}
-.cact{display:flex;gap:8px;justify-content:center}
+  padding:24px;width:340px;text-align:center;box-shadow:0 12px 48px rgba(0,0,0,.6)}
+.ci{width:44px;height:44px;border-radius:10px;background:var(--re-d);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.ci svg{width:20px;height:20px;color:var(--re)}
+.ctit{font-size:14px;font-weight:700;margin-bottom:6px}
+.csb2{font-size:12.5px;color:var(--ts);margin-bottom:20px;line-height:1.55}
+.cact{display:flex;gap:7px;justify-content:center}
 
 /* TOAST */
-.tct{position:fixed;bottom:22px;right:22px;z-index:500;display:flex;flex-direction:column;gap:7px}
-.toast{display:flex;align-items:center;gap:9px;background:var(--bg-3);border:1px solid var(--bdr-b);
-  border-radius:10px;padding:11px 15px;font-size:13px;font-weight:500;box-shadow:0 4px 24px rgba(0,0,0,.4);
-  animation:ti .25s ease;max-width:310px}
-@keyframes ti{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.toast.s{border-color:rgba(34,197,94,.3)}.toast.s svg{color:var(--gr)}
-.toast.e{border-color:rgba(239,68,68,.3)}.toast.e svg{color:var(--re)}
+.tct{position:fixed;bottom:20px;right:20px;z-index:500;display:flex;flex-direction:column;gap:6px}
+.toast{display:flex;align-items:center;gap:8px;background:var(--bg-3);border:1px solid var(--bdr-b);
+  border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:500;box-shadow:0 4px 24px rgba(0,0,0,.4);
+  animation:ti .22s ease;max-width:300px}
+@keyframes ti{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast.s{border-color:rgba(45,212,160,.3)}.toast.s svg{color:var(--gr)}
+.toast.e{border-color:rgba(255,92,92,.3)}.toast.e svg{color:var(--re)}
 .toast.i svg{color:var(--ac)}
-.toast svg{width:15px;height:15px;flex-shrink:0}
+.toast svg{width:14px;height:14px;flex-shrink:0}
 
-.div{height:1px;background:var(--bdr);margin:16px 0}
+.div{height:1px;background:var(--bdr);margin:14px 0}
 
-@media(max-width:900px){.sg{grid-template-columns:1fr 1fr}.cs{grid-template-columns:1fr}}
+/* EXPORT BTNS */
+.export-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.exp-badge{background:var(--gr-d);color:var(--gr);border:1px solid rgba(45,212,160,.2);
+  padding:2px 7px;border-radius:99px;font-size:10px;font-weight:600;font-family:var(--mono)}
+
+/* RESTOCK HINT */
+.restock-hint{background:rgba(79,124,255,.07);border:1px solid rgba(79,124,255,.15);border-radius:var(--rs);
+  padding:9px 12px;font-size:11.5px;color:var(--ts);margin-top:8px;display:flex;align-items:center;gap:7px}
+.restock-hint svg{color:var(--ac);width:13px;height:13px;flex-shrink:0}
+
+@media(max-width:1000px){.sg{grid-template-columns:repeat(3,1fr)}.cs{grid-template-columns:1fr}}
 @media(max-width:700px){
   .sidebar{transform:translateX(-100%)}.sidebar.mob{transform:translateX(0);box-shadow:0 8px 48px rgba(0,0,0,.6)}
   .sb-ov.mob{display:block}.main{margin-left:0}.ham{display:flex}
-  .sg{grid-template-columns:1fr 1fr;gap:10px}.fg2{grid-template-columns:1fr}
-  .fg.full{grid-column:1/-1}.content{padding:14px}.topbar{padding:0 14px}
-  .sc-v{font-size:20px}.gr2{grid-template-columns:1fr}
+  .sg{grid-template-columns:1fr 1fr;gap:8px}.fg2{grid-template-columns:1fr}
+  .fg.full{grid-column:1/-1}.content{padding:12px}.topbar{padding:0 12px}
+  .sc-v{font-size:18px}.gr2{grid-template-columns:1fr}
 }
 @media(max-width:440px){.sg{grid-template-columns:1fr}}
 </style>
@@ -315,11 +350,11 @@ tbody tr:last-child td{border-bottom:none}
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-logo">
-    <div class="sb-logo-t">⬡ StockPro</div>
-    <div class="sb-logo-s">Inventory Management v2.0</div>
+    <div class="sb-logo-ic"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+    <div><div class="sb-logo-t">StockPro</div><div class="sb-logo-s">Inventory v3.0</div></div>
   </div>
   <nav class="sb-nav">
-    <div class="nav-lbl">Menu</div>
+    <div class="nav-lbl">Menu Utama</div>
     <div class="ni active" data-page="dashboard">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard
     </div>
@@ -335,15 +370,18 @@ tbody tr:last-child td{border-bottom:none}
     <div class="ni" data-page="labels">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Label Barang
     </div>
-    <div class="nav-lbl" style="margin-top:10px">Tools</div>
-    <div class="ni" id="nav-export">
+    <div class="nav-lbl" style="margin-top:8px">Export & Import</div>
+    <div class="ni" id="nav-exp-xlsx">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Export Excel (XLSX)
+    </div>
+    <div class="ni" id="nav-exp-csv">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV
     </div>
     <div class="ni" data-page="import">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Import Data
     </div>
   </nav>
-  <div class="sb-foot">Data tersimpan lokal<br><span id="foot-count">0 item</span></div>
+  <div class="sb-foot">💾 Data tersimpan lokal<br><span id="foot-count">0 item</span></div>
 </aside>
 <div class="sb-ov" id="sb-ov"></div>
 
@@ -368,22 +406,28 @@ tbody tr:last-child td{border-bottom:none}
       </div>
       <div class="sg">
         <div class="sc"><div class="sc-h"><div class="sc-lbl">Total Barang</div><div class="sc-ic ic-b"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div></div><div class="sc-v" id="st-total">0</div><div class="sc-s" id="st-total-s">jenis barang</div></div>
-        <div class="sc"><div class="sc-h"><div class="sc-lbl">Nilai Inventori</div><div class="sc-ic ic-g"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="sc-v" id="st-nilai" style="font-size:16px">Rp 0</div><div class="sc-s">total nilai stok</div></div>
-        <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Menipis</div><div class="sc-ic ic-y"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div></div><div class="sc-v" id="st-menipis">0</div><div class="sc-s">≤ 5 unit tersisa</div></div>
-        <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Habis</div><div class="sc-ic ic-r"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div></div><div class="sc-v" id="st-habis">0</div><div class="sc-s">perlu restock</div></div>
+        <div class="sc"><div class="sc-h"><div class="sc-lbl">Nilai Inventori</div><div class="sc-ic ic-g"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="sc-v" id="st-nilai" style="font-size:15px">Rp 0</div><div class="sc-s">total nilai stok</div></div>
+        <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Menipis</div><div class="sc-ic ic-y"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div></div><div class="sc-v" id="st-menipis">0</div><div class="sc-s">di bawah stok minimal</div></div>
+        <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Habis</div><div class="sc-ic ic-r"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div></div><div class="sc-v" id="st-habis">0</div><div class="sc-s">perlu restock segera</div></div>
+        <div class="sc"><div class="sc-h"><div class="sc-lbl">Total Unit</div><div class="sc-ic ic-p"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div></div><div class="sc-v" id="st-unit">0</div><div class="sc-s">unit tersedia</div></div>
       </div>
       <div class="cs">
-        <div class="cc"><div class="cc-t">Stok Per Kategori</div><div class="bc" id="chart-kat"></div></div>
+        <div class="cc"><div class="cc-t">Stok Per Kategori (unit)</div><div class="bc" id="chart-kat"></div></div>
         <div class="cc">
           <div class="cc-t">Status Stok</div>
-          <div class="dw" style="height:130px"><svg id="donut-svg" width="130" height="130" viewBox="0 0 130 130"></svg><div class="dc"><div class="dv" id="donut-val">0</div><div class="dl">total</div></div></div>
+          <div class="dw" style="height:120px"><svg id="donut-svg" width="120" height="120" viewBox="0 0 120 120"></svg><div class="dc"><div class="dv" id="donut-val">0</div><div class="dl">total</div></div></div>
           <div class="leg" id="donut-leg"></div>
         </div>
       </div>
       <div>
-        <div class="sh"><div><div class="st">Barang Terbaru</div><div class="ss">5 terakhir ditambahkan</div></div><button class="btn btn-g btn-sm" id="btn-see-all">Lihat Semua →</button></div>
+        <div class="sh"><div><div class="st">Barang Terbaru</div><div class="ss">5 terakhir ditambahkan</div></div>
+          <div class="export-group">
+            <button class="btn btn-gr btn-sm" id="db-exp-xlsx"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+            <button class="btn btn-g btn-sm" id="btn-see-all">Lihat Semua →</button>
+          </div>
+        </div>
         <div class="tc"><div class="tw"><table>
-          <thead><tr><th>Barang</th><th>Kategori</th><th>Stok</th><th>Harga Ecer</th><th>Harga Grosir</th><th>Label</th><th>Status</th></tr></thead>
+          <thead><tr><th>Barang</th><th>Kategori</th><th>Stok</th><th>Min Stok</th><th>Harga Ecer</th><th>Harga Grosir</th><th>Label</th><th>Status</th></tr></thead>
           <tbody id="recent-tbody"></tbody>
         </table></div></div>
       </div>
@@ -391,20 +435,38 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- DATA BARANG -->
     <div class="page" id="page-barang">
-      <div class="sh"><div><div class="st">Data Barang</div><div class="ss" id="barang-sub">Semua barang</div></div>
-        <button class="btn btn-p" id="btn-add-barang"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
+      <div class="sh">
+        <div><div class="st">Data Barang</div><div class="ss" id="barang-sub">Semua barang</div></div>
+        <div class="export-group">
+          <button class="btn btn-gr btn-sm" id="btn-exp-xlsx-b"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+          <button class="btn btn-p btn-sm" id="btn-add-barang"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
+        </div>
       </div>
       <div class="toolbar">
         <div class="sw"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="srch" placeholder="Cari nama / merek..."></div>
         <select class="fsl" id="f-kat-filter"></select>
         <select class="fsl" id="f-merek-filter"></select>
         <select class="fsl" id="f-status-filter"><option value="">Semua Status</option><option value="aman">Stok Aman</option><option value="menipis">Stok Menipis</option><option value="habis">Stok Habis</option></select>
-        <select class="fsl" id="f-lbl-filter" style="min-width:115px"></select>
+        <select class="fsl" id="f-lbl-filter" style="min-width:110px"></select>
         <button class="btn btn-g btn-sm" id="btn-reset">Reset</button>
       </div>
       <div class="tc">
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>Nama Barang</th><th>Kategori</th><th>Merek</th><th>Stok</th><th>Harga Ecer</th><th>Harga Grosir</th><th>Min.Grosir</th><th>Nilai Stok</th><th>Lokasi</th><th>Label</th><th>Status</th><th>Aksi</th></tr></thead>
+          <thead><tr>
+            <th>#</th>
+            <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
+            <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
+            <th data-sort="merek">Merek<span class="sort-ic"></span></th>
+            <th data-sort="stok">Stok<span class="sort-ic"></span></th>
+            <th>Min Stok</th>
+            <th data-sort="harga">Harga Ecer<span class="sort-ic"></span></th>
+            <th>Harga Grosir</th>
+            <th data-sort="nilai">Nilai Stok<span class="sort-ic"></span></th>
+            <th>Lokasi</th>
+            <th>Label</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr></thead>
           <tbody id="main-tbody"></tbody>
         </table>
         <div class="empty" id="main-empty" style="display:none">
@@ -417,9 +479,12 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- STOK MENIPIS -->
     <div class="page" id="page-lowstock">
-      <div class="sh"><div><div class="st">⚠️ Stok Menipis &amp; Habis</div><div class="ss">Perlu segera direstok</div></div></div>
+      <div class="sh">
+        <div><div class="st">⚠️ Stok Menipis &amp; Habis</div><div class="ss">Perlu segera direstok berdasarkan stok minimal</div></div>
+        <button class="btn btn-gr btn-sm" id="btn-exp-xlsx-ls"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+      </div>
       <div class="tc"><div class="tw"><table>
-        <thead><tr><th>Nama Barang</th><th>Kategori</th><th>Merek</th><th>Stok</th><th>Harga Ecer</th><th>Harga Grosir</th><th>Supplier</th><th>Lokasi</th><th>Status</th><th>Aksi</th></tr></thead>
+        <thead><tr><th>Nama Barang</th><th>Kategori</th><th>Merek</th><th>Stok Saat Ini</th><th>Min Stok</th><th>Kekurangan</th><th>Harga Ecer</th><th>Harga Grosir</th><th>Supplier</th><th>Lokasi</th><th>Status</th><th>Aksi</th></tr></thead>
         <tbody id="ls-tbody"></tbody>
       </table>
       <div class="empty" id="ls-empty" style="display:none">
@@ -431,50 +496,50 @@ tbody tr:last-child td{border-bottom:none}
     <!-- KATEGORI -->
     <div class="page" id="page-categories">
       <div class="sh"><div><div class="st">Manajemen Kategori</div><div class="ss">Kelola kategori barang</div></div></div>
-      <div class="tc" style="padding:18px;margin-bottom:14px">
-        <div class="st" style="font-size:13px;margin-bottom:10px">Tambah Kategori Baru</div>
+      <div class="tc" style="padding:16px;margin-bottom:12px">
+        <div class="st" style="font-size:12.5px;margin-bottom:9px">Tambah Kategori Baru</div>
         <div class="car"><input type="text" class="fi" id="new-cat" placeholder="Nama kategori baru..." maxlength="40"><button class="btn btn-p btn-sm" id="btn-add-cat">Tambah</button></div>
       </div>
       <div class="cg" id="cat-grid"></div>
-      <div class="empty" id="cat-empty" style="display:none;padding:36px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg><h3>Belum ada kategori</h3><p>Tambah kategori baru di atas.</p></div>
+      <div class="empty" id="cat-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg><h3>Belum ada kategori</h3><p>Tambah kategori baru di atas.</p></div>
     </div>
 
     <!-- LABELS -->
     <div class="page" id="page-labels">
       <div class="sh"><div><div class="st">Label Barang</div><div class="ss">Label custom berwarna untuk menandai barang</div></div></div>
-      <div class="tc" style="padding:18px;margin-bottom:14px">
-        <div class="st" style="font-size:13px;margin-bottom:12px">Buat Label Baru</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-          <div class="fg" style="flex:1;min-width:150px"><label class="flbl">Nama Label</label><input type="text" class="fi" id="nl-name" placeholder="Promo, Best Seller, Fragile..." maxlength="30"></div>
-          <div class="fg" style="flex:1;min-width:200px"><label class="flbl">Pilih Warna</label><div class="cp" id="clr-palette"></div><input type="hidden" id="nl-color" value="#3b82f6"></div>
+      <div class="tc" style="padding:16px;margin-bottom:12px">
+        <div class="st" style="font-size:12.5px;margin-bottom:11px">Buat Label Baru</div>
+        <div style="display:flex;gap:11px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:140px"><label class="flbl">Nama Label</label><input type="text" class="fi" id="nl-name" placeholder="Promo, Best Seller, Fragile..." maxlength="30"></div>
+          <div class="fg" style="flex:1;min-width:190px"><label class="flbl">Pilih Warna</label><div class="cp" id="clr-palette"></div><input type="hidden" id="nl-color" value="#4f7cff"></div>
           <div><button class="btn btn-p btn-sm" id="btn-create-lbl"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Buat</button></div>
         </div>
-        <div style="margin-top:10px;display:flex;align-items:center;gap:7px">
-          <span style="font-size:11px;color:var(--tm)">Preview:</span>
-          <span id="lbl-preview" class="il" style="background:rgba(59,130,246,.12);color:#3b82f6;border-color:rgba(59,130,246,.3)"><span class="ld2" style="background:#3b82f6"></span>Label Baru</span>
+        <div style="margin-top:9px;display:flex;align-items:center;gap:7px">
+          <span style="font-size:10.5px;color:var(--tm)">Preview:</span>
+          <span id="lbl-preview" class="il" style="background:rgba(79,124,255,.12);color:#4f7cff;border-color:rgba(79,124,255,.3)"><span class="ld2" style="background:#4f7cff"></span>Label Baru</span>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--ts);margin-bottom:8px">Label Tersimpan</div>
+      <div style="font-size:11.5px;color:var(--ts);margin-bottom:7px">Label Tersimpan</div>
       <div class="lmg" id="lbl-grid"></div>
-      <div class="empty" id="lbl-empty" style="display:none;padding:36px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><h3>Belum ada label</h3><p>Buat label baru di atas.</p></div>
+      <div class="empty" id="lbl-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><h3>Belum ada label</h3><p>Buat label baru di atas.</p></div>
     </div>
 
     <!-- IMPORT -->
     <div class="page" id="page-import">
       <div class="sh"><div><div class="st">Import Data</div><div class="ss">Import barang dari file CSV</div></div></div>
-      <div class="tc" style="padding:26px">
+      <div class="tc" style="padding:24px">
         <label class="idrop" id="import-drop" for="import-file">
           <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           <p><strong>Klik atau drag &amp; drop</strong> file CSV di sini</p>
-          <p style="font-size:11px;margin-top:5px">Format: nama,kategori,merek,stok,harga_ecer,harga_grosir,min_grosir,supplier,lokasi,catatan</p>
+          <p style="font-size:11px;margin-top:4px">Format: nama, kategori, merek, stok, harga_ecer, harga_grosir, min_grosir, min_stok, supplier, lokasi, catatan</p>
           <input type="file" id="import-file" accept=".csv">
         </label>
         <div class="div"></div>
-        <div style="font-size:13px;color:var(--ts)">
+        <div style="font-size:12.5px;color:var(--ts)">
           <strong style="color:var(--tp)">Contoh format CSV:</strong><br><br>
-          <code style="font-family:var(--mono);font-size:11px;color:var(--ac)">nama,kategori,merek,stok,harga_ecer,harga_grosir,min_grosir,supplier,lokasi,catatan<br>"Laptop ASUS",Elektronik,ASUS,10,12000000,10500000,5,"PT ABC","Rak A1","Garansi 1 th"</code>
+          <code style="font-family:var(--mono);font-size:11px;color:var(--ac)">nama,kategori,merek,stok,harga_ecer,harga_grosir,min_grosir,min_stok,supplier,lokasi,catatan<br>"Laptop ASUS",Elektronik,ASUS,10,12000000,10500000,5,3,"PT ABC","Rak A1","Garansi 1 th"</code>
         </div>
-        <div id="import-result" style="margin-top:14px"></div>
+        <div id="import-result" style="margin-top:12px"></div>
       </div>
     </div>
 
@@ -482,7 +547,7 @@ tbody tr:last-child td{border-bottom:none}
 </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL ADD/EDIT -->
 <div class="mo" id="modal-ov">
   <div class="modal" id="modal">
     <div class="mh">
@@ -499,14 +564,24 @@ tbody tr:last-child td{border-bottom:none}
 
         <!-- HARGA -->
         <div class="fg full">
-          <label class="flbl">Harga <span class="req">*</span></label>
+          <label class="flbl">Pengaturan Harga <span class="req">*</span></label>
           <div class="gbox">
-            <div class="gt"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>Pengaturan Harga</div>
+            <div class="gt"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Harga Jual</div>
             <div class="gr2">
               <div class="fg"><label class="flbl">Harga Ecer <span class="req">*</span></label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga" placeholder="0" min="0"></div><span class="ferr" id="e-harga"></span></div>
               <div class="fg"><label class="flbl" style="color:var(--or)">Harga Grosir (opsional)</label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga-grosir" placeholder="0" min="0"></div></div>
             </div>
-            <div class="fg" style="margin-top:10px"><label class="flbl" style="color:var(--or)">Min. Qty untuk Harga Grosir</label><input type="number" class="fi" id="f-min-grosir" placeholder="Contoh: 5 (beli ≥5 dapat harga grosir)" min="1"></div>
+            <div class="fg" style="margin-top:9px"><label class="flbl" style="color:var(--or)">Min. Qty untuk Harga Grosir</label><input type="number" class="fi" id="f-min-grosir" placeholder="Contoh: 5" min="1"></div>
+          </div>
+        </div>
+
+        <!-- MIN STOK -->
+        <div class="fg full">
+          <label class="flbl">Pengaturan Stok Minimal</label>
+          <div class="msbox">
+            <div class="mst"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Batas Stok Minimal</div>
+            <div class="fg"><label class="flbl" style="color:var(--pu)">Jumlah Stok Minimal <span style="font-weight:400;color:var(--tm)">(barang = "Menipis" jika stok ≤ nilai ini)</span></label><input type="number" class="fi" id="f-min-stok" placeholder="Contoh: 5 (kosongkan = default 5)" min="0"></div>
+            <div class="restock-hint"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Sistem akan memberi peringatan saat stok mencapai atau di bawah batas ini</div>
           </div>
         </div>
 
@@ -514,12 +589,12 @@ tbody tr:last-child td{border-bottom:none}
         <div class="fg"><label class="flbl">Lokasi Penyimpanan <span class="req">*</span></label><input type="text" class="fi" id="f-lokasi" placeholder="Rak A1, Gudang B..."><span class="ferr" id="e-lokasi"></span></div>
         <div class="fg"><label class="flbl">Tanggal Masuk</label><input type="date" class="fi" id="f-tgl"></div>
         <div class="fg full"><label class="flbl">Catatan Tambahan</label><textarea class="fta" id="f-catatan" placeholder="Catatan tentang barang ini..."></textarea></div>
-        <div class="fg full"><label class="flbl">Label Barang <span style="font-weight:400;color:var(--tm)">(pilih satu atau lebih — klik untuk memilih)</span></label><div class="lp" id="f-lbl-picker"></div></div>
+        <div class="fg full"><label class="flbl">Label Barang <span style="font-weight:400;color:var(--tm)">(klik untuk pilih)</span></label><div class="lp" id="f-lbl-picker"></div></div>
       </div>
     </div>
     <div class="mf">
       <button class="btn btn-g" id="modal-cancel">Batal</button>
-      <button class="btn btn-p" id="modal-save"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Simpan Barang</button>
+      <button class="btn btn-p" id="modal-save">💾 Simpan Barang</button>
     </div>
   </div>
 </div>
@@ -546,52 +621,54 @@ const S = {
   labels: [],
   editingId: null,
   confirmCb: null,
+  sortKey: null,
+  sortDir: 'asc',
+  lastFiltered: null,
 };
 
-function storeSave() {
-  localStorage.setItem('sbt2_items', JSON.stringify(S.items));
-  localStorage.setItem('sbt2_cats',  JSON.stringify(S.categories));
-  localStorage.setItem('sbt2_lbls',  JSON.stringify(S.labels));
+function storeSave(){
+  localStorage.setItem('sp3_items',JSON.stringify(S.items));
+  localStorage.setItem('sp3_cats',JSON.stringify(S.categories));
+  localStorage.setItem('sp3_lbls',JSON.stringify(S.labels));
 }
-function storeLoad() {
-  try { const v=localStorage.getItem('sbt2_items'); if(v) S.items=JSON.parse(v); } catch(e){}
-  try { const v=localStorage.getItem('sbt2_cats');  if(v) S.categories=JSON.parse(v); } catch(e){}
-  try { const v=localStorage.getItem('sbt2_lbls');  if(v) S.labels=JSON.parse(v); } catch(e){}
-  // Migrate old storage key
-  if (!S.items.length) {
-    try { const v=localStorage.getItem('sbt_items'); if(v){ S.items=JSON.parse(v); } } catch(e){}
-    try { const v=localStorage.getItem('sbt_cats');  if(v){ S.categories=JSON.parse(v); } } catch(e){}
-    try { const v=localStorage.getItem('sbt_lbls');  if(v){ S.labels=JSON.parse(v); } } catch(e){}
-    // Even older key
-    try { const v=localStorage.getItem('sbtp_items'); if(v){ S.items=JSON.parse(v); } } catch(e){}
-    try { const v=localStorage.getItem('sbtp_cats');  if(v){ S.categories=JSON.parse(v); } } catch(e){}
-    try { const v=localStorage.getItem('sbtp_lbls');  if(v){ S.labels=JSON.parse(v); } } catch(e){}
-  }
+function storeLoad(){
+  const keys=[['sp3_items','items'],['sbt2_items','items'],['sbt_items','items'],['sbtp_items','items']];
+  for(const[k,p]of keys){try{const v=localStorage.getItem(k);if(v&&!S[p].length){S[p]=JSON.parse(v);}}catch(e){}}
+  const ckeys=[['sp3_cats','categories'],['sbt2_cats','categories'],['sbt_cats','categories']];
+  for(const[k,p]of ckeys){try{const v=localStorage.getItem(k);if(v){const arr=JSON.parse(v);if(arr.length>S[p].length)S[p]=arr;}}catch(e){}}
+  const lkeys=[['sp3_lbls','labels'],['sbt2_lbls','labels'],['sbt_lbls','labels']];
+  for(const[k,p]of lkeys){try{const v=localStorage.getItem(k);if(v&&!S[p].length){S[p]=JSON.parse(v);}}catch(e){}}
 }
 
 // ══════════════════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════════════════
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const rp  = n => 'Rp '+(parseInt(n)||0).toLocaleString('id-ID');
-const $   = id => document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const rp=n=>'Rp '+(parseInt(n)||0).toLocaleString('id-ID');
+const $=id=>document.getElementById(id);
 
-function stockSt(s){ const n=parseInt(s)||0; return n===0?'habis':n<=5?'menipis':'aman'; }
+// stockSt now uses minStok per-item
+function stockSt(item){
+  const stok=parseInt(item.stok)||0;
+  const min=parseInt(item.minStok)||5;
+  if(stok===0)return'habis';
+  if(stok<=min)return'menipis';
+  return'aman';
+}
 
 function badgeHtml(st){
   const lbl={aman:'Aman',menipis:'Menipis',habis:'Habis'};
-  return `<span class="badge ${st}"><span class="bdot"></span>${lbl[st]||st}</span>`;
+  return`<span class="badge ${st}"><span class="bdot"></span>${lbl[st]||st}</span>`;
 }
 
-// ── Label utils ──
-const PALETTE=['#3b82f6','#8b5cf6','#ec4899','#ef4444','#f97316','#eab308','#22c55e','#14b8a6','#06b6d4','#64748b','#a855f7','#f43f5e','#10b981','#0ea5e9','#84cc16'];
-function h2r(h){ return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)].join(','); }
-function lblSt(c){ return `background:rgba(${h2r(c)},.13);color:${c};border-color:rgba(${h2r(c)},.3)`; }
-function lblChip(l){ return `<span class="il" style="${lblSt(l.color)}"><span class="ld2" style="background:${l.color}"></span>${esc(l.name)}</span>`; }
+const PALETTE=['#4f7cff','#8b5cf6','#ec4899','#ff5c5c','#ff8c42','#f5c542','#2dd4a0','#14b8a6','#06b6d4','#64748b','#a78bfa','#f43f5e','#10b981','#0ea5e9','#84cc16'];
+function h2r(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)].join(',');}
+function lblSt(c){return`background:rgba(${h2r(c)},.13);color:${c};border-color:rgba(${h2r(c)},.3)`;}
+function lblChip(l){return`<span class="il" style="${lblSt(l.color)}"><span class="ld2" style="background:${l.color}"></span>${esc(l.name)}</span>`;}
 
-function updateBadge(){ $('ls-badge').textContent=S.items.filter(i=>stockSt(i.stok)!=='aman').length; }
-function updateFooter(){ $('foot-count').textContent=S.items.length+' item'; }
+function updateBadge(){$('ls-badge').textContent=S.items.filter(i=>stockSt(i)!=='aman').length;}
+function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 
 // ══════════════════════════════════════════════════════
 //  NAVIGATION
@@ -601,20 +678,20 @@ const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Men
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
-  const pg=$('page-'+page); if(pg) pg.classList.add('active');
-  const ni=document.querySelector(`.ni[data-page="${page}"]`); if(ni) ni.classList.add('active');
+  const pg=$('page-'+page);if(pg)pg.classList.add('active');
+  const ni=document.querySelector(`.ni[data-page="${page}"]`);if(ni)ni.classList.add('active');
   $('tb-title').textContent=PAGE_TITLES[page]||page;
   closeSidebar();
-  if(page==='dashboard')  renderDashboard();
-  if(page==='barang')     renderBarang();
-  if(page==='lowstock')   renderLowStock();
-  if(page==='categories') renderCategories();
-  if(page==='labels')     renderLabels();
+  if(page==='dashboard')renderDashboard();
+  if(page==='barang')renderBarang();
+  if(page==='lowstock')renderLowStock();
+  if(page==='categories')renderCategories();
+  if(page==='labels')renderLabels();
 }
 
 function refreshAll(){
-  renderDashboard(); renderBarang(); renderLowStock(); renderCategories(); renderLabels();
-  updateBadge(); updateFooter();
+  renderDashboard();renderBarang();renderLowStock();renderCategories();renderLabels();
+  updateBadge();updateFooter();
 }
 
 // ══════════════════════════════════════════════════════
@@ -623,18 +700,20 @@ function refreshAll(){
 function renderDashboard(){
   const items=S.items;
   const total=items.length;
+  const totalUnit=items.reduce((s,i)=>s+(parseInt(i.stok)||0),0);
   const nilai=items.reduce((s,i)=>s+(parseInt(i.stok)||0)*(parseInt(i.harga)||0),0);
-  const menipis=items.filter(i=>stockSt(i.stok)==='menipis').length;
-  const habis=items.filter(i=>stockSt(i.stok)==='habis').length;
+  const menipis=items.filter(i=>stockSt(i)==='menipis').length;
+  const habis=items.filter(i=>stockSt(i)==='habis').length;
   $('st-total').textContent=total;
   $('st-total-s').textContent=total===1?'1 jenis barang':total+' jenis barang';
   $('st-nilai').textContent=rp(nilai);
   $('st-menipis').textContent=menipis;
   $('st-habis').textContent=habis;
+  $('st-unit').textContent=totalUnit.toLocaleString('id-ID');
   const al=$('db-alert');
-  if(menipis+habis>0){al.style.display='flex';$('alert-t').textContent=`Perhatian! ${menipis+habis} barang butuh perhatian.`;$('alert-s').textContent=`${habis} stok habis · ${menipis} stok menipis (≤5 unit)`;}
+  if(menipis+habis>0){al.style.display='flex';$('alert-t').textContent=`Perhatian! ${menipis+habis} barang butuh perhatian.`;$('alert-s').textContent=`${habis} stok habis · ${menipis} stok menipis (di bawah batas minimal masing-masing)`;}
   else al.style.display='none';
-  renderBarChart(); renderDonut(habis,menipis,Math.max(0,total-menipis-habis),total); renderRecent();
+  renderBarChart();renderDonut(habis,menipis,Math.max(0,total-menipis-habis),total);renderRecent();
   updateBadge();
 }
 
@@ -643,17 +722,17 @@ function renderBarChart(){
   const cats={};
   S.items.forEach(i=>{cats[i.kategori]=(cats[i.kategori]||0)+(parseInt(i.stok)||0);});
   const entries=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(!entries.length){c.innerHTML='<div class="empty" style="flex:1;padding:16px 0"><p>Belum ada data</p></div>';return;}
+  if(!entries.length){c.innerHTML='<div class="empty" style="flex:1;padding:12px 0"><p>Belum ada data</p></div>';return;}
   const max=Math.max(...entries.map(e=>e[1]));
-  c.innerHTML=entries.map(([cat,val],i)=>`<div class="bg"><div class="bw"><div class="bar b${i%6}" style="height:${max?val/max*100:0}%" title="${esc(cat)}: ${val}"></div></div><div class="bl" title="${esc(cat)}">${esc(cat)}</div></div>`).join('');
+  c.innerHTML=entries.map(([cat,val],i)=>`<div class="bg"><div class="bw"><div class="bar b${i%6}" style="height:${max?val/max*100:0}%" title="${esc(cat)}: ${val} unit"></div></div><div class="bl" title="${esc(cat)}">${esc(cat)}</div></div>`).join('');
 }
 
 function renderDonut(habis,menipis,aman,total){
   const svg=$('donut-svg'),leg=$('donut-leg');
   $('donut-val').textContent=total;
-  if(!total){svg.innerHTML=`<circle cx="65" cy="65" r="48" fill="none" stroke="var(--bg-4)" stroke-width="16"/>`;leg.innerHTML='';return;}
+  if(!total){svg.innerHTML=`<circle cx="60" cy="60" r="44" fill="none" stroke="var(--bg-4)" stroke-width="14"/>`;leg.innerHTML='';return;}
   const data=[{label:'Stok Aman',val:aman,color:'var(--gr)'},{label:'Stok Menipis',val:menipis,color:'var(--ye)'},{label:'Stok Habis',val:habis,color:'var(--re)'}].filter(d=>d.val>0);
-  const r=48,cx=65,cy=65,sw=16,circ=2*Math.PI*r;
+  const r=44,cx=60,cy=60,sw=14,circ=2*Math.PI*r;
   let off=0,paths='';
   data.forEach(d=>{const dash=d.val/total*circ;paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}" stroke-width="${sw}" stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${-off}" transform="rotate(-90 ${cx} ${cy})" opacity=".85"/>`;off+=dash;});
   svg.innerHTML=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-3)" stroke-width="${sw}"/>${paths}`;
@@ -662,29 +741,46 @@ function renderDonut(habis,menipis,aman,total){
 
 function renderRecent(){
   const tbody=$('recent-tbody');
-  const recent=[...S.items].sort((a,b)=>(b.tanggal||'')>(a.tanggal||'')?1:-1).slice(0,5);
-  if(!recent.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--tm);padding:18px">Belum ada data</td></tr>';return;}
+  const recent=[...S.items].sort((a,b)=>(b.createdAt||'')>(a.createdAt||'')?1:-1).slice(0,5);
+  if(!recent.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--tm);padding:18px">Belum ada data</td></tr>';return;}
   tbody.innerHTML=recent.map(item=>{
-    const st=stockSt(item.stok);
+    const st=stockSt(item);
     const iLbls=(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)).filter(Boolean);
-    const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1} pcs</div></div>`:'<span style="color:var(--tm);font-size:11px">—</span>';
-    return `<tr>
+    const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1} pcs</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
+    const minS=parseInt(item.minStok)||5;
+    return`<tr>
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek)}</div></td>
       <td><span class="ct">${esc(item.kategori)}</span></td>
       <td class="cm">${item.stok}</td>
+      <td><span class="ms-badge">min: ${minS}</span></td>
       <td class="cm">${rp(item.harga)}</td>
       <td>${gHtml}</td>
-      <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'<span style="color:var(--tm);font-size:11px">—</span>'}</td>
+      <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>'}</td>
       <td>${badgeHtml(st)}</td>
     </tr>`;
   }).join('');
 }
 
 // ══════════════════════════════════════════════════════
-//  DATA BARANG
+//  DATA BARANG + SORT
 // ══════════════════════════════════════════════════════
+function sortItems(items){
+  if(!S.sortKey)return items;
+  return[...items].sort((a,b)=>{
+    let va,vb;
+    if(S.sortKey==='nilai'){va=(parseInt(a.stok)||0)*(parseInt(a.harga)||0);vb=(parseInt(b.stok)||0)*(parseInt(b.harga)||0);}
+    else if(S.sortKey==='stok'||S.sortKey==='harga'){va=parseInt(a[S.sortKey])||0;vb=parseInt(b[S.sortKey])||0;}
+    else{va=(a[S.sortKey]||'').toLowerCase();vb=(b[S.sortKey]||'').toLowerCase();}
+    if(va<vb)return S.sortDir==='asc'?-1:1;
+    if(va>vb)return S.sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
 function renderBarang(filtered){
-  const items=filtered!==undefined?filtered:S.items;
+  const rawItems=filtered!==undefined?filtered:S.items;
+  S.lastFiltered=rawItems;
+  const items=sortItems(rawItems);
   const tbody=$('main-tbody'),empty=$('main-empty');
   populateFilters();
   if(!items.length){tbody.innerHTML='';empty.style.display='block';$('tbl-info').textContent='0 barang';$('tbl-nilai').textContent='Total nilai: Rp 0';$('barang-sub').textContent='Tidak ada barang ditemukan';return;}
@@ -695,30 +791,39 @@ function renderBarang(filtered){
   $('barang-sub').textContent=`Menampilkan ${items.length} dari ${S.items.length} barang`;
   const maxS=Math.max(...S.items.map(i=>parseInt(i.stok)||0),1);
   tbody.innerHTML=items.map((item,idx)=>{
-    const st=stockSt(item.stok);
+    const st=stockSt(item);
     const pct=Math.min(100,(parseInt(item.stok)||0)/maxS*100);
     const bc=st==='aman'?'var(--gr)':st==='menipis'?'var(--ye)':'var(--re)';
     const iLbls=(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)).filter(Boolean);
-    const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1}</div></div>`:'<span style="color:var(--tm);font-size:11px">—</span>';
-    return `<tr>
+    const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1}</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
+    const minS=parseInt(item.minStok)||5;
+    return`<tr>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi)}${item.supplier?' · '+esc(item.supplier):''}</div></td>
       <td><span class="ct">${esc(item.kategori)}</span></td>
-      <td style="color:var(--ts)">${esc(item.merek)}</td>
+      <td style="color:var(--ts);font-size:12px">${esc(item.merek)}</td>
       <td><div class="skw"><span class="cm">${item.stok}</span><div class="skb"><div class="skf" style="width:${pct}%;background:${bc}"></div></div></div></td>
+      <td><span class="ms-badge">min: ${minS}</span></td>
       <td class="cm">${rp(item.harga)}</td>
       <td>${gHtml}</td>
-      <td class="cm" style="color:var(--tm)">${item.minGrosir||'—'}</td>
       <td class="cm" style="color:var(--ts)">${rp((parseInt(item.stok)||0)*(parseInt(item.harga)||0))}</td>
-      <td style="font-size:12px;color:var(--ts)">${esc(item.lokasi)}</td>
-      <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'<span style="color:var(--tm);font-size:11px">—</span>'}</td>
+      <td style="font-size:11.5px;color:var(--ts)">${esc(item.lokasi)}</td>
+      <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>'}</td>
       <td>${badgeHtml(st)}</td>
       <td><div class="ca">
-        <div class="ib" onclick="openModal('${item.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <div class="ib e" onclick="openModal('${item.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
         <div class="ib d" onclick="deleteBarang('${item.id}')" title="Hapus"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
       </div></td>
     </tr>`;
   }).join('');
+  updateSortIcons();
+}
+
+function updateSortIcons(){
+  document.querySelectorAll('#page-barang thead th[data-sort]').forEach(th=>{
+    th.classList.remove('asc','desc');
+    if(th.dataset.sort===S.sortKey)th.classList.add(S.sortDir);
+  });
 }
 
 // ══════════════════════════════════════════════════════
@@ -728,7 +833,7 @@ function populateFilters(){
   const cats=[...new Set(S.items.map(i=>i.kategori).filter(Boolean))].sort();
   const merks=[...new Set(S.items.map(i=>i.merek).filter(Boolean))].sort();
   const fk=$('f-kat-filter'),fm=$('f-merek-filter'),fl=$('f-lbl-filter');
-  const [sk,sm,sl]=[fk.value,fm.value,fl?fl.value:''];
+  const[sk,sm,sl]=[fk.value,fm.value,fl?fl.value:''];
   fk.innerHTML='<option value="">Semua Kategori</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   fm.innerHTML='<option value="">Semua Merek</option>'+merks.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
   if(fl){fl.innerHTML='<option value="">Semua Label</option>'+S.labels.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('');fl.value=sl;}
@@ -743,14 +848,16 @@ function doFilter(){
     if(q&&!i.nama.toLowerCase().includes(q)&&!i.merek.toLowerCase().includes(q))return false;
     if(kat&&i.kategori!==kat)return false;
     if(merek&&i.merek!==merek)return false;
-    if(st&&stockSt(i.stok)!==st)return false;
+    if(st&&stockSt(i)!==st)return false;
     if(lbl&&!(i.labels||[]).includes(lbl))return false;
     return true;
   }));
 }
 
 function resetFilter(){
-  $('srch').value='';$('f-kat-filter').value='';$('f-merek-filter').value='';$('f-status-filter').value='';$('f-lbl-filter').value='';
+  $('srch').value='';$('f-kat-filter').value='';$('f-merek-filter').value='';
+  $('f-status-filter').value='';$('f-lbl-filter').value='';
+  S.sortKey=null;S.sortDir='asc';
   renderBarang();
 }
 
@@ -759,23 +866,28 @@ function resetFilter(){
 // ══════════════════════════════════════════════════════
 function renderLowStock(){
   const tbody=$('ls-tbody'),empty=$('ls-empty');
-  const items=S.items.filter(i=>stockSt(i.stok)!=='aman').sort((a,b)=>parseInt(a.stok)-parseInt(b.stok));
+  const items=S.items.filter(i=>stockSt(i)!=='aman').sort((a,b)=>parseInt(a.stok)-parseInt(b.stok));
   if(!items.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML=items.map(item=>{
-    const st=stockSt(item.stok);
+    const st=stockSt(item);
+    const stok=parseInt(item.stok)||0;
+    const minS=parseInt(item.minStok)||5;
+    const kekurangan=Math.max(0,minS-stok);
     const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1}</div></div>`:'—';
-    return `<tr>
-      <td><div class="cn">${esc(item.nama)}</div></td>
+    return`<tr>
+      <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek)}</div></td>
       <td><span class="ct">${esc(item.kategori)}</span></td>
-      <td style="color:var(--ts)">${esc(item.merek)}</td>
-      <td class="cm" style="color:${st==='habis'?'var(--re)':'var(--ye)'};font-weight:700">${item.stok}</td>
+      <td style="color:var(--ts);font-size:12px">${esc(item.merek)}</td>
+      <td class="cm" style="color:${st==='habis'?'var(--re)':'var(--ye)'};font-weight:700">${stok}</td>
+      <td><span class="ms-badge">min: ${minS}</span></td>
+      <td class="cm" style="color:var(--re)">${kekurangan>0?'+'+kekurangan+' unit':'—'}</td>
       <td class="cm">${rp(item.harga)}</td>
       <td>${gHtml}</td>
-      <td style="color:var(--ts);font-size:12px">${esc(item.supplier||'—')}</td>
-      <td style="font-size:12px;color:var(--ts)">${esc(item.lokasi)}</td>
+      <td style="color:var(--ts);font-size:11.5px">${esc(item.supplier||'—')}</td>
+      <td style="font-size:11.5px;color:var(--ts)">${esc(item.lokasi)}</td>
       <td>${badgeHtml(st)}</td>
-      <td><div class="ca"><div class="ib" onclick="openModal('${item.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div></div></td>
+      <td><div class="ca"><div class="ib e" onclick="openModal('${item.id}')" title="Edit Stok"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div></div></td>
     </tr>`;
   }).join('');
 }
@@ -789,7 +901,7 @@ function renderCategories(){
   empty.style.display='none';
   grid.innerHTML=S.categories.map(cat=>{
     const count=S.items.filter(i=>i.kategori===cat).length;
-    return `<div class="ccard"><div class="ccard-i"><h4>${esc(cat)}</h4><p>${count} barang</p></div>
+    return`<div class="ccard"><div class="ccard-i"><h4>${esc(cat)}</h4><p>${count} barang</p></div>
       <div class="ib d" onclick="deleteCategory(${JSON.stringify(cat)})" title="Hapus"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
     </div>`;
   }).join('');
@@ -818,7 +930,7 @@ function renderLabels(){
     empty.style.display='none';
     grid.innerHTML=S.labels.map(l=>{
       const count=S.items.filter(i=>(i.labels||[]).includes(l.id)).length;
-      return `<div class="lmc">
+      return`<div class="lmc">
         <div class="lmcl"><div class="lsw" style="background:${l.color}"></div>
           <div><div class="lmn">${esc(l.name)}</div><div class="lmct">${count} barang</div></div></div>
         <div class="lmcr"><span class="il" style="${lblSt(l.color)}"><span class="ld2" style="background:${l.color}"></span>${esc(l.name)}</span>
@@ -845,13 +957,13 @@ function pickColor(c,el){
 
 function updateLblPreview(){
   const name=($('nl-name')||{value:''}).value.trim()||'Label Baru';
-  const c=($('nl-color')||{value:'#3b82f6'}).value;
+  const c=($('nl-color')||{value:'#4f7cff'}).value;
   const prev=$('lbl-preview');
   if(prev){prev.setAttribute('style',lblSt(c));prev.innerHTML=`<span class="ld2" style="background:${c}"></span>${esc(name)}`;}
 }
 
 function createLabel(){
-  const name=$('nl-name').value.trim(),color=$('nl-color').value||'#3b82f6';
+  const name=$('nl-name').value.trim(),color=$('nl-color').value||'#4f7cff';
   if(!name){toast('Nama label kosong','error');return;}
   if(S.labels.find(l=>l.name.toLowerCase()===name.toLowerCase())){toast('Label sudah ada','error');return;}
   S.labels.push({id:uid(),name,color});storeSave();
@@ -868,16 +980,13 @@ function deleteLabel(id){
   });
 }
 
-// Label picker inside modal
 function populateLblPicker(selectedIds=[]){
   const c=$('f-lbl-picker');if(!c)return;
-  if(!S.labels.length){c.innerHTML=`<span style="font-size:12px;color:var(--tm)">Belum ada label. Buat di menu <strong style="color:var(--ac)">Label Barang</strong>.</span>`;return;}
+  if(!S.labels.length){c.innerHTML=`<span style="font-size:11.5px;color:var(--tm)">Belum ada label. Buat di menu <strong style="color:var(--ac)">Label Barang</strong>.</span>`;return;}
   c.innerHTML=S.labels.map(l=>`<span class="lo${selectedIds.includes(l.id)?' sel':''}" style="${lblSt(l.color)}" data-lid="${l.id}"><span class="lod" style="background:${l.color}"></span>${esc(l.name)}</span>`).join('');
 }
 
-function getPickedLabels(){
-  return [...document.querySelectorAll('#f-lbl-picker .lo.sel')].map(el=>el.dataset.lid).filter(Boolean);
-}
+function getPickedLabels(){return[...document.querySelectorAll('#f-lbl-picker .lo.sel')].map(el=>el.dataset.lid).filter(Boolean);}
 
 // ══════════════════════════════════════════════════════
 //  MODAL
@@ -885,18 +994,13 @@ function getPickedLabels(){
 function openModal(editId){
   S.editingId=editId||null;
   $('modal-ov').classList.add('open');
-
-  // Populate category select
   const ks=$('f-kat-sel');
   ks.innerHTML='<option value="">Pilih kategori</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-
   clearErrors();
-
   if(editId){
-    const item=S.items.find(i=>i.id===editId);
-    if(!item)return;
+    const item=S.items.find(i=>i.id===editId);if(!item)return;
     $('modal-title').textContent='Edit Barang';
-    $('modal-save').innerHTML=svgSave()+' Update Barang';
+    $('modal-save').textContent='💾 Update Barang';
     $('f-nama').value=item.nama;
     $('f-kat-sel').value=item.kategori;
     $('f-merek-inp').value=item.merek;
@@ -904,26 +1008,25 @@ function openModal(editId){
     $('f-harga').value=item.harga;
     $('f-harga-grosir').value=item.hargaGrosir||'';
     $('f-min-grosir').value=item.minGrosir||'';
+    $('f-min-stok').value=item.minStok||'';
     $('f-supplier').value=item.supplier||'';
     $('f-lokasi').value=item.lokasi;
     $('f-tgl').value=item.tanggal||'';
     $('f-catatan').value=item.catatan||'';
     populateLblPicker(item.labels||[]);
-  } else {
+  }else{
     $('modal-title').textContent='Tambah Barang Baru';
-    $('modal-save').innerHTML=svgSave()+' Simpan Barang';
+    $('modal-save').textContent='💾 Simpan Barang';
     clearForm();
     $('f-tgl').value=new Date().toISOString().slice(0,10);
     populateLblPicker([]);
   }
 }
 
-function svgSave(){return`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`;}
-
 function closeModal(){$('modal-ov').classList.remove('open');S.editingId=null;}
 
 function clearForm(){
-  ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});
   $('f-kat-sel').value='';
 }
 
@@ -936,7 +1039,7 @@ function addCategoryModal(){
   const val=$('f-kat-new').value.trim();if(!val)return;
   if(!S.categories.map(c=>c.toLowerCase()).includes(val.toLowerCase())){S.categories.push(val);storeSave();}
   const sel=$('f-kat-sel');
-  if(![...sel.options].find(o=>o.value===val)) sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;
+  if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;
   sel.value=val;$('f-kat-new').value='';toast(`Kategori "${val}" ditambahkan`,'success');
 }
 
@@ -948,37 +1051,36 @@ function saveBarang(){
   const stok=$('f-stok').value;
   const harga=$('f-harga').value;
   const lokasi=$('f-lokasi').value.trim();
-
   let ok=true;
   const err=(fid,eid,msg)=>{$(fid).classList.add('err');$(eid).textContent=msg;ok=false;};
-  if(!nama) err('f-nama','e-nama','Nama barang wajib diisi');
-  if(!kat)  err('f-kat-sel','e-kat','Pilih kategori');
+  if(!nama)err('f-nama','e-nama','Nama barang wajib diisi');
+  if(!kat)err('f-kat-sel','e-kat','Pilih kategori');
   if(!merek)err('f-merek-inp','e-merek','Merek wajib diisi');
-  if(stok===''||isNaN(stok)||parseInt(stok)<0) err('f-stok','e-stok','Stok tidak valid');
-  if(!harga||isNaN(harga)||parseInt(harga)<0)  err('f-harga','e-harga','Harga tidak valid');
-  if(!lokasi) err('f-lokasi','e-lokasi','Lokasi wajib diisi');
+  if(stok===''||isNaN(stok)||parseInt(stok)<0)err('f-stok','e-stok','Stok tidak valid');
+  if(!harga||isNaN(harga)||parseInt(harga)<0)err('f-harga','e-harga','Harga tidak valid');
+  if(!lokasi)err('f-lokasi','e-lokasi','Lokasi wajib diisi');
   if(!ok)return;
-
   const now=new Date().toISOString();
   const hargaG=$('f-harga-grosir').value;
   const minG=$('f-min-grosir').value;
+  const minStokVal=$('f-min-stok').value;
   const data={
     nama,kategori:kat,merek,
     stok:parseInt(stok),harga:parseInt(harga),
     hargaGrosir:hargaG&&parseInt(hargaG)>0?parseInt(hargaG):null,
     minGrosir:minG&&parseInt(minG)>0?parseInt(minG):null,
+    minStok:minStokVal&&parseInt(minStokVal)>=0?parseInt(minStokVal):5,
     supplier:$('f-supplier').value.trim(),
     lokasi,tanggal:$('f-tgl').value||now.slice(0,10),
     catatan:$('f-catatan').value.trim(),
     labels:getPickedLabels(),
     updatedAt:now,
   };
-
   if(S.editingId){
     const idx=S.items.findIndex(i=>i.id===S.editingId);
-    if(idx>-1) S.items[idx]={...S.items[idx],...data};
+    if(idx>-1)S.items[idx]={...S.items[idx],...data};
     toast('Barang berhasil diperbarui!','success');
-  } else {
+  }else{
     S.items.unshift({id:uid(),...data,createdAt:now});
     toast('Barang berhasil ditambahkan!','success');
   }
@@ -999,15 +1101,94 @@ function confirm2(msg,cb){$('conf-msg').textContent=msg;S.confirmCb=cb;$('conf-o
 function closeConfirm(){$('conf-ov').classList.remove('open');S.confirmCb=null;}
 
 // ══════════════════════════════════════════════════════
+//  EXPORT XLSX (SheetJS)
+// ══════════════════════════════════════════════════════
+function buildXLSXData(items){
+  const header=['No','Nama Barang','Kategori','Merek','Stok','Stok Minimal','Harga Ecer','Harga Grosir','Min Qty Grosir','Nilai Stok','Supplier','Lokasi','Tanggal Masuk','Status','Label','Catatan'];
+  const rows=items.map((item,i)=>[
+    i+1,
+    item.nama,
+    item.kategori,
+    item.merek,
+    parseInt(item.stok)||0,
+    parseInt(item.minStok)||5,
+    parseInt(item.harga)||0,
+    item.hargaGrosir?parseInt(item.hargaGrosir):'',
+    item.minGrosir?parseInt(item.minGrosir):'',
+    (parseInt(item.stok)||0)*(parseInt(item.harga)||0),
+    item.supplier||'',
+    item.lokasi||'',
+    item.tanggal||'',
+    {aman:'Aman',menipis:'Menipis',habis:'Habis'}[stockSt(item)],
+    (item.labels||[]).map(id=>S.labels.find(l=>l.id===id)?.name||'').filter(Boolean).join(', '),
+    item.catatan||''
+  ]);
+  return[header,...rows];
+}
+
+function exportXLSX(items,filename){
+  if(!items||!items.length){toast('Tidak ada data untuk diekspor','error');return;}
+  if(typeof XLSX==='undefined'){toast('Library XLSX tidak tersedia','error');return;}
+  const data=buildXLSXData(items);
+  const wb=XLSX.utils.book_new();
+
+  // Sheet 1: Data Barang
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  // Set column widths
+  ws['!cols']=[
+    {wch:5},{wch:28},{wch:16},{wch:16},{wch:10},{wch:12},
+    {wch:16},{wch:16},{wch:14},{wch:18},{wch:18},
+    {wch:16},{wch:14},{wch:10},{wch:22},{wch:30}
+  ];
+  // Style header row (SheetJS CE doesn't support cell styles but we set freeze pane)
+  ws['!freeze']={xSplit:0,ySplit:1,topLeftCell:'A2',activePane:'bottomLeft',state:'frozen'};
+
+  XLSX.utils.book_append_sheet(wb,ws,'Data Barang');
+
+  // Sheet 2: Stok Menipis
+  const lowItems=S.items.filter(i=>stockSt(i)!=='aman');
+  if(lowItems.length){
+    const lowData=buildXLSXData(lowItems);
+    const ws2=XLSX.utils.aoa_to_sheet(lowData);
+    ws2['!cols']=[{wch:5},{wch:28},{wch:16},{wch:16},{wch:10},{wch:12},{wch:16},{wch:16},{wch:14},{wch:18},{wch:18},{wch:16},{wch:14},{wch:10},{wch:22},{wch:30}];
+    ws2['!freeze']={xSplit:0,ySplit:1,topLeftCell:'A2',activePane:'bottomLeft',state:'frozen'};
+    XLSX.utils.book_append_sheet(wb,ws2,'Stok Menipis');
+  }
+
+  // Sheet 3: Ringkasan per Kategori
+  const katMap={};
+  S.items.forEach(i=>{
+    if(!katMap[i.kategori])katMap[i.kategori]={kategori:i.kategori,jumlahJenis:0,totalUnit:0,totalNilai:0,menipis:0,habis:0};
+    katMap[i.kategori].jumlahJenis++;
+    katMap[i.kategori].totalUnit+=parseInt(i.stok)||0;
+    katMap[i.kategori].totalNilai+=(parseInt(i.stok)||0)*(parseInt(i.harga)||0);
+    const st=stockSt(i);
+    if(st==='menipis')katMap[i.kategori].menipis++;
+    if(st==='habis')katMap[i.kategori].habis++;
+  });
+  const sumHeader=['Kategori','Jenis Barang','Total Unit','Total Nilai (Rp)','Stok Menipis','Stok Habis'];
+  const sumRows=Object.values(katMap).map(k=>[k.kategori,k.jumlahJenis,k.totalUnit,k.totalNilai,k.menipis,k.habis]);
+  const ws3=XLSX.utils.aoa_to_sheet([sumHeader,...sumRows]);
+  ws3['!cols']=[{wch:18},{wch:14},{wch:12},{wch:20},{wch:14},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws3,'Ringkasan Kategori');
+
+  const ts=new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb,`${filename}_${ts}.xlsx`);
+  toast(`Export XLSX berhasil! (${items.length} barang, 3 sheet)`, 'success');
+}
+
+// ══════════════════════════════════════════════════════
 //  EXPORT CSV
 // ══════════════════════════════════════════════════════
-function exportCSV(){
-  if(!S.items.length){toast('Tidak ada data','error');return;}
-  const hdr=['ID','Nama','Kategori','Merek','Stok','Harga Ecer','Harga Grosir','Min Grosir','Nilai','Supplier','Lokasi','Tanggal','Status','Label','Catatan'];
-  const rows=S.items.map(i=>[
-    i.id,i.nama,i.kategori,i.merek,i.stok,i.harga,i.hargaGrosir||'',i.minGrosir||'',
-    (parseInt(i.stok)||0)*(parseInt(i.harga)||0),i.supplier||'',i.lokasi,i.tanggal||'',
-    {aman:'Aman',menipis:'Menipis',habis:'Habis'}[stockSt(i.stok)],
+function exportCSV(items){
+  const data=items||S.items;
+  if(!data.length){toast('Tidak ada data','error');return;}
+  const hdr=['ID','Nama','Kategori','Merek','Stok','Stok Minimal','Harga Ecer','Harga Grosir','Min Grosir','Nilai','Supplier','Lokasi','Tanggal','Status','Label','Catatan'];
+  const rows=data.map(i=>[
+    i.id,i.nama,i.kategori,i.merek,i.stok,parseInt(i.minStok)||5,i.harga,
+    i.hargaGrosir||'',i.minGrosir||'',(parseInt(i.stok)||0)*(parseInt(i.harga)||0),
+    i.supplier||'',i.lokasi,i.tanggal||'',
+    {aman:'Aman',menipis:'Menipis',habis:'Habis'}[stockSt(i)],
     (i.labels||[]).map(id=>S.labels.find(l=>l.id===id)?.name||'').filter(Boolean).join(';'),
     i.catatan||''
   ].map(v=>`"${String(v).replace(/"/g,'""')}"`));
@@ -1034,18 +1215,19 @@ function handleImport(e){
     for(let i=start;i<lines.length;i++){
       const c=parseCSV(lines[i]);
       if(c.length<4){errors++;continue;}
-      const[nama,kat,merek,stok,harga,hargaG,minG,supplier,lokasi,catatan]=c;
+      const[nama,kat,merek,stok,harga,hargaG,minG,minStok,supplier,lokasi,catatan]=c;
       if(!nama||!kat||!merek){errors++;continue;}
       if(!S.categories.includes(kat))S.categories.push(kat);
       S.items.push({id:uid(),nama:nama.trim(),kategori:kat.trim(),merek:merek.trim(),
         stok:parseInt(stok)||0,harga:parseInt(harga)||0,
         hargaGrosir:hargaG?parseInt(hargaG):null,minGrosir:minG?parseInt(minG):null,
+        minStok:minStok&&parseInt(minStok)>=0?parseInt(minStok):5,
         supplier:(supplier||'').trim(),lokasi:(lokasi||'Tidak ditentukan').trim(),
         tanggal:now.slice(0,10),catatan:(catatan||'').trim(),labels:[],createdAt:now,updatedAt:now});
       added++;
     }
     storeSave();refreshAll();
-    $('import-result').innerHTML=`<div style="background:var(--gr-d);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--gr)">✓ Berhasil import <strong>${added}</strong> barang${errors?`, ${errors} baris dilewati`:''}.`;
+    $('import-result').innerHTML=`<div style="background:rgba(45,212,160,.07);border:1px solid rgba(45,212,160,.2);border-radius:8px;padding:10px 13px;font-size:12.5px;color:var(--gr)">✓ Berhasil import <strong>${added}</strong> barang${errors?`, <span style="color:var(--ye)">${errors} baris dilewati</span>`:''}.</div>`;
     if(e.target)e.target.value='';
   };
   reader.readAsText(file);
@@ -1069,14 +1251,14 @@ function closeSidebar(){$('sidebar').classList.remove('mob');$('sb-ov').classLis
 function toast(msg,type='info'){
   const icons={
     success:`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
-    error:`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    error:`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
     info:`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
   };
   const t=document.createElement('div');
   t.className=`toast ${type.slice(0,1)}`;
   t.innerHTML=(icons[type]||icons.info)+`<span>${esc(msg)}</span>`;
   $('toast-ct').appendChild(t);
-  setTimeout(()=>{t.style.cssText='opacity:0;transform:translateX(20px);transition:all .3s';setTimeout(()=>t.remove(),350);},3000);
+  setTimeout(()=>{t.style.cssText='opacity:0;transform:translateX(16px);transition:all .3s';setTimeout(()=>t.remove(),320);},3200);
 }
 
 // ══════════════════════════════════════════════════════
@@ -1089,7 +1271,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.ni[data-page]').forEach(el=>{
     el.addEventListener('click',()=>navigateTo(el.dataset.page));
   });
-  $('nav-export').addEventListener('click',exportCSV);
+
+  // Export buttons
+  $('nav-exp-xlsx').addEventListener('click',()=>exportXLSX(S.items,'inventori_lengkap'));
+  $('nav-exp-csv').addEventListener('click',()=>exportCSV());
+  $('db-exp-xlsx').addEventListener('click',()=>exportXLSX(S.items,'inventori_lengkap'));
+  $('btn-exp-xlsx-b').addEventListener('click',()=>{
+    const items=S.lastFiltered||S.items;
+    exportXLSX(items,'data_barang');
+  });
+  $('btn-exp-xlsx-ls').addEventListener('click',()=>{
+    const items=S.items.filter(i=>stockSt(i)!=='aman');
+    exportXLSX(items,'stok_menipis');
+  });
 
   // Topbar
   $('btn-add-top').addEventListener('click',()=>openModal());
@@ -1107,12 +1301,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('f-kat-add').addEventListener('click',addCategoryModal);
   $('f-kat-new').addEventListener('keydown',e=>{if(e.key==='Enter')addCategoryModal();});
 
-  // Label picker (event delegation — click toggles .sel)
+  // Label picker
   $('f-lbl-picker').addEventListener('click',e=>{
     const lo=e.target.closest('.lo');if(lo)lo.classList.toggle('sel');
   });
 
-  // Confirm dialog
+  // Confirm
   $('conf-cancel').addEventListener('click',closeConfirm);
   $('conf-ok').addEventListener('click',()=>{if(S.confirmCb)S.confirmCb();closeConfirm();});
   $('conf-ov').addEventListener('click',e=>{if(e.target===$('conf-ov'))closeConfirm();});
@@ -1125,11 +1319,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('f-lbl-filter').addEventListener('change',doFilter);
   $('btn-reset').addEventListener('click',resetFilter);
 
-  // Categories page
+  // Sort headers
+  document.querySelector('#page-barang thead').addEventListener('click',e=>{
+    const th=e.target.closest('th[data-sort]');if(!th)return;
+    const key=th.dataset.sort;
+    if(S.sortKey===key){S.sortDir=S.sortDir==='asc'?'desc':'asc';}
+    else{S.sortKey=key;S.sortDir='asc';}
+    doFilter();
+  });
+
+  // Categories
   $('btn-add-cat').addEventListener('click',()=>{addCategory($('new-cat').value.trim());$('new-cat').value='';});
   $('new-cat').addEventListener('keydown',e=>{if(e.key==='Enter'){addCategory($('new-cat').value.trim());$('new-cat').value='';}});
 
-  // Labels page
+  // Labels
   $('btn-create-lbl').addEventListener('click',createLabel);
   $('nl-name').addEventListener('input',updateLblPreview);
   $('clr-palette').addEventListener('click',e=>{
@@ -1147,6 +1350,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){closeModal();closeConfirm();}
     if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}
+    if((e.ctrlKey||e.metaKey)&&e.key==='e'){e.preventDefault();exportXLSX(S.items,'inventori');}
   });
 
   refreshAll();
