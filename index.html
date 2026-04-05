@@ -46,8 +46,8 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 .ni svg{width:15px;height:15px;flex-shrink:0}
 .ni-badge{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--re-d);color:var(--re);
   padding:1px 6px;border-radius:99px;border:1px solid rgba(255,92,92,.2)}
-.ni-badge-cy{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--cy-d);color:var(--cy);
-  padding:1px 6px;border-radius:99px;border:1px solid rgba(6,182,212,.2)}
+.ni-badge-cy{margin-left:auto;font-size:9.5px;font-family:var(--mono);background:var(--gr-d);color:var(--gr);
+  padding:1px 6px;border-radius:99px;border:1px solid rgba(45,212,160,.2)}
 .sb-foot{padding:12px 16px;border-top:1px solid var(--bdr);font-size:10.5px;color:var(--tm)}
 .sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99}
 
@@ -304,6 +304,15 @@ tbody tr:last-child td{border-bottom:none}
 .idrop p{font-size:12.5px}
 .idrop input{display:none}
 
+/* IMPORT RESULT */
+.import-res-ok{background:rgba(45,212,160,.07);border:1px solid rgba(45,212,160,.2);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--gr);margin-top:10px}
+.import-res-ok .imp-count{font-family:var(--mono);font-weight:700;font-size:15px}
+.imp-warning{color:var(--ye);font-size:11.5px;margin-top:4px}
+.import-col-map{background:var(--bg-3);border:1px solid var(--bdr);border-radius:8px;padding:12px;margin-top:10px;font-size:11.5px}
+.import-col-map-title{font-weight:600;color:var(--ts);margin-bottom:6px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.col-map-row{display:flex;align-items:center;gap:8px;padding:3px 0;color:var(--tm)}
+.col-map-row .col-found{color:var(--gr)}.col-map-row .col-not{color:var(--tm);opacity:.5}
+
 /* CONFIRM */
 .conf-ov{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
   background:rgba(0,0,0,.8);backdrop-filter:blur(6px)}
@@ -334,14 +343,18 @@ tbody tr:last-child td{border-bottom:none}
   padding:9px 12px;font-size:11.5px;color:var(--ts);margin-top:8px;display:flex;align-items:center;gap:7px}
 .restock-hint svg{color:var(--ac);width:13px;height:13px;flex-shrink:0}
 
-/* NOTA SPECIFIC */
+/* ═══════════════════════════════════
+   NOTA BARANG MASUK  
+   ═══════════════════════════════════ */
 .nota-card{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:border-color .15s}
 .nota-card:hover{border-color:var(--bdr-b)}
 .nota-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.nota-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--cy)}
+.nota-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--gr)}
 .nota-date{font-size:11px;color:var(--tm);font-family:var(--mono)}
 .nota-total{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--or)}
 .nota-items-count{font-size:10.5px;color:var(--ts);background:var(--bg-3);padding:2px 8px;border-radius:99px}
+.nota-badge-masuk{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;
+  font-size:10px;font-weight:700;background:var(--gr-d);color:var(--gr);border:1px solid rgba(45,212,160,.2);font-family:var(--mono)}
 .nota-tbl{width:100%;border-collapse:collapse;margin-top:8px}
 .nota-tbl th{font-size:9.5px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;
   padding:6px 8px;text-align:left;border-bottom:1px solid var(--bdr)}
@@ -375,19 +388,14 @@ tbody tr:last-child td{border-bottom:none}
 /* NOTA FILTER */
 .nota-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 
-/* PRINT NOTA */
-@media print{
-  body{background:#fff!important;color:#000!important}
-  .sidebar,.topbar,.sb-ov,.tct,.conf-ov,.mo{display:none!important}
-  .main{margin-left:0!important}
-  .content{padding:0!important}
-  .page{display:none!important}
-  #page-nota-print{display:block!important}
-  .nota-print-area{color:#000}
-  .nota-print-area table{border-collapse:collapse;width:100%}
-  .nota-print-area th,.nota-print-area td{border:1px solid #ccc;padding:6px 10px;font-size:11px}
-  .nota-print-area th{background:#f0f0f0;font-weight:700}
-}
+/* STOK AKAN BERTAMBAH HINT */
+.stok-hint{background:rgba(45,212,160,.06);border:1px solid rgba(45,212,160,.18);border-radius:var(--rs);
+  padding:9px 12px;font-size:11.5px;color:var(--gr);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.stok-hint svg{width:13px;height:13px;flex-shrink:0;color:var(--gr)}
+
+/* Harga beli badge */
+.hbeli-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;color:var(--cy);
+  background:var(--cy-d);border:1px solid rgba(6,182,212,.2);padding:1px 6px;border-radius:99px}
 
 @media(max-width:1000px){.sg{grid-template-columns:repeat(3,1fr)}.cs{grid-template-columns:1fr}}
 @media(max-width:700px){
@@ -406,7 +414,7 @@ tbody tr:last-child td{border-bottom:none}
 <aside class="sidebar" id="sidebar">
   <div class="sb-logo">
     <div class="sb-logo-ic"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-    <div><div class="sb-logo-t">StockPro</div><div class="sb-logo-s">Inventory v4.0</div></div>
+    <div><div class="sb-logo-t">StockPro</div><div class="sb-logo-s">Inventory v4.1</div></div>
   </div>
   <nav class="sb-nav">
     <div class="nav-lbl">Menu Utama</div>
@@ -420,7 +428,7 @@ tbody tr:last-child td{border-bottom:none}
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Stok Menipis<span class="ni-badge" id="ls-badge">0</span>
     </div>
     <div class="ni" data-page="nota">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Nota / Invoice<span class="ni-badge-cy" id="nota-badge">0</span>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="ni-badge-cy" id="nota-badge">0</span>
     </div>
     <div class="ni" data-page="categories">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Kategori
@@ -430,7 +438,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <div class="nav-lbl" style="margin-top:8px">Export & Import</div>
     <div class="ni" id="nav-exp-xlsx">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Export Excel (XLSX)
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Export Excel (XLSX)
     </div>
     <div class="ni" id="nav-exp-csv">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV
@@ -466,7 +474,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="sc"><div class="sc-h"><div class="sc-lbl">Nilai Inventori</div><div class="sc-ic ic-g"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="sc-v" id="st-nilai" style="font-size:15px">Rp 0</div><div class="sc-s">total nilai stok</div></div>
         <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Menipis</div><div class="sc-ic ic-y"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div></div><div class="sc-v" id="st-menipis">0</div><div class="sc-s">di bawah stok minimal</div></div>
         <div class="sc"><div class="sc-h"><div class="sc-lbl">Stok Habis</div><div class="sc-ic ic-r"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div></div><div class="sc-v" id="st-habis">0</div><div class="sc-s">perlu restock segera</div></div>
-        <div class="sc"><div class="sc-h"><div class="sc-lbl">Total Nota</div><div class="sc-ic ic-cy"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div><div class="sc-v" id="st-nota">0</div><div class="sc-s">nota dibuat</div></div>
+        <div class="sc"><div class="sc-h"><div class="sc-lbl">Barang Masuk</div><div class="sc-ic ic-cy"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg></div></div><div class="sc-v" id="st-nota">0</div><div class="sc-s">total nota penerimaan</div></div>
       </div>
       <div class="cs">
         <div class="cc"><div class="cc-t">Stok Per Kategori (unit)</div><div class="bc" id="chart-kat"></div></div>
@@ -558,25 +566,30 @@ tbody tr:last-child td{border-bottom:none}
       </div></div></div>
     </div>
 
-    <!-- NOTA / INVOICE -->
+    <!-- BARANG MASUK / NOTA -->
     <div class="page" id="page-nota">
       <div class="sh">
-        <div><div class="st">📋 Nota / Invoice</div><div class="ss">Kelompokkan barang ke dalam nota dengan tanggal</div></div>
+        <div><div class="st">📦 Barang Masuk</div><div class="ss">Pencatatan penerimaan stok dari supplier</div></div>
         <div class="export-group">
-          <button class="btn btn-gr btn-sm" id="btn-exp-nota-xlsx"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export Nota XLSX</button>
-          <button class="btn btn-cy btn-sm" id="btn-new-nota"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Buat Nota Baru</button>
+          <button class="btn btn-gr btn-sm" id="btn-exp-nota-xlsx"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+          <button class="btn btn-p btn-sm" id="btn-new-nota"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Catat Barang Masuk</button>
         </div>
       </div>
+      <!-- Info box -->
+      <div class="stok-hint" style="margin-bottom:14px">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Setiap nota barang masuk yang disimpan akan <strong>otomatis menambah stok</strong> pada data barang.
+      </div>
       <div class="nota-filters">
-        <div class="sw" style="max-width:240px"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="nota-srch" placeholder="Cari no. nota / pelanggan..."></div>
+        <div class="sw" style="max-width:240px"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="nota-srch" placeholder="Cari no. nota / supplier..."></div>
         <input type="date" class="fi" id="nota-date-from" style="width:140px;padding:7px 9px" title="Dari tanggal">
         <input type="date" class="fi" id="nota-date-to" style="width:140px;padding:7px 9px" title="Sampai tanggal">
         <button class="btn btn-g btn-sm" id="nota-reset-filter">Reset</button>
       </div>
       <div id="nota-list"></div>
       <div class="empty" id="nota-empty" style="display:none">
-        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <h3>Belum ada nota</h3><p>Klik "Buat Nota Baru" untuk mulai.</p>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>
+        <h3>Belum ada catatan barang masuk</h3><p>Klik "Catat Barang Masuk" untuk mulai mencatat penerimaan stok.</p>
       </div>
     </div>
 
@@ -613,26 +626,30 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- IMPORT -->
     <div class="page" id="page-import">
-      <div class="sh"><div><div class="st">Import Data</div><div class="ss">Import barang dari file CSV atau Excel (XLSX)</div></div></div>
+      <div class="sh"><div><div class="st">Import Data</div><div class="ss">Import barang dari file CSV atau Excel (XLSX) — hanya nama barang yang wajib ada</div></div></div>
       <div class="tc" style="padding:24px">
         <label class="idrop" id="import-drop" for="import-file">
           <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           <p><strong>Klik atau drag &amp; drop</strong> file CSV atau XLSX di sini</p>
-          <p style="font-size:11px;margin-top:4px">Format CSV: nama, kategori, merek, stok, harga_ecer, harga_grosir, min_grosir, min_stok, supplier, lokasi, catatan</p>
-          <p style="font-size:11px;margin-top:2px;color:var(--ac)">Format XLSX: Kolom harus mengandung header: nama, kategori, merek, stok, harga</p>
+          <p style="font-size:11px;margin-top:6px;color:var(--gr)">✓ Hanya kolom <strong>nama</strong> yang wajib ada — kolom lain bisa dikosongkan</p>
+          <p style="font-size:11px;margin-top:3px">Kolom yang dikenali: nama, kategori, merek, stok, harga, harga_ecer, harga_grosir, min_grosir, min_stok, supplier, lokasi, catatan</p>
           <input type="file" id="import-file" accept=".csv,.xlsx,.xls">
         </label>
         <div class="div"></div>
         <div style="font-size:12.5px;color:var(--ts)">
-          <strong style="color:var(--tp)">Contoh format CSV:</strong><br><br>
+          <strong style="color:var(--tp)">Contoh format CSV (minimal):</strong><br><br>
+          <code style="font-family:var(--mono);font-size:11px;color:var(--ac)">nama<br>Laptop ASUS<br>Kemeja Polos<br>Aqua 600ml</code>
+          <br><br>
+          <strong style="color:var(--tp)">Contoh format CSV (lengkap):</strong><br><br>
           <code style="font-family:var(--mono);font-size:11px;color:var(--ac)">nama,kategori,merek,stok,harga_ecer,harga_grosir,min_grosir,min_stok,supplier,lokasi,catatan<br>"Laptop ASUS",Elektronik,ASUS,10,12000000,10500000,5,3,"PT ABC","Rak A1","Garansi 1 th"</code>
+          <br><br>
+          <div style="background:rgba(45,212,160,.07);border:1px solid rgba(45,212,160,.2);border-radius:8px;padding:10px 13px;font-size:11.5px;color:var(--gr)">
+            💡 Kolom yang tidak diisi akan menggunakan nilai default: stok = 0, harga = 0, kategori = "Lainnya", lokasi = "Tidak ditentukan", min stok = 5
+          </div>
         </div>
         <div id="import-result" style="margin-top:12px"></div>
       </div>
     </div>
-
-    <!-- PRINT (hidden) -->
-    <div class="page" id="page-nota-print"></div>
 
   </div>
 </div>
@@ -685,37 +702,45 @@ tbody tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<!-- MODAL NOTA -->
+<!-- MODAL BARANG MASUK -->
 <div class="mo" id="nota-modal-ov">
   <div class="modal wide" id="nota-modal">
     <div class="mh">
-      <div class="mt" id="nota-modal-title">Buat Nota Baru</div>
+      <div class="mt" id="nota-modal-title">📦 Catat Barang Masuk</div>
       <div class="icon-btn" id="nota-modal-close"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
     </div>
     <div class="mb">
+      <div class="stok-hint">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>
+        Simpan nota ini akan <strong>menambah stok</strong> barang secara otomatis sesuai qty yang dimasukkan.
+      </div>
       <div class="fg2">
-        <div class="fg"><label class="flbl">No. Nota <span class="req">*</span></label><input type="text" class="fi" id="nf-nomor" placeholder="INV-001"><span class="ferr" id="ne-nomor"></span></div>
-        <div class="fg"><label class="flbl">Tanggal <span class="req">*</span></label><input type="date" class="fi" id="nf-tanggal"><span class="ferr" id="ne-tanggal"></span></div>
-        <div class="fg"><label class="flbl">Pelanggan</label><input type="text" class="fi" id="nf-pelanggan" placeholder="Nama pelanggan (opsional)"></div>
-        <div class="fg"><label class="flbl">Catatan</label><input type="text" class="fi" id="nf-catatan" placeholder="Catatan nota (opsional)"></div>
+        <div class="fg"><label class="flbl">No. Nota <span class="req">*</span></label><input type="text" class="fi" id="nf-nomor" placeholder="MSK-001"><span class="ferr" id="ne-nomor"></span></div>
+        <div class="fg"><label class="flbl">Tanggal Masuk <span class="req">*</span></label><input type="date" class="fi" id="nf-tanggal"><span class="ferr" id="ne-tanggal"></span></div>
+        <div class="fg"><label class="flbl">Supplier / Pemasok</label><input type="text" class="fi" id="nf-pelanggan" placeholder="Nama supplier (opsional)"></div>
+        <div class="fg"><label class="flbl">Catatan</label><input type="text" class="fi" id="nf-catatan" placeholder="Catatan penerimaan (opsional)"></div>
       </div>
       <div class="div"></div>
-      <div style="font-size:12.5px;font-weight:600;margin-bottom:8px;color:var(--cy)">Tambah Barang ke Nota</div>
+      <div style="font-size:12.5px;font-weight:600;margin-bottom:8px;color:var(--gr)">Tambah Barang yang Diterima</div>
       <div class="nota-add-search" style="margin-bottom:12px">
-        <div class="sw" style="min-width:100%"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="nota-add-srch" placeholder="Cari barang untuk ditambahkan ke nota..." autocomplete="off"></div>
+        <div class="sw" style="min-width:100%"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="nota-add-srch" placeholder="Cari barang untuk ditambahkan ke catatan masuk..." autocomplete="off"></div>
         <div class="nota-add-results" id="nota-add-results"></div>
       </div>
+      <!-- Harga beli per item -->
       <div id="nota-items-list" style="margin-bottom:12px"></div>
-      <div style="display:flex;justify-content:flex-end;padding:10px 0;border-top:1px solid var(--bdr)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;padding:10px 0;border-top:1px solid var(--bdr)">
+        <div style="font-size:11px;color:var(--tm)">
+          <span id="nota-total-unit">0</span> jenis barang · <span id="nota-total-qty">0</span> total unit diterima
+        </div>
         <div style="text-align:right">
-          <div style="font-size:11px;color:var(--tm);text-transform:uppercase;letter-spacing:.07em">Total</div>
+          <div style="font-size:11px;color:var(--tm);text-transform:uppercase;letter-spacing:.07em">Total Nilai Beli</div>
           <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--or)" id="nota-grand-total">Rp 0</div>
         </div>
       </div>
     </div>
     <div class="mf">
       <button class="btn btn-g" id="nota-modal-cancel">Batal</button>
-      <button class="btn btn-cy" id="nota-modal-save">📋 Simpan Nota</button>
+      <button class="btn btn-p" id="nota-modal-save">📦 Simpan &amp; Tambah Stok</button>
     </div>
   </div>
 </div>
@@ -776,7 +801,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Nota / Invoice',categories:'Kategori',labels:'Label Barang',import:'Import Data'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -798,7 +823,6 @@ function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNo
 // ═══════════════════════════════════════
 function renderDashboard(){
   const items=S.items,total=items.length;
-  const totalUnit=items.reduce((s,i)=>s+(parseInt(i.stok)||0),0);
   const nilai=items.reduce((s,i)=>s+(parseInt(i.stok)||0)*(parseInt(i.harga)||0),0);
   const menipis=items.filter(i=>stockSt(i)==='menipis').length;
   const habis=items.filter(i=>stockSt(i)==='habis').length;
@@ -936,7 +960,7 @@ function renderLowStock(){
 }
 
 // ═══════════════════════════════════════
-//  NOTA / INVOICE
+//  BARANG MASUK (NOTA)
 // ═══════════════════════════════════════
 function renderNotas(){
   const list=$('nota-list'),empty=$('nota-empty');
@@ -948,25 +972,27 @@ function renderNotas(){
   if(dt)notas=notas.filter(n=>n.tanggal<=dt);
   if(!notas.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  // Group by date
   const groups={};notas.forEach(n=>{const d=n.tanggal||'Tanpa Tanggal';if(!groups[d])groups[d]=[];groups[d].push(n);});
   let html='';
   Object.entries(groups).forEach(([date,gnotas])=>{
-    const dateTotal=gnotas.reduce((s,n)=>s+(n.items||[]).reduce((ss,it)=>ss+it.qty*(it.harga||0),0),0);
+    const dateTotal=gnotas.reduce((s,n)=>s+(n.items||[]).reduce((ss,it)=>ss+it.qty*(it.hargaBeli||0),0),0);
+    const dateTotalUnit=gnotas.reduce((s,n)=>s+(n.items||[]).reduce((ss,it)=>ss+it.qty,0),0);
     html+=`<div style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <div style="font-size:12px;font-weight:700;color:var(--cy);font-family:var(--mono)">${esc(date)}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--gr);font-family:var(--mono)">${esc(date)}</div>
         <div style="flex:1;height:1px;background:var(--bdr)"></div>
-        <div style="font-size:10.5px;color:var(--tm)">${gnotas.length} nota · Total: <span style="color:var(--or);font-family:var(--mono)">${rp(dateTotal)}</span></div>
+        <div style="font-size:10.5px;color:var(--tm)">${gnotas.length} nota · ${dateTotalUnit} unit masuk · Nilai: <span style="color:var(--or);font-family:var(--mono)">${rp(dateTotal)}</span></div>
       </div>`;
     gnotas.forEach(nota=>{
-      const total=(nota.items||[]).reduce((s,it)=>s+it.qty*(it.harga||0),0);
+      const total=(nota.items||[]).reduce((s,it)=>s+it.qty*(it.hargaBeli||0),0);
+      const totalUnit=(nota.items||[]).reduce((s,it)=>s+it.qty,0);
       html+=`<div class="nota-card">
         <div class="nota-hdr">
-          <div style="display:flex;align-items:center;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <div class="nota-num">${esc(nota.nomor)}</div>
-            ${nota.pelanggan?`<span style="font-size:11.5px;color:var(--ts)">· ${esc(nota.pelanggan)}</span>`:''}
-            <span class="nota-items-count">${(nota.items||[]).length} item</span>
+            <span class="nota-badge-masuk">📦 MASUK</span>
+            ${nota.pelanggan?`<span style="font-size:11.5px;color:var(--ts)">dari ${esc(nota.pelanggan)}</span>`:''}
+            <span class="nota-items-count">${(nota.items||[]).length} jenis · ${totalUnit} unit</span>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="nota-total">${rp(total)}</div>
@@ -975,8 +1001,8 @@ function renderNotas(){
             <div class="ib d" onclick="deleteNota('${nota.id}')" title="Hapus"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
           </div>
         </div>
-        <table class="nota-tbl"><thead><tr><th>#</th><th>Nama Barang</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr></thead><tbody>
-        ${(nota.items||[]).map((it,i)=>`<tr><td style="color:var(--tm)">${i+1}</td><td>${esc(it.nama)}</td><td class="cm">${it.qty}</td><td class="cm" style="color:var(--or)">${rp(it.harga)}</td><td class="cm" style="font-weight:600">${rp(it.qty*it.harga)}</td></tr>`).join('')}
+        <table class="nota-tbl"><thead><tr><th>#</th><th>Nama Barang</th><th>Qty Diterima</th><th>Harga Beli/unit</th><th>Total Nilai</th></tr></thead><tbody>
+        ${(nota.items||[]).map((it,i)=>`<tr><td style="color:var(--tm)">${i+1}</td><td>${esc(it.nama)}</td><td class="cm" style="color:var(--gr);font-weight:600">+${it.qty}</td><td class="cm" style="color:var(--or)">${it.hargaBeli?rp(it.hargaBeli):'—'}</td><td class="cm" style="font-weight:600">${it.hargaBeli?rp(it.qty*it.hargaBeli):'—'}</td></tr>`).join('')}
         </tbody></table>
         ${nota.catatan?`<div style="font-size:11px;color:var(--tm);margin-top:6px">📝 ${esc(nota.catatan)}</div>`:''}
       </div>`;
@@ -992,12 +1018,13 @@ function openNotaModal(editId){
   $('ne-nomor').textContent='';$('ne-tanggal').textContent='';
   if(editId){
     const n=S.notas.find(x=>x.id===editId);if(!n)return;
-    $('nota-modal-title').textContent='Edit Nota';$('nota-modal-save').textContent='📋 Update Nota';
+    $('nota-modal-title').textContent='Edit Barang Masuk';$('nota-modal-save').textContent='📦 Update & Sesuaikan Stok';
     $('nf-nomor').value=n.nomor;$('nf-tanggal').value=n.tanggal;$('nf-pelanggan').value=n.pelanggan||'';$('nf-catatan').value=n.catatan||'';
     S.notaItems=[...(n.items||[]).map(it=>({...it}))];
   }else{
-    $('nota-modal-title').textContent='Buat Nota Baru';$('nota-modal-save').textContent='📋 Simpan Nota';
-    $('nf-nomor').value='INV-'+(S.notas.length+1).toString().padStart(3,'0');
+    $('nota-modal-title').textContent='📦 Catat Barang Masuk';$('nota-modal-save').textContent='📦 Simpan & Tambah Stok';
+    const countMsk=S.notas.length+1;
+    $('nf-nomor').value='MSK-'+countMsk.toString().padStart(3,'0');
     $('nf-tanggal').value=new Date().toISOString().slice(0,10);$('nf-pelanggan').value='';$('nf-catatan').value='';
     S.notaItems=[];
   }
@@ -1008,33 +1035,48 @@ function closeNotaModal(){$('nota-modal-ov').classList.remove('open');S.editingN
 
 function renderNotaItems(){
   const c=$('nota-items-list');
-  if(!S.notaItems.length){c.innerHTML='<div style="text-align:center;padding:18px;color:var(--tm);font-size:12px">Belum ada barang. Cari dan tambahkan di atas.</div>';$('nota-grand-total').textContent='Rp 0';return;}
+  if(!S.notaItems.length){
+    c.innerHTML='<div style="text-align:center;padding:18px;color:var(--tm);font-size:12px">Belum ada barang. Cari dan tambahkan di atas.</div>';
+    $('nota-grand-total').textContent='Rp 0';
+    $('nota-total-unit').textContent='0';$('nota-total-qty').textContent='0';
+    return;
+  }
   c.innerHTML=S.notaItems.map((it,i)=>`<div class="nota-item-row">
     <div style="font-size:11px;color:var(--tm);width:24px">${i+1}</div>
     <div class="nota-item-name">${esc(it.nama)}</div>
-    <div class="nota-item-price">@ ${rp(it.harga)}</div>
     <div style="display:flex;align-items:center;gap:4px">
       <span style="font-size:10px;color:var(--tm)">Qty:</span>
-      <input type="number" class="fi nota-item-qty" value="${it.qty}" min="1" data-idx="${i}" style="width:60px;padding:5px 7px;font-size:12px;text-align:center">
+      <input type="number" class="fi nota-item-qty" value="${it.qty}" min="1" data-idx="${i}" style="width:65px;padding:5px 7px;font-size:12px;text-align:center">
     </div>
-    <div class="nota-item-sub">${rp(it.qty*it.harga)}</div>
+    <div style="display:flex;flex-direction:column;gap:2px;min-width:130px">
+      <span style="font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:.04em">Harga Beli/unit (opsional)</span>
+      <div style="position:relative"><span style="position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--tm)">Rp</span><input type="number" class="fi nota-item-harga" value="${it.hargaBeli||''}" min="0" placeholder="0" data-idx="${i}" style="width:120px;padding:5px 7px 5px 24px;font-size:11.5px;font-family:var(--mono)"></div>
+    </div>
+    <div class="nota-item-sub">${it.hargaBeli?rp(it.qty*(it.hargaBeli||0)):'—'}</div>
     <button class="nota-rm" onclick="removeNotaItem(${i})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>`).join('');
-  const total=S.notaItems.reduce((s,it)=>s+it.qty*(it.harga||0),0);
-  $('nota-grand-total').textContent=rp(total);
-  // qty change listeners
+  
+  const totalNilai=S.notaItems.reduce((s,it)=>s+it.qty*(it.hargaBeli||0),0);
+  const totalQty=S.notaItems.reduce((s,it)=>s+it.qty,0);
+  $('nota-grand-total').textContent=totalNilai>0?rp(totalNilai):'—';
+  $('nota-total-unit').textContent=S.notaItems.length;
+  $('nota-total-qty').textContent=totalQty;
+
+  // qty change
   c.querySelectorAll('.nota-item-qty').forEach(inp=>{
     inp.addEventListener('change',e=>{const idx=parseInt(e.target.dataset.idx);S.notaItems[idx].qty=Math.max(1,parseInt(e.target.value)||1);renderNotaItems();});
+  });
+  // harga beli change
+  c.querySelectorAll('.nota-item-harga').forEach(inp=>{
+    inp.addEventListener('change',e=>{const idx=parseInt(e.target.dataset.idx);const v=parseInt(e.target.value)||0;S.notaItems[idx].hargaBeli=v>0?v:null;renderNotaItems();});
   });
 }
 
 function addNotaItem(itemId){
   const item=S.items.find(i=>i.id===itemId);if(!item)return;
   const existing=S.notaItems.find(n=>n.itemId===itemId);
-  if(existing){existing.qty++;} else {
-    const useGrosir=item.hargaGrosir&&item.minGrosir;
-    S.notaItems.push({itemId:item.id,nama:item.nama,harga:parseInt(item.harga)||0,hargaGrosir:useGrosir?parseInt(item.hargaGrosir):null,minGrosir:useGrosir?parseInt(item.minGrosir):null,qty:1});
-  }
+  if(existing){existing.qty++;}
+  else{S.notaItems.push({itemId:item.id,nama:item.nama,qty:1,hargaBeli:null});}
   $('nota-add-srch').value='';$('nota-add-results').classList.remove('show');
   renderNotaItems();
 }
@@ -1043,71 +1085,84 @@ function removeNotaItem(idx){S.notaItems.splice(idx,1);renderNotaItems();}
 function saveNota(){
   const nomor=$('nf-nomor').value.trim(),tanggal=$('nf-tanggal').value;
   let ok=true;$('ne-nomor').textContent='';$('ne-tanggal').textContent='';
+  $('nf-nomor').classList.remove('err');$('nf-tanggal').classList.remove('err');
   if(!nomor){$('ne-nomor').textContent='No. nota wajib diisi';$('nf-nomor').classList.add('err');ok=false;}
   if(!tanggal){$('ne-tanggal').textContent='Tanggal wajib diisi';$('nf-tanggal').classList.add('err');ok=false;}
-  if(!S.notaItems.length){toast('Tambahkan minimal 1 barang ke nota','error');ok=false;}
+  if(!S.notaItems.length){toast('Tambahkan minimal 1 barang','error');ok=false;}
   if(!ok)return;
-  // Apply grosir pricing
-  const finalItems=S.notaItems.map(it=>{
-    let harga=it.harga;
-    if(it.hargaGrosir&&it.minGrosir&&it.qty>=it.minGrosir)harga=it.hargaGrosir;
-    return{...it,harga};
-  });
   const now=new Date().toISOString();
+  const finalItems=S.notaItems.map(it=>({...it}));
+
   if(S.editingNotaId){
+    // Rollback stok lama dulu
+    const oldNota=S.notas.find(n=>n.id===S.editingNotaId);
+    if(oldNota){
+      (oldNota.items||[]).forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=Math.max(0,(parseInt(item.stok)||0)-it.qty);});
+    }
     const idx=S.notas.findIndex(n=>n.id===S.editingNotaId);
     if(idx>-1)S.notas[idx]={...S.notas[idx],nomor,tanggal,pelanggan:$('nf-pelanggan').value.trim(),catatan:$('nf-catatan').value.trim(),items:finalItems,updatedAt:now};
-    toast('Nota berhasil diperbarui!','success');
+    // Tambah stok baru
+    finalItems.forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=(parseInt(item.stok)||0)+it.qty;});
+    toast('Nota diperbarui & stok disesuaikan!','success');
   }else{
+    // Tambah stok untuk setiap item
+    finalItems.forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=(parseInt(item.stok)||0)+it.qty;});
     S.notas.push({id:uid(),nomor,tanggal,pelanggan:$('nf-pelanggan').value.trim(),catatan:$('nf-catatan').value.trim(),items:finalItems,createdAt:now,updatedAt:now});
-    toast('Nota berhasil dibuat!','success');
+    const totalUnit=finalItems.reduce((s,it)=>s+it.qty,0);
+    toast(`Barang masuk dicatat! +${totalUnit} unit stok ditambahkan.`,'success');
   }
   storeSave();closeNotaModal();refreshAll();
 }
+
 function deleteNota(id){
   const n=S.notas.find(x=>x.id===id);if(!n)return;
-  confirm2(`Hapus nota "${n.nomor}"?`,()=>{S.notas=S.notas.filter(x=>x.id!==id);storeSave();refreshAll();toast('Nota dihapus','success');});
+  confirm2(`Hapus nota "${n.nomor}"? Stok yang sudah ditambahkan akan dikurangi kembali.`,()=>{
+    // Rollback stok
+    (n.items||[]).forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=Math.max(0,(parseInt(item.stok)||0)-it.qty);});
+    S.notas=S.notas.filter(x=>x.id!==id);storeSave();refreshAll();toast('Nota dihapus & stok dikembalikan','success');
+  });
 }
 
 function printNota(id){
   const n=S.notas.find(x=>x.id===id);if(!n)return;
-  const total=(n.items||[]).reduce((s,it)=>s+it.qty*(it.harga||0),0);
+  const total=(n.items||[]).reduce((s,it)=>s+it.qty*(it.hargaBeli||0),0);
+  const totalUnit=(n.items||[]).reduce((s,it)=>s+it.qty,0);
   const w=window.open('','_blank','width=800,height=600');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Nota ${esc(n.nomor)}</title>
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Barang Masuk ${esc(n.nomor)}</title>
   <style>body{font-family:'Segoe UI',sans-serif;padding:30px;color:#222;max-width:700px;margin:0 auto}
   h1{font-size:20px;margin-bottom:4px}table{width:100%;border-collapse:collapse;margin:16px 0}
   th,td{border:1px solid #ddd;padding:8px 10px;font-size:13px;text-align:left}th{background:#f5f5f5;font-weight:700}
   .r{text-align:right}.total{font-size:16px;font-weight:700;text-align:right;margin-top:8px}
   .meta{color:#666;font-size:13px;margin-bottom:16px}.mono{font-family:'Courier New',monospace}
+  .badge{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700}
   @media print{body{padding:10px}}</style></head><body>
-  <h1>NOTA: ${esc(n.nomor)}</h1>
-  <div class="meta">Tanggal: ${esc(n.tanggal)}${n.pelanggan?' · Pelanggan: '+esc(n.pelanggan):''}${n.catatan?'<br>Catatan: '+esc(n.catatan):''}</div>
-  <table><thead><tr><th>#</th><th>Nama Barang</th><th class="r">Qty</th><th class="r">Harga</th><th class="r">Subtotal</th></tr></thead><tbody>
-  ${(n.items||[]).map((it,i)=>`<tr><td>${i+1}</td><td>${esc(it.nama)}</td><td class="r mono">${it.qty}</td><td class="r mono">Rp ${(it.harga||0).toLocaleString('id-ID')}</td><td class="r mono">Rp ${(it.qty*(it.harga||0)).toLocaleString('id-ID')}</td></tr>`).join('')}
+  <h1>📦 BARANG MASUK <span class="badge">STOK +${totalUnit} UNIT</span></h1>
+  <div style="font-size:14px;font-weight:700;color:#333;margin-bottom:4px">No: ${esc(n.nomor)}</div>
+  <div class="meta">Tanggal: ${esc(n.tanggal)}${n.pelanggan?' · Supplier: '+esc(n.pelanggan):''}${n.catatan?'<br>Catatan: '+esc(n.catatan):''}</div>
+  <table><thead><tr><th>#</th><th>Nama Barang</th><th class="r">Qty Diterima</th><th class="r">Harga Beli</th><th class="r">Total Nilai</th></tr></thead><tbody>
+  ${(n.items||[]).map((it,i)=>`<tr><td>${i+1}</td><td>${esc(it.nama)}</td><td class="r mono" style="color:#059669;font-weight:700">+${it.qty}</td><td class="r mono">${it.hargaBeli?'Rp '+(it.hargaBeli).toLocaleString('id-ID'):'—'}</td><td class="r mono">${it.hargaBeli?'Rp '+(it.qty*(it.hargaBeli)).toLocaleString('id-ID'):'—'}</td></tr>`).join('')}
   </tbody></table>
-  <div class="total">TOTAL: <span class="mono">Rp ${total.toLocaleString('id-ID')}</span></div>
+  ${total>0?`<div class="total">TOTAL NILAI BELI: <span class="mono">Rp ${total.toLocaleString('id-ID')}</span></div>`:''}
   <script>setTimeout(()=>window.print(),300)<\/script></body></html>`);
   w.document.close();
 }
 
 function exportNotaXLSX(){
-  if(!S.notas.length){toast('Tidak ada nota','error');return;}
+  if(!S.notas.length){toast('Tidak ada data barang masuk','error');return;}
   const wb=XLSX.utils.book_new();
-  // All notas in one sheet
-  const hdr=['No. Nota','Tanggal','Pelanggan','Nama Barang','Qty','Harga','Subtotal','Catatan'];
+  const hdr=['No. Nota','Tanggal','Supplier','Nama Barang','Qty Diterima','Harga Beli/unit','Total Nilai','Catatan'];
   const rows=[];
-  S.notas.forEach(n=>{(n.items||[]).forEach(it=>{rows.push([n.nomor,n.tanggal,n.pelanggan||'',it.nama,it.qty,it.harga||0,it.qty*(it.harga||0),n.catatan||'']);});});
+  S.notas.forEach(n=>{(n.items||[]).forEach(it=>{rows.push([n.nomor,n.tanggal,n.pelanggan||'',it.nama,it.qty,it.hargaBeli||0,it.qty*(it.hargaBeli||0),n.catatan||'']);});});
   const ws=XLSX.utils.aoa_to_sheet([hdr,...rows]);
-  ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:28},{wch:8},{wch:16},{wch:16},{wch:24}];
-  XLSX.utils.book_append_sheet(wb,ws,'Semua Nota');
-  // Summary
-  const sumHdr=['No. Nota','Tanggal','Pelanggan','Jumlah Item','Total'];
-  const sumRows=S.notas.map(n=>[n.nomor,n.tanggal,n.pelanggan||'',(n.items||[]).length,(n.items||[]).reduce((s,it)=>s+it.qty*(it.harga||0),0)]);
+  ws['!cols']=[{wch:14},{wch:12},{wch:20},{wch:28},{wch:14},{wch:16},{wch:16},{wch:24}];
+  XLSX.utils.book_append_sheet(wb,ws,'Barang Masuk');
+  const sumHdr=['No. Nota','Tanggal','Supplier','Jumlah Jenis','Total Unit','Total Nilai Beli'];
+  const sumRows=S.notas.map(n=>[n.nomor,n.tanggal,n.pelanggan||'',(n.items||[]).length,(n.items||[]).reduce((s,it)=>s+it.qty,0),(n.items||[]).reduce((s,it)=>s+it.qty*(it.hargaBeli||0),0)]);
   const ws2=XLSX.utils.aoa_to_sheet([sumHdr,...sumRows]);
-  ws2['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:18}];
-  XLSX.utils.book_append_sheet(wb,ws2,'Ringkasan Nota');
-  XLSX.writeFile(wb,`nota_${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast('Export nota XLSX berhasil!','success');
+  ws2['!cols']=[{wch:14},{wch:12},{wch:20},{wch:14},{wch:12},{wch:18}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Ringkasan');
+  XLSX.writeFile(wb,`barang_masuk_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast('Export XLSX berhasil!','success');
 }
 
 // ═══════════════════════════════════════
@@ -1209,7 +1264,7 @@ function exportCSV(items){
 }
 
 // ═══════════════════════════════════════
-//  IMPORT CSV & XLSX
+//  IMPORT CSV & XLSX — FLEXIBLE (hanya nama wajib)
 // ═══════════════════════════════════════
 function handleImport(e){
   const file=e.target?.files?.[0];if(!file)return;
@@ -1221,17 +1276,40 @@ function handleImport(e){
     const text=ev.target.result.replace(/^\uFEFF/,'');
     const lines=text.split('\n').filter(l=>l.trim());
     if(!lines.length){toast('File kosong','error');return;}
-    const start=lines[0].toLowerCase().includes('nama')?1:0;
-    let added=0,errors=0;const now=new Date().toISOString();
+    // Deteksi header
+    const hasHeader=lines[0].toLowerCase().includes('nama');
+    const headerLine=hasHeader?lines[0]:'';
+    const start=hasHeader?1:0;
+    // Parse header jika ada, buat mapping kolom
+    let colMap={nama:0,kategori:1,merek:2,stok:3,harga:4,harga_ecer:4,harga_grosir:5,min_grosir:6,min_stok:7,supplier:8,lokasi:9,catatan:10};
+    if(hasHeader){
+      const cols=parseCSV(headerLine).map(h=>h.toLowerCase().trim().replace(/ /g,'_'));
+      colMap={};
+      cols.forEach((col,i)=>{colMap[col]=i;});
+    }
+    const get=(row,keys,def='')=>{for(const k of (Array.isArray(keys)?keys:[keys])){if(colMap[k]!==undefined&&row[colMap[k]]!==undefined&&row[colMap[k]].trim()!=='')return row[colMap[k]].trim();}return def;};
+    let added=0,skipped=0,warnings=[];
+    const now=new Date().toISOString();
     for(let i=start;i<lines.length;i++){
-      const c=parseCSV(lines[i]);if(c.length<4){errors++;continue;}
-      const[nama,kat,merek,stok,harga,hargaG,minG,minStok,supplier,lokasi,catatan]=c;
-      if(!nama||!kat||!merek){errors++;continue;}
+      const c=parseCSV(lines[i]);
+      if(!c.length||c.every(v=>!v.trim())){skipped++;continue;}
+      const nama=get(c,['nama','name','item_name','barang'],'');
+      if(!nama){skipped++;continue;}
+      const kat=get(c,['kategori','category'],'Lainnya');
+      const merek=get(c,['merek','merk','brand'],'-');
+      const stok=get(c,['stok','stock','jumlah','qty'],'0');
+      const harga=get(c,['harga_ecer','harga','harga jual','price'],'0');
+      const hargaG=get(c,['harga_grosir','wholesale_price'],'');
+      const minG=get(c,['min_grosir','min_qty_grosir'],'');
+      const minStok=get(c,['min_stok','stok_minimal','min_stock'],'5');
+      const supplier=get(c,['supplier','pemasok'],'');
+      const lokasi=get(c,['lokasi','location','rak'],'Tidak ditentukan');
+      const catatan=get(c,['catatan','note','keterangan'],'');
       if(!S.categories.includes(kat))S.categories.push(kat);
-      S.items.push({id:uid(),nama:nama.trim(),kategori:kat.trim(),merek:merek.trim(),stok:parseInt(stok)||0,harga:parseInt(harga)||0,hargaGrosir:hargaG?parseInt(hargaG):null,minGrosir:minG?parseInt(minG):null,minStok:minStok&&parseInt(minStok)>=0?parseInt(minStok):5,supplier:(supplier||'').trim(),lokasi:(lokasi||'Tidak ditentukan').trim(),tanggal:now.slice(0,10),catatan:(catatan||'').trim(),labels:[],createdAt:now,updatedAt:now});
+      S.items.push({id:uid(),nama:nama.trim(),kategori:kat.trim(),merek:merek.trim(),stok:Math.max(0,parseInt(stok)||0),harga:Math.max(0,parseInt(harga)||0),hargaGrosir:hargaG&&parseInt(hargaG)>0?parseInt(hargaG):null,minGrosir:minG&&parseInt(minG)>0?parseInt(minG):null,minStok:parseInt(minStok)>=0?parseInt(minStok):5,supplier:supplier.trim(),lokasi:lokasi.trim(),tanggal:now.slice(0,10),catatan:catatan.trim(),labels:[],createdAt:now,updatedAt:now});
       added++;
     }
-    storeSave();refreshAll();showImportResult(added,errors);if(e.target)e.target.value='';
+    storeSave();refreshAll();showImportResult(added,skipped,{});if(e.target)e.target.value='';
   };reader.readAsText(file);
 }
 
@@ -1243,34 +1321,64 @@ function handleImportXLSX(file,e){
       const wsName=wb.SheetNames[0];const ws=wb.Sheets[wsName];
       const data=XLSX.utils.sheet_to_json(ws,{defval:''});
       if(!data.length){toast('Sheet kosong','error');return;}
-      let added=0,errors=0;const now=new Date().toISOString();
-      // Flexible column mapping
-      const map=(row,keys)=>{for(const k of keys){const v=row[k]||row[k.toLowerCase()]||row[k.toUpperCase()]||row[k.charAt(0).toUpperCase()+k.slice(1)];if(v!==undefined&&v!=='')return String(v);}return'';};
+      let added=0,skipped=0;
+      const now=new Date().toISOString();
+      // Deteksi kolom yang ada di file
+      const sampleRow=data[0];
+      const foundCols=Object.keys(sampleRow);
+      const colFound={};
+      
+      // Flexible mapping — coba banyak variasi nama kolom
+      const mapVal=(row,keys)=>{
+        for(const k of keys){
+          // Case insensitive + underscore/space normalized
+          const normalize=s=>s.toLowerCase().replace(/[\s_-]+/g,'');
+          const nk=normalize(k);
+          for(const rk of Object.keys(row)){
+            if(normalize(rk)===nk&&row[rk]!==undefined&&String(row[rk]).trim()!==''){
+              colFound[k]=true;
+              return String(row[rk]).trim();
+            }
+          }
+        }
+        return '';
+      };
+
       data.forEach(row=>{
-        const nama=map(row,['nama','Nama','Nama Barang','nama_barang','name','item']);
-        const kat=map(row,['kategori','Kategori','category','Category','kategori_barang'])||'Lainnya';
-        const merek=map(row,['merek','Merek','brand','Brand','merk'])||'-';
-        const stok=map(row,['stok','Stok','stock','Stock','jumlah','Jumlah','qty','Qty']);
-        const harga=map(row,['harga','Harga','harga_ecer','Harga Ecer','price','Price','harga_jual']);
-        const hargaG=map(row,['harga_grosir','Harga Grosir','wholesale']);
-        const minG=map(row,['min_grosir','Min Grosir','min_qty_grosir']);
-        const minStok=map(row,['min_stok','Min Stok','Stok Minimal','stok_minimal','min_stock']);
-        const supplier=map(row,['supplier','Supplier','pemasok']);
-        const lokasi=map(row,['lokasi','Lokasi','location','Location','rak'])||'Tidak ditentukan';
-        const catatan=map(row,['catatan','Catatan','note','Note','notes','keterangan']);
-        if(!nama){errors++;return;}
+        const nama=mapVal(row,['nama','Nama','name','Name','item','Item','nama barang','Nama Barang','item name','barang']);
+        if(!nama){skipped++;return;}
+        const kat=mapVal(row,['kategori','Kategori','category','Category','jenis','Jenis'])||'Lainnya';
+        const merek=mapVal(row,['merek','Merek','merk','brand','Brand','merk/brand'])||'-';
+        const stok=mapVal(row,['stok','Stok','stock','Stock','jumlah','Jumlah','qty','Qty','quantity'])||'0';
+        const harga=mapVal(row,['harga_ecer','harga','Harga','harga jual','Harga Jual','harga ecer','Harga Ecer','price','Price','selling price'])||'0';
+        const hargaG=mapVal(row,['harga_grosir','harga grosir','Harga Grosir','wholesale','wholesale price','hargaGrosir']);
+        const minG=mapVal(row,['min_grosir','min grosir','Min Grosir','min qty grosir','minGrosir','min_qty_grosir']);
+        const minStok=mapVal(row,['min_stok','min stok','Min Stok','stok minimal','Stok Minimal','min stock','minStok','minimum stock'])||'5';
+        const supplier=mapVal(row,['supplier','Supplier','pemasok','Pemasok','vendor','Vendor']);
+        const lokasi=mapVal(row,['lokasi','Lokasi','location','Location','rak','Rak','gudang','Gudang','tempat'])||'Tidak ditentukan';
+        const catatan=mapVal(row,['catatan','Catatan','note','Note','notes','Notes','keterangan','Keterangan','ket','deskripsi']);
+        
         if(!S.categories.includes(kat))S.categories.push(kat);
-        S.items.push({id:uid(),nama:nama.trim(),kategori:kat.trim(),merek:merek.trim(),stok:parseInt(stok)||0,harga:parseInt(harga)||0,hargaGrosir:hargaG?parseInt(hargaG):null,minGrosir:minG?parseInt(minG):null,minStok:minStok&&parseInt(minStok)>=0?parseInt(minStok):5,supplier:supplier.trim(),lokasi:lokasi.trim(),tanggal:now.slice(0,10),catatan:catatan.trim(),labels:[],createdAt:now,updatedAt:now});
+        S.items.push({id:uid(),nama:nama.trim(),kategori:kat.trim(),merek:merek.trim(),stok:Math.max(0,parseInt(stok)||0),harga:Math.max(0,parseInt(harga)||0),hargaGrosir:hargaG&&parseInt(hargaG)>0?parseInt(hargaG):null,minGrosir:minG&&parseInt(minG)>0?parseInt(minG):null,minStok:parseInt(minStok)>=0?parseInt(minStok):5,supplier:supplier.trim(),lokasi:lokasi.trim(),tanggal:now.slice(0,10),catatan:catatan.trim(),labels:[],createdAt:now,updatedAt:now});
         added++;
       });
-      storeSave();refreshAll();showImportResult(added,errors);
+      storeSave();refreshAll();showImportResult(added,skipped,colFound);
     }catch(err){toast('Gagal membaca file XLSX: '+err.message,'error');}
     if(e.target)e.target.value='';
   };reader.readAsArrayBuffer(file);
 }
 
-function showImportResult(added,errors){
-  $('import-result').innerHTML=`<div style="background:rgba(45,212,160,.07);border:1px solid rgba(45,212,160,.2);border-radius:8px;padding:10px 13px;font-size:12.5px;color:var(--gr)">✓ Berhasil import <strong>${added}</strong> barang${errors?`, <span style="color:var(--ye)">${errors} baris dilewati</span>`:''}.</div>`;
+function showImportResult(added,skipped,colFound){
+  const colList=['nama','kategori','merek','stok','harga','harga_grosir','min_stok','supplier','lokasi','catatan'];
+  const mapHtml=Object.keys(colFound).length>0?`
+    <div class="import-col-map" style="margin-top:10px">
+      <div class="import-col-map-title">Kolom yang terdeteksi</div>
+      ${colList.map(k=>`<div class="col-map-row">${colFound[k]?'<span class="col-found">✓</span>':'<span class="col-not">–</span>'} <span>${k}</span>${!colFound[k]?'<span style="font-size:10px;margin-left:4px;color:var(--tm)">(pakai default)</span>':''}</div>`).join('')}
+    </div>`:'';
+  $('import-result').innerHTML=`
+    <div class="import-res-ok">
+      <div>✓ Berhasil import <span class="imp-count">${added}</span> barang${skipped?`<span class="imp-warning"> · ${skipped} baris dilewati (tidak ada nama)</span>`:''}</div>
+    </div>${mapHtml}`;
 }
 
 function parseCSV(line){const r=[];let cur='',inQ=false;for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){r.push(cur);cur='';}else{cur+=c;}}r.push(cur);return r.map(v=>v.trim());}
@@ -1308,7 +1416,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('f-kat-add').addEventListener('click',addCategoryModal);
   $('f-kat-new').addEventListener('keydown',e=>{if(e.key==='Enter')addCategoryModal();});
   $('f-lbl-picker').addEventListener('click',e=>{const lo=e.target.closest('.lo');if(lo)lo.classList.toggle('sel');});
-  // Modal nota
+  // Modal barang masuk
   $('btn-new-nota').addEventListener('click',()=>openNotaModal());
   $('nota-modal-close').addEventListener('click',closeNotaModal);$('nota-modal-cancel').addEventListener('click',closeNotaModal);
   $('nota-modal-ov').addEventListener('click',e=>{if(e.target===$('nota-modal-ov'))closeNotaModal();});
@@ -1320,7 +1428,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!q){notaRes.classList.remove('show');return;}
     const matches=S.items.filter(i=>i.nama.toLowerCase().includes(q)||i.merek.toLowerCase().includes(q)).slice(0,10);
     if(!matches.length){notaRes.innerHTML='<div style="padding:12px;color:var(--tm);font-size:12px;text-align:center">Tidak ditemukan</div>';notaRes.classList.add('show');return;}
-    notaRes.innerHTML=matches.map(i=>`<div class="nar-item" data-id="${i.id}"><div><span class="nar-item-name">${esc(i.nama)}</span> <span class="nar-item-stock">(stok: ${i.stok})</span></div><span class="nar-item-price">${rp(i.harga)}</span></div>`).join('');
+    notaRes.innerHTML=matches.map(i=>`<div class="nar-item" data-id="${i.id}"><div><span class="nar-item-name">${esc(i.nama)}</span> <span class="nar-item-stock">(stok saat ini: ${i.stok})</span></div><span class="nar-item-price">${rp(i.harga)}</span></div>`).join('');
     notaRes.classList.add('show');
   });
   notaRes.addEventListener('click',e=>{const item=e.target.closest('.nar-item');if(item)addNotaItem(item.dataset.id);});
