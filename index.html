@@ -209,6 +209,22 @@ tbody tr:last-child td{border-bottom:none}
 .tf{padding:10px 12px;background:var(--bg-1);border-top:1px solid var(--bdr);
   display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--tm)}
 
+/* TRASH */
+.trash-tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--bdr);padding-bottom:0}
+.trash-tab{padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--ts);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:6px}
+.trash-tab:hover{color:var(--tp)}
+.trash-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.trash-badge{font-size:9.5px;font-family:var(--mono);background:var(--re-d);color:var(--re);padding:1px 6px;border-radius:99px;border:1px solid rgba(255,92,92,.2)}
+.trash-notice{background:rgba(245,197,66,.06);border:1px solid rgba(245,197,66,.18);border-radius:var(--r);padding:10px 14px;font-size:11.5px;color:var(--ye);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.trash-notice svg{width:14px;height:14px;flex-shrink:0}
+.trash-item-card{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;opacity:.85;transition:all .15s}
+.trash-item-card:hover{border-color:var(--bdr-b);opacity:1}
+.trash-item-info{flex:1}
+.trash-item-name{font-size:13px;font-weight:600;color:var(--tp)}
+.trash-item-meta{font-size:11px;color:var(--tm);margin-top:3px}
+.trash-item-actions{display:flex;gap:6px;flex-shrink:0}
+.ib.r:hover{background:var(--gr-d);color:var(--gr);border-color:rgba(45,212,160,.25)}
+
 /* STOCK BAR */
 .skw{display:flex;align-items:center;gap:6px}
 .skb{flex:1;height:3px;background:var(--bg-4);border-radius:2px;overflow:hidden;max-width:60px}
@@ -515,6 +531,10 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <div class="ni" data-page="import">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Import Data
+    </div>
+    <div class="nav-lbl" style="margin-top:8px">Lainnya</div>
+    <div class="ni" data-page="trash">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Tempat Sampah<span class="ni-badge" id="trash-badge" style="display:none">0</span>
     </div>
   </nav>
   <div class="sb-foot">💾 Data tersimpan lokal<br><span id="foot-count">0 item</span></div>
@@ -876,6 +896,40 @@ tbody tr:last-child td{border-bottom:none}
   </div>
 </div>
 
+<!-- TEMPAT SAMPAH -->
+    <div class="page" id="page-trash">
+      <div class="sh">
+        <div><div class="st">🗑️ Tempat Sampah</div><div class="ss">Barang/nota yang dihapus dapat dipulihkan di sini</div></div>
+        <button class="btn btn-d btn-sm" id="btn-empty-trash" onclick="emptyTrash()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Kosongkan Semua</button>
+      </div>
+      <div class="trash-notice">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Item di tempat sampah dapat dipulihkan kapan saja. Klik "Kosongkan Semua" untuk menghapus permanen.
+      </div>
+      <div class="trash-tabs">
+        <div class="trash-tab active" id="trash-tab-barang" onclick="switchTrashTab('barang')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Data Barang<span class="trash-badge" id="trash-count-barang">0</span>
+        </div>
+        <div class="trash-tab" id="trash-tab-nota" onclick="switchTrashTab('nota')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="trash-badge" id="trash-count-nota">0</span>
+        </div>
+      </div>
+      <div id="trash-barang-panel">
+        <div id="trash-barang-list"></div>
+        <div class="empty" id="trash-barang-empty">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <h3>Tempat sampah kosong</h3><p>Belum ada barang yang dihapus.</p>
+        </div>
+      </div>
+      <div id="trash-nota-panel" style="display:none">
+        <div id="trash-nota-list"></div>
+        <div class="empty" id="trash-nota-empty">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <h3>Tempat sampah kosong</h3><p>Belum ada nota yang dihapus.</p>
+        </div>
+      </div>
+    </div>
+
 <!-- CONFIRM -->
 <div class="conf-ov" id="conf-ov">
   <div class="cbox">
@@ -980,7 +1034,7 @@ tbody tr:last-child td{border-bottom:none}
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],trashItems:[],trashNotas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
@@ -990,6 +1044,8 @@ function storeSave(){
   localStorage.setItem('sp4_mastergroups',JSON.stringify(S.masterGroups||[]));
   localStorage.setItem('sp4_lbls',JSON.stringify(S.labels));
   localStorage.setItem('sp4_notas',JSON.stringify(S.notas));
+  localStorage.setItem('sp4_trash_items',JSON.stringify(S.trashItems||[]));
+  localStorage.setItem('sp4_trash_notas',JSON.stringify(S.trashNotas||[]));
 }
 function storeLoad(){
   const tryLoad=(keys,prop,merge)=>{for(const k of keys){try{const v=localStorage.getItem(k);if(v){const arr=JSON.parse(v);if(merge?arr.length>S[prop].length:!S[prop].length){S[prop]=arr;return;}}}catch(e){}}};
@@ -1001,6 +1057,8 @@ function storeLoad(){
   try{const mg=localStorage.getItem('sp4_mastergroups');if(mg)S.masterGroups=JSON.parse(mg);}catch(e){}
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
+  try{const ti=localStorage.getItem('sp4_trash_items');if(ti)S.trashItems=JSON.parse(ti);}catch(e){}
+  try{const tn=localStorage.getItem('sp4_trash_notas');if(tn)S.trashNotas=JSON.parse(tn);}catch(e){}
   // Sync legacy → masterGroups if masterGroups empty
   if(!S.masterGroups||!S.masterGroups.length)mdSeedBuiltins();
   else{
@@ -1034,7 +1092,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data',masterdata:'⚙️ Master Data'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data',masterdata:'⚙️ Master Data',trash:'🗑️ Tempat Sampah'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -1049,8 +1107,9 @@ function navigateTo(page){
   if(page==='categories')renderCategories();
   if(page==='labels')renderLabels();
   if(page==='masterdata')renderMasterData();
+  if(page==='trash')renderTrash();
 }
-function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderCategories();renderLabels();updateBadge();updateFooter();}
+function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderCategories();renderLabels();updateBadge();updateFooter();updateTrashBadge();}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -1367,10 +1426,12 @@ function saveNota(){
 
 function deleteNota(id){
   const n=S.notas.find(x=>x.id===id);if(!n)return;
-  confirm2(`Hapus nota "${n.nomor}"? Stok yang sudah ditambahkan akan dikurangi kembali.`,()=>{
+  confirm2(`Pindahkan nota "${n.nomor}" ke tempat sampah? Stok yang sudah ditambahkan akan dikurangi sementara.`,()=>{
     // Rollback stok
     (n.items||[]).forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=Math.max(0,(parseInt(item.stok)||0)-it.qty);});
-    S.notas=S.notas.filter(x=>x.id!==id);storeSave();refreshAll();toast('Nota dihapus & stok dikembalikan','success');
+    S.trashNotas=S.trashNotas||[];
+    S.trashNotas.unshift({...n,deletedAt:new Date().toISOString()});
+    S.notas=S.notas.filter(x=>x.id!==id);storeSave();refreshAll();updateTrashBadge();toast('Nota dipindahkan ke tempat sampah & stok dikurangi','info');
   });
 }
 
@@ -1961,7 +2022,7 @@ function saveBarang(){
   else{S.items.unshift({id:uid(),...data,createdAt:now});toast('Ditambahkan!','success');}
   storeSave();closeModal();refreshAll();
 }
-function deleteBarang(id){const item=S.items.find(i=>i.id===id);if(!item)return;confirm2(`Hapus "${item.nama}"?`,()=>{S.items=S.items.filter(i=>i.id!==id);storeSave();refreshAll();toast('Dihapus','success');});}
+function deleteBarang(id){const item=S.items.find(i=>i.id===id);if(!item)return;confirm2(`Pindahkan "${item.nama}" ke tempat sampah?`,()=>{S.trashItems=S.trashItems||[];S.trashItems.unshift({...item,deletedAt:new Date().toISOString()});S.items=S.items.filter(i=>i.id!==id);storeSave();refreshAll();updateTrashBadge();toast('Dipindahkan ke tempat sampah','info');});}
 
 // ═══════════════════════════════════════
 //  CONFIRM & TOAST
@@ -2128,6 +2189,141 @@ function showImportResult(added,skipped,colFound){
 function parseCSV(line){const r=[];let cur='',inQ=false;for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){r.push(cur);cur='';}else{cur+=c;}}r.push(cur);return r.map(v=>v.trim());}
 
 // ═══════════════════════════════════════
+//  TEMPAT SAMPAH
+// ═══════════════════════════════════════
+let _trashTab = 'barang';
+
+function updateTrashBadge(){
+  const total=(S.trashItems||[]).length+(S.trashNotas||[]).length;
+  const badge=$('trash-badge');
+  if(badge){badge.textContent=total;badge.style.display=total>0?'':'none';}
+}
+
+function switchTrashTab(tab){
+  _trashTab=tab;
+  document.querySelectorAll('.trash-tab').forEach(el=>el.classList.remove('active'));
+  $('trash-tab-'+tab).classList.add('active');
+  $('trash-barang-panel').style.display=tab==='barang'?'block':'none';
+  $('trash-nota-panel').style.display=tab==='nota'?'block':'none';
+}
+
+function renderTrash(){
+  S.trashItems=S.trashItems||[];S.trashNotas=S.trashNotas||[];
+  // Update counts
+  const bc=S.trashItems.length,nc=S.trashNotas.length;
+  const tbEl=$('trash-count-barang');if(tbEl)tbEl.textContent=bc;
+  const tnEl=$('trash-count-nota');if(tnEl)tnEl.textContent=nc;
+
+  // Render barang panel
+  const bList=$('trash-barang-list'),bEmpty=$('trash-barang-empty');
+  if(!bc){bList.innerHTML='';bEmpty.style.display='block';}
+  else{
+    bEmpty.style.display='none';
+    bList.innerHTML=S.trashItems.map(item=>{
+      const st=stockSt(item);
+      const dAt=item.deletedAt?new Date(item.deletedAt).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+      return`<div class="trash-item-card">
+        <div class="trash-item-info">
+          <div class="trash-item-name">${esc(item.nama)}</div>
+          <div class="trash-item-meta">
+            <span class="ct" style="font-size:10px;padding:1px 6px">${esc(item.kategori||'—')}</span>
+            &nbsp;Stok: <b>${item.stok}</b> &nbsp;·&nbsp; ${rp(item.harga)}
+            ${item.merek?' &nbsp;·&nbsp; '+esc(item.merek):''}
+            &nbsp;·&nbsp; Dihapus: <span style="color:var(--re)">${dAt}</span>
+          </div>
+        </div>
+        <div class="trash-item-actions">
+          <div class="ib r" onclick="restoreBarang('${item.id}')" title="Pulihkan"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg></div>
+          <div class="ib d" onclick="destroyBarang('${item.id}')" title="Hapus Permanen"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Render nota panel
+  const nList=$('trash-nota-list'),nEmpty=$('trash-nota-empty');
+  if(!nc){nList.innerHTML='';nEmpty.style.display='block';}
+  else{
+    nEmpty.style.display='none';
+    nList.innerHTML=S.trashNotas.map(nota=>{
+      const total=(nota.items||[]).reduce((s,it)=>s+it.qty*(it.hargaBeli||0),0);
+      const totalUnit=(nota.items||[]).reduce((s,it)=>s+it.qty,0);
+      const dAt=nota.deletedAt?new Date(nota.deletedAt).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+      return`<div class="trash-item-card">
+        <div class="trash-item-info">
+          <div class="trash-item-name">📦 ${esc(nota.nomor)}</div>
+          <div class="trash-item-meta">
+            Tanggal: <b>${esc(nota.tanggal)}</b>
+            ${nota.pelanggan?' &nbsp;·&nbsp; Supplier: '+esc(nota.pelanggan):''}
+            &nbsp;·&nbsp; ${(nota.items||[]).length} jenis · ${totalUnit} unit
+            &nbsp;·&nbsp; Nilai: <span style="color:var(--or);font-family:var(--mono)">${rp(total)}</span>
+            &nbsp;·&nbsp; Dihapus: <span style="color:var(--re)">${dAt}</span>
+          </div>
+        </div>
+        <div class="trash-item-actions">
+          <div class="ib r" onclick="restoreNota('${nota.id}')" title="Pulihkan & Tambah Stok Kembali"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg></div>
+          <div class="ib d" onclick="destroyNota('${nota.id}')" title="Hapus Permanen"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  updateTrashBadge();
+}
+
+function restoreBarang(id){
+  S.trashItems=S.trashItems||[];
+  const item=S.trashItems.find(i=>i.id===id);if(!item)return;
+  delete item.deletedAt;
+  S.items.unshift(item);
+  S.trashItems=S.trashItems.filter(i=>i.id!==id);
+  storeSave();refreshAll();renderTrash();
+  toast(`${item.nama} berhasil dipulihkan!`,'success');
+}
+
+function destroyBarang(id){
+  S.trashItems=S.trashItems||[];
+  const item=S.trashItems.find(i=>i.id===id);if(!item)return;
+  confirm2(`Hapus permanen ${item.nama}? Data tidak bisa dikembalikan!`,()=>{
+    S.trashItems=S.trashItems.filter(i=>i.id!==id);
+    storeSave();renderTrash();
+    toast('Dihapus permanen','success');
+  });
+}
+
+function restoreNota(id){
+  S.trashNotas=S.trashNotas||[];
+  const nota=S.trashNotas.find(n=>n.id===id);if(!nota)return;
+  // Tambahkan stok kembali
+  (nota.items||[]).forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=(parseInt(item.stok)||0)+it.qty;});
+  delete nota.deletedAt;
+  S.notas.unshift(nota);
+  S.trashNotas=S.trashNotas.filter(n=>n.id!==id);
+  storeSave();refreshAll();renderTrash();
+  const totalUnit=(nota.items||[]).reduce((s,it)=>s+it.qty,0);
+  toast(`Nota ${nota.nomor} dipulihkan! +${totalUnit} unit stok ditambahkan kembali.`,'success');
+}
+
+function destroyNota(id){
+  S.trashNotas=S.trashNotas||[];
+  const nota=S.trashNotas.find(n=>n.id===id);if(!nota)return;
+  confirm2(`Hapus permanen nota ${nota.nomor}? Data tidak bisa dikembalikan!`,()=>{
+    S.trashNotas=S.trashNotas.filter(n=>n.id!==id);
+    storeSave();renderTrash();
+    toast('Nota dihapus permanen','success');
+  });
+}
+
+function emptyTrash(){
+  const total=(S.trashItems||[]).length+(S.trashNotas||[]).length;
+  if(!total){toast('Tempat sampah sudah kosong','info');return;}
+  confirm2(`Hapus permanen semua ${total} item di tempat sampah? Aksi ini tidak bisa dibatalkan!`,()=>{
+    S.trashItems=[];S.trashNotas=[];
+    storeSave();renderTrash();
+    toast('Tempat sampah dikosongkan','success');
+  });
+}
+
+// ═══════════════════════════════════════
 //  SIDEBAR
 // ═══════════════════════════════════════
 function toggleSidebar(){$('sidebar').classList.toggle('mob');$('sb-ov').classList.toggle('mob');}
@@ -2233,7 +2429,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Keyboard
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
 
-  refreshAll();navigateTo('dashboard');
+  refreshAll();updateTrashBadge();navigateTo('dashboard');
 });
 </script>
 </body>
