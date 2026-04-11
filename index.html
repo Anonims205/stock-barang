@@ -340,23 +340,28 @@ tbody tr:last-child td{border-bottom:none}
 .div{height:1px;background:var(--bdr);margin:14px 0}
 
 /* MASTER DATA */
-.md-section{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px}
-.md-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.md-section-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tp)}
-.md-section-title svg{color:var(--ac)}
+.md-new-group-form{margin-bottom:14px;animation:fi .2s ease}
+.md-ngf-inner{background:var(--bg-2);border:1px solid rgba(79,124,255,.3);border-radius:var(--r);padding:16px;box-shadow:0 0 0 3px var(--ac-d)}
+.md-section{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px;transition:border-color .15s}
+.md-section:hover{border-color:var(--bdr-b)}
+.md-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:8px;flex-wrap:wrap}
+.md-section-title{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--tp)}
+.md-section-icon{font-size:18px;line-height:1}
+.md-section-actions{display:flex;gap:5px;align-items:center}
 .md-count{font-family:var(--mono);font-size:10.5px;color:var(--tm);background:var(--bg-3);padding:2px 9px;border-radius:99px;border:1px solid var(--bdr)}
 .md-add-row{display:flex;gap:8px;margin-bottom:14px}
 .md-add-row .fi{flex:1}
-.md-chip-grid{display:flex;flex-wrap:wrap;gap:7px;min-height:32px}
-.md-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;border-radius:8px;
+.md-chip-grid{display:flex;flex-wrap:wrap;gap:7px;min-height:28px}
+.md-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-radius:8px;
   background:var(--bg-3);border:1px solid var(--bdr-b);font-size:12px;font-weight:500;color:var(--tp);
-  transition:all .15s}
-.md-chip:hover{border-color:var(--re);background:var(--re-d)}
-.md-chip-del{width:16px;height:16px;border-radius:3px;background:transparent;border:none;
+  transition:all .15s;animation:fi .15s ease}
+.md-chip-del{width:18px;height:18px;border-radius:3px;background:transparent;border:none;
   color:var(--tm);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:13px;line-height:1;transition:color .15s;padding:0}
-.md-chip:hover .md-chip-del{color:var(--re)}
-.md-empty{font-size:11.5px;color:var(--tm);padding:8px 0;font-style:italic}
+  font-size:12px;line-height:1;transition:all .15s;padding:0;flex-shrink:0}
+.md-chip-del:hover{color:var(--re);background:var(--re-d)}
+.md-empty-chips{font-size:11.5px;color:var(--tm);padding:4px 0;font-style:italic}
+.md-rename-inp{background:var(--bg-1);border:1px solid var(--ac);border-radius:6px;padding:4px 8px;
+  color:var(--tp);font-size:13px;font-weight:700;font-family:var(--sans);outline:none;width:160px}
 .export-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .restock-hint{background:rgba(79,124,255,.07);border:1px solid rgba(79,124,255,.15);border-radius:var(--rs);
   padding:9px 12px;font-size:11.5px;color:var(--ts);margin-top:8px;display:flex;align-items:center;gap:7px}
@@ -650,56 +655,31 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- MASTER DATA -->
     <div class="page" id="page-masterdata">
-      <div class="sh"><div><div class="st">⚙️ Master Data</div><div class="ss">Kelola daftar Tipe Motor, Merek, dan Kategori sesuai kebutuhan</div></div></div>
-
-      <!-- TIPE MOTOR -->
-      <div class="md-section">
-        <div class="md-section-hdr">
-          <div class="md-section-title">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Tipe Motor
-          </div>
-          <span class="md-count" id="md-tipe-count">0 tipe</span>
-        </div>
-        <div class="md-add-row">
-          <input type="text" class="fi" id="md-tipe-inp" placeholder="Contoh: Honda Beat 2023, Yamaha NMAX..." maxlength="60">
-          <button class="btn btn-p btn-sm" id="md-tipe-add-btn">+ Tambah</button>
-        </div>
-        <div class="md-chip-grid" id="md-tipe-grid"></div>
+      <div class="sh">
+        <div><div class="st">⚙️ Master Data</div><div class="ss">Buat dan kelola daftar sortiran apapun sesuai kebutuhan bisnis kamu</div></div>
+        <button class="btn btn-p btn-sm" id="md-new-group-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Buat Daftar Baru</button>
       </div>
-
-      <!-- MEREK -->
-      <div class="md-section">
-        <div class="md-section-hdr">
-          <div class="md-section-title">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            Merek / Brand
+      <!-- Form buat grup baru -->
+      <div class="md-new-group-form" id="md-new-group-form" style="display:none">
+        <div class="md-ngf-inner">
+          <div style="font-size:12.5px;font-weight:700;color:var(--tp);margin-bottom:10px">✨ Buat Daftar Baru</div>
+          <div class="fg2">
+            <div class="fg"><label class="flbl">Nama Daftar <span class="req">*</span></label><input type="text" class="fi" id="md-ng-name" placeholder="Contoh: Ukuran, Warna, Kondisi..." maxlength="40"></div>
+            <div class="fg"><label class="flbl">Ikon (emoji)</label><input type="text" class="fi" id="md-ng-icon" placeholder="📦" maxlength="4" style="font-size:20px;text-align:center"></div>
           </div>
-          <span class="md-count" id="md-merek-count">0 merek</span>
-        </div>
-        <div class="md-add-row">
-          <input type="text" class="fi" id="md-merek-inp" placeholder="Contoh: Honda, Yamaha, Bosch, NGK..." maxlength="60">
-          <button class="btn btn-p btn-sm" id="md-merek-add-btn">+ Tambah</button>
-        </div>
-        <div class="md-chip-grid" id="md-merek-grid"></div>
-      </div>
-
-      <!-- KATEGORI -->
-      <div class="md-section">
-        <div class="md-section-hdr">
-          <div class="md-section-title">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-            Kategori Barang
+          <div style="display:flex;gap:7px;margin-top:10px">
+            <button class="btn btn-p btn-sm" id="md-ng-save-btn">Simpan Daftar</button>
+            <button class="btn btn-g btn-sm" id="md-ng-cancel-btn">Batal</button>
           </div>
-          <span class="md-count" id="md-kat-count">0 kategori</span>
         </div>
-        <div class="md-add-row">
-          <input type="text" class="fi" id="md-kat-inp" placeholder="Contoh: Oli Mesin, Spare Part, Aksesoris..." maxlength="60">
-          <button class="btn btn-p btn-sm" id="md-kat-add-btn">+ Tambah</button>
-        </div>
-        <div class="md-chip-grid" id="md-kat-grid"></div>
       </div>
-
+      <!-- Container grup dinamis -->
+      <div id="md-groups-container"></div>
+      <div class="empty" id="md-empty" style="display:none;padding:48px">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" width="42" height="42" style="margin:0 auto 12px;opacity:.25"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        <h3>Belum ada daftar</h3>
+        <p>Klik "Buat Daftar Baru" untuk membuat daftar sortiran pertamamu.</p>
+      </div>
     </div>
 
     <!-- IMPORT -->
@@ -840,13 +820,14 @@ tbody tr:last-child td{border-bottom:none}
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
   localStorage.setItem('sp4_cats',JSON.stringify(S.categories));
   localStorage.setItem('sp4_tipes',JSON.stringify(S.tipeMotors));
   localStorage.setItem('sp4_mereks',JSON.stringify(S.merekList));
+  localStorage.setItem('sp4_mastergroups',JSON.stringify(S.masterGroups||[]));
   localStorage.setItem('sp4_lbls',JSON.stringify(S.labels));
   localStorage.setItem('sp4_notas',JSON.stringify(S.notas));
 }
@@ -856,8 +837,17 @@ function storeLoad(){
   tryLoad(['sp4_cats','sp3_cats'],'categories',true);
   tryLoad(['sp4_tipes'],'tipeMotors',true);
   tryLoad(['sp4_mereks'],'merekList',true);
+  // Load masterGroups
+  try{const mg=localStorage.getItem('sp4_mastergroups');if(mg)S.masterGroups=JSON.parse(mg);}catch(e){}
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
+  // Sync legacy → masterGroups if masterGroups empty
+  if(!S.masterGroups||!S.masterGroups.length)mdSeedBuiltins();
+  else{
+    // Keep legacy arrays in sync from masterGroups
+    const tg=S.masterGroups.find(x=>x.id==='tipeMotor');const mg2=S.masterGroups.find(x=>x.id==='merek');const kg=S.masterGroups.find(x=>x.id==='kategori');
+    if(tg)S.tipeMotors=tg.items;if(mg2)S.merekList=mg2.items;if(kg)S.categories=kg.items;
+  }
 }
 
 // ═══════════════════════════════════════
@@ -1286,54 +1276,156 @@ function populateLblPicker(sel=[]){const c=$('f-lbl-picker');if(!c)return;if(!S.
 function getPickedLabels(){return[...document.querySelectorAll('#f-lbl-picker .lo.sel')].map(el=>el.dataset.lid).filter(Boolean);}
 
 // ═══════════════════════════════════════
-//  MASTER DATA
+//  MASTER DATA — DYNAMIC GROUPS
 // ═══════════════════════════════════════
+// S.masterGroups = [{id, icon, name, items:[...]}]
+// Built-in groups are seeded on first load.
+
+function mdSeedBuiltins(){
+  if(S.masterGroups&&S.masterGroups.length)return;
+  S.masterGroups=[
+    {id:'tipeMotor', icon:'🏍️', name:'Tipe Motor', items:S.tipeMotors||['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX']},
+    {id:'merek',     icon:'🏷️', name:'Merek / Brand', items:S.merekList||['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso']},
+    {id:'kategori',  icon:'📋', name:'Kategori Barang', items:S.categories||['Oli Mesin','Spare Part','Aksesoris','Filter','Ban','Aki','Busi','Rantai','Lampu','Lainnya']},
+  ];
+}
+
 function renderMasterData(){
-  renderMdSection('tipe','md-tipe-grid','md-tipe-count',S.tipeMotors,'tipeMotors');
-  renderMdSection('merek','md-merek-grid','md-merek-count',S.merekList,'merekList');
-  renderMdSection('kat','md-kat-grid','md-kat-count',S.categories,'categories');
+  mdSeedBuiltins();
+  const cont=$('md-groups-container'),empty=$('md-empty');
+  if(!S.masterGroups.length){cont.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  cont.innerHTML=S.masterGroups.map(g=>mdGroupHtml(g)).join('');
 }
 
-function renderMdSection(key,gridId,countId,arr,prop){
-  const grid=$(gridId),cnt=$(countId);
-  const labels={tipeMotors:'tipe',merekList:'merek',categories:'kategori'};
-  cnt.textContent=arr.length+' '+(labels[prop]||'item');
-  if(!arr.length){grid.innerHTML=`<span class="md-empty">Belum ada data. Tambahkan di atas.</span>`;return;}
-  grid.innerHTML=arr.map((val,i)=>{
-    const usedCount=prop==='tipeMotors'?S.items.filter(it=>it.tipeMotor===val).length
-      :prop==='merekList'?S.items.filter(it=>it.merek===val).length
-      :S.items.filter(it=>it.kategori===val).length;
-    return`<div class="md-chip">
-      <span>${esc(val)}</span>
-      ${usedCount>0?`<span style="font-size:9.5px;color:var(--tm);font-family:var(--mono)">(${usedCount})</span>`:''}
-      <button class="md-chip-del" onclick="mdDelete(${JSON.stringify(prop)},${JSON.stringify(val)})" title="Hapus">✕</button>
-    </div>`;
-  }).join('');
+function mdGroupHtml(g){
+  const chipsHtml=g.items.length
+    ?g.items.map(val=>`<div class="md-chip">
+        <span>${esc(val)}</span>
+        <button class="md-chip-del" onclick="mdDeleteItem(${JSON.stringify(g.id)},${JSON.stringify(val)})" title="Hapus">✕</button>
+      </div>`).join('')
+    :`<span class="md-empty-chips">Belum ada item. Tambahkan di bawah.</span>`;
+
+  return`<div class="md-section" id="md-sec-${g.id}">
+    <div class="md-section-hdr">
+      <div class="md-section-title">
+        <span class="md-section-icon">${esc(g.icon||'📦')}</span>
+        <span id="md-title-${g.id}">${esc(g.name)}</span>
+        <span class="md-count">${g.items.length} item</span>
+      </div>
+      <div class="md-section-actions">
+        <button class="btn btn-g btn-sm" onclick="mdRenameGroup(${JSON.stringify(g.id)})" title="Ubah nama & ikon">✏️ Edit</button>
+        <button class="btn btn-d btn-sm" onclick="mdDeleteGroup(${JSON.stringify(g.id)})" title="Hapus daftar ini">🗑️</button>
+      </div>
+    </div>
+    <div class="md-chip-grid" id="md-grid-${g.id}">${chipsHtml}</div>
+    <div class="md-add-row" style="margin-top:12px;margin-bottom:0">
+      <input type="text" class="fi" id="md-inp-${g.id}" placeholder="Tambah item ke daftar ${esc(g.name)}..." maxlength="80">
+      <button class="btn btn-p btn-sm" onclick="mdAddItem(${JSON.stringify(g.id)})">+ Tambah</button>
+    </div>
+  </div>`;
 }
 
-function mdAdd(prop,inpId){
-  const val=$(inpId).value.trim();
-  if(!val){toast('Nama tidak boleh kosong','error');return;}
-  if(S[prop].map(v=>v.toLowerCase()).includes(val.toLowerCase())){toast('Sudah ada di daftar','error');return;}
-  S[prop].push(val);
-  storeSave();renderMasterData();
-  $(inpId).value='';
-  toast(`"${val}" ditambahkan`,'success');
+function mdAddItem(gid){
+  const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+  const inp=$('md-inp-'+gid);const val=inp.value.trim();
+  if(!val){toast('Item tidak boleh kosong','error');return;}
+  if(g.items.map(v=>v.toLowerCase()).includes(val.toLowerCase())){toast('Sudah ada di daftar','error');return;}
+  g.items.push(val);
+  mdSyncLegacy();storeSave();renderMasterData();
+  // Keep focus in the same group after re-render
+  setTimeout(()=>{const el=$('md-inp-'+gid);if(el)el.focus();},50);
+  toast(`"${val}" ditambahkan ke ${g.name}`,'success');
 }
 
-function mdDelete(prop,val){
-  const labelMap={tipeMotors:'tipe motor',merekList:'merek',categories:'kategori'};
-  const usedCount=prop==='tipeMotors'?S.items.filter(i=>i.tipeMotor===val).length
-    :prop==='merekList'?S.items.filter(i=>i.merek===val).length
-    :S.items.filter(i=>i.kategori===val).length;
-  const msg=usedCount>0
-    ?`"${val}" dipakai di ${usedCount} barang. Tetap hapus dari daftar?`
-    :`Hapus ${labelMap[prop]||'item'} "${val}"?`;
-  confirm2(msg,()=>{
-    S[prop]=S[prop].filter(v=>v!==val);
-    storeSave();renderMasterData();
+function mdDeleteItem(gid,val){
+  const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+  confirm2(`Hapus "${val}" dari daftar ${g.name}?`,()=>{
+    g.items=g.items.filter(v=>v!==val);
+    mdSyncLegacy();storeSave();renderMasterData();
     toast(`"${val}" dihapus`,'success');
   });
+}
+
+function mdDeleteGroup(gid){
+  const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+  const isBuiltin=['tipeMotor','merek','kategori'].includes(gid);
+  const msg=isBuiltin
+    ?`"${g.name}" adalah daftar bawaan. Data yang sudah tersimpan di barang tidak akan terhapus. Tetap hapus daftar ini?`
+    :`Hapus daftar "${g.name}" beserta ${g.items.length} item di dalamnya?`;
+  confirm2(msg,()=>{
+    S.masterGroups=S.masterGroups.filter(x=>x.id!==gid);
+    mdSyncLegacy();storeSave();renderMasterData();
+    toast(`Daftar "${g.name}" dihapus`,'success');
+  });
+}
+
+function mdRenameGroup(gid){
+  const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+  const titleEl=$('md-title-'+gid);if(!titleEl)return;
+  const sec=$('md-sec-'+gid);
+  // Replace title with inline edit inputs
+  const iconSpan=titleEl.previousElementSibling;
+  const origIcon=g.icon||'📦',origName=g.name;
+  iconSpan.outerHTML=`<input type="text" class="md-rename-inp" id="md-ri-${gid}" value="${esc(origIcon)}" maxlength="4" style="width:48px;font-size:18px;text-align:center;padding:4px 6px">`;
+  titleEl.outerHTML=`<input type="text" class="md-rename-inp" id="md-rn-${gid}" value="${esc(origName)}" maxlength="40">`;
+  // Replace action buttons temporarily
+  const actDiv=sec.querySelector('.md-section-actions');
+  actDiv.innerHTML=`
+    <button class="btn btn-p btn-sm" onclick="mdSaveRename(${JSON.stringify(gid)})">✓ Simpan</button>
+    <button class="btn btn-g btn-sm" onclick="renderMasterData()">Batal</button>`;
+  $('md-rn-'+gid).focus();
+  $('md-rn-'+gid).addEventListener('keydown',e=>{if(e.key==='Enter')mdSaveRename(gid);if(e.key==='Escape')renderMasterData();});
+}
+
+function mdSaveRename(gid){
+  const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+  const newName=($('md-rn-'+gid)||{}).value?.trim();
+  const newIcon=($('md-ri-'+gid)||{}).value?.trim()||'📦';
+  if(!newName){toast('Nama tidak boleh kosong','error');return;}
+  g.name=newName;g.icon=newIcon;
+  storeSave();renderMasterData();
+  toast('Daftar diperbarui','success');
+}
+
+function mdNewGroupOpen(){
+  $('md-new-group-form').style.display='block';
+  $('md-ng-name').focus();
+  $('md-ng-icon').value='📦';
+}
+function mdNewGroupClose(){$('md-new-group-form').style.display='none';$('md-ng-name').value='';$('md-ng-icon').value='';}
+
+function mdNewGroupSave(){
+  const name=$('md-ng-name').value.trim();
+  const icon=$('md-ng-icon').value.trim()||'📦';
+  if(!name){toast('Nama daftar wajib diisi','error');$('md-ng-name').classList.add('err');return;}
+  $('md-ng-name').classList.remove('err');
+  const id='grp_'+Date.now().toString(36);
+  S.masterGroups.push({id,icon,name,items:[]});
+  storeSave();mdNewGroupClose();renderMasterData();
+  toast(`Daftar "${name}" dibuat!`,'success');
+  // Scroll to new group
+  setTimeout(()=>{const el=$('md-sec-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
+}
+
+// Sync builtin groups back to legacy fields so existing code still works
+function mdSyncLegacy(){
+  const tg=S.masterGroups.find(x=>x.id==='tipeMotor');
+  const mg=S.masterGroups.find(x=>x.id==='merek');
+  const kg=S.masterGroups.find(x=>x.id==='kategori');
+  if(tg)S.tipeMotors=tg.items;
+  if(mg)S.merekList=mg.items;
+  if(kg)S.categories=kg.items;
+}
+
+// Legacy stubs so old event listeners don't break
+function mdAdd(prop,inpId){
+  const propToGid={tipeMotors:'tipeMotor',merekList:'merek',categories:'kategori'};
+  mdAddItem(propToGid[prop]||prop);
+}
+function mdDelete(prop,val){
+  const propToGid={tipeMotors:'tipeMotor',merekList:'merek',categories:'kategori'};
+  mdDeleteItem(propToGid[prop]||prop,val);
 }
 
 // ═══════════════════════════════════════
@@ -1655,12 +1747,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-add-cat').addEventListener('click',()=>{addCategory($('new-cat').value.trim());$('new-cat').value='';});
   $('new-cat').addEventListener('keydown',e=>{if(e.key==='Enter'){addCategory($('new-cat').value.trim());$('new-cat').value='';}});
   // Master Data
-  $('md-tipe-add-btn').addEventListener('click',()=>mdAdd('tipeMotors','md-tipe-inp'));
-  $('md-tipe-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('tipeMotors','md-tipe-inp');});
-  $('md-merek-add-btn').addEventListener('click',()=>mdAdd('merekList','md-merek-inp'));
-  $('md-merek-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('merekList','md-merek-inp');});
-  $('md-kat-add-btn').addEventListener('click',()=>mdAdd('categories','md-kat-inp'));
-  $('md-kat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('categories','md-kat-inp');});
+  $('md-new-group-btn').addEventListener('click',mdNewGroupOpen);
+  $('md-ng-save-btn').addEventListener('click',mdNewGroupSave);
+  $('md-ng-cancel-btn').addEventListener('click',mdNewGroupClose);
+  $('md-ng-name').addEventListener('keydown',e=>{if(e.key==='Enter')mdNewGroupSave();if(e.key==='Escape')mdNewGroupClose();});
   // Labels
   $('btn-create-lbl').addEventListener('click',createLabel);$('nl-name').addEventListener('input',updateLblPreview);
   $('clr-palette').addEventListener('click',e=>{const sw=e.target.closest('.csw');if(sw)pickColor(sw.dataset.c,sw);});
