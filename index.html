@@ -774,6 +774,39 @@ tbody tr:last-child td{border-bottom:none}
         <div id="import-result" style="margin-top:12px"></div>
       </div>
     </div>
+<!-- TEMPAT SAMPAH -->
+    <div class="page" id="page-trash">
+      <div class="sh">
+        <div><div class="st">🗑️ Tempat Sampah</div><div class="ss">Barang/nota yang dihapus dapat dipulihkan di sini</div></div>
+        <button class="btn btn-d btn-sm" id="btn-empty-trash" onclick="emptyTrash()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Kosongkan Semua</button>
+      </div>
+      <div class="trash-notice">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Item di tempat sampah dapat dipulihkan kapan saja. Klik "Kosongkan Semua" untuk menghapus permanen.
+      </div>
+      <div class="trash-tabs">
+        <div class="trash-tab active" id="trash-tab-barang" onclick="switchTrashTab('barang')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Data Barang<span class="trash-badge" id="trash-count-barang">0</span>
+        </div>
+        <div class="trash-tab" id="trash-tab-nota" onclick="switchTrashTab('nota')">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="trash-badge" id="trash-count-nota">0</span>
+        </div>
+      </div>
+      <div id="trash-barang-panel">
+        <div id="trash-barang-list"></div>
+        <div class="empty" id="trash-barang-empty">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <h3>Tempat sampah kosong</h3><p>Belum ada barang yang dihapus.</p>
+        </div>
+      </div>
+      <div id="trash-nota-panel" style="display:none">
+        <div id="trash-nota-list"></div>
+        <div class="empty" id="trash-nota-empty">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <h3>Tempat sampah kosong</h3><p>Belum ada nota yang dihapus.</p>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -896,39 +929,6 @@ tbody tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<!-- TEMPAT SAMPAH -->
-    <div class="page" id="page-trash">
-      <div class="sh">
-        <div><div class="st">🗑️ Tempat Sampah</div><div class="ss">Barang/nota yang dihapus dapat dipulihkan di sini</div></div>
-        <button class="btn btn-d btn-sm" id="btn-empty-trash" onclick="emptyTrash()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Kosongkan Semua</button>
-      </div>
-      <div class="trash-notice">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Item di tempat sampah dapat dipulihkan kapan saja. Klik "Kosongkan Semua" untuk menghapus permanen.
-      </div>
-      <div class="trash-tabs">
-        <div class="trash-tab active" id="trash-tab-barang" onclick="switchTrashTab('barang')">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Data Barang<span class="trash-badge" id="trash-count-barang">0</span>
-        </div>
-        <div class="trash-tab" id="trash-tab-nota" onclick="switchTrashTab('nota')">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="trash-badge" id="trash-count-nota">0</span>
-        </div>
-      </div>
-      <div id="trash-barang-panel">
-        <div id="trash-barang-list"></div>
-        <div class="empty" id="trash-barang-empty">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-          <h3>Tempat sampah kosong</h3><p>Belum ada barang yang dihapus.</p>
-        </div>
-      </div>
-      <div id="trash-nota-panel" style="display:none">
-        <div id="trash-nota-list"></div>
-        <div class="empty" id="trash-nota-empty">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-          <h3>Tempat sampah kosong</h3><p>Belum ada nota yang dihapus.</p>
-        </div>
-      </div>
-    </div>
 
 <!-- CONFIRM -->
 <div class="conf-ov" id="conf-ov">
