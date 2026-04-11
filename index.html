@@ -1696,7 +1696,7 @@ function renderCategories(){
   empty.style.display='none';
   grid.innerHTML=S.categories.map(cat=>{
     const count=S.items.filter(i=>i.kategori===cat).length;
-    return`<div class="ccard"><div class="ccard-i"><h4>${esc(cat)}</h4><p>${count} barang</p></div><div class="ib d" onclick="deleteCategory(${JSON.stringify(cat)})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div></div>`;
+    return`<div class="ccard"><div class="ccard-i"><h4>${esc(cat)}</h4><p>${count} barang</p></div><div class="ib d" data-cat="${esc(cat)}" onclick="deleteCategory(this.dataset.cat)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div></div>`;
   }).join('');
 }
 function addCategory(name){if(!name){toast('Nama kosong','error');return;}if(S.categories.map(c=>c.toLowerCase()).includes(name.toLowerCase())){toast('Sudah ada','error');return;}S.categories.push(name);storeSave();renderCategories();toast(`Kategori "${name}" ditambahkan`,'success');}
@@ -1746,7 +1746,7 @@ function mdGroupHtml(g){
   const chipsHtml=g.items.length
     ?g.items.map(val=>`<div class="md-chip">
         <span>${esc(val)}</span>
-        <button class="md-chip-del" onclick="mdDeleteItem(${JSON.stringify(g.id)},${JSON.stringify(val)})" title="Hapus">✕</button>
+        <button class="md-chip-del" onclick="mdDeleteItem('${g.id}',this.dataset.val)" data-val="${esc(val)}" title="Hapus">✕</button>
       </div>`).join('')
     :`<span class="md-empty-chips">Belum ada item. Tambahkan di bawah.</span>`;
 
@@ -1758,14 +1758,14 @@ function mdGroupHtml(g){
         <span class="md-count">${g.items.length} item</span>
       </div>
       <div class="md-section-actions">
-        <button class="btn btn-g btn-sm" onclick="mdRenameGroup(${JSON.stringify(g.id)})" title="Ubah nama & ikon">✏️ Edit</button>
-        <button class="btn btn-d btn-sm" onclick="mdDeleteGroup(${JSON.stringify(g.id)})" title="Hapus daftar ini">🗑️</button>
+        <button class="btn btn-g btn-sm" onclick="mdRenameGroup('${g.id}')" title="Ubah nama & ikon">✏️ Edit</button>
+        <button class="btn btn-d btn-sm" onclick="mdDeleteGroup('${g.id}')" title="Hapus daftar ini">🗑️</button>
       </div>
     </div>
     <div class="md-chip-grid" id="md-grid-${g.id}">${chipsHtml}</div>
     <div class="md-add-row" style="margin-top:12px;margin-bottom:0">
-      <input type="text" class="fi" id="md-inp-${g.id}" placeholder="Tambah item ke daftar ${esc(g.name)}..." maxlength="80">
-      <button class="btn btn-p btn-sm" onclick="mdAddItem(${JSON.stringify(g.id)})">+ Tambah</button>
+      <input type="text" class="fi" id="md-inp-${g.id}" placeholder="Tambah item ke daftar ${esc(g.name)}..." maxlength="80" onkeydown="if(event.key==='Enter')mdAddItem('${g.id}')">
+      <button class="btn btn-p btn-sm" onclick="mdAddItem('${g.id}')">+ Tambah</button>
     </div>
   </div>`;
 }
@@ -1816,7 +1816,7 @@ function mdRenameGroup(gid){
   // Replace action buttons temporarily
   const actDiv=sec.querySelector('.md-section-actions');
   actDiv.innerHTML=`
-    <button class="btn btn-p btn-sm" onclick="mdSaveRename(${JSON.stringify(gid)})">✓ Simpan</button>
+    <button class="btn btn-p btn-sm" onclick="mdSaveRename('${gid}')">✓ Simpan</button>
     <button class="btn btn-g btn-sm" onclick="renderMasterData()">Batal</button>`;
   $('md-rn-'+gid).focus();
   $('md-rn-'+gid).addEventListener('keydown',e=>{if(e.key==='Enter')mdSaveRename(gid);if(e.key==='Escape')renderMasterData();});
