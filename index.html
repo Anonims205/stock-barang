@@ -337,7 +337,14 @@ tbody tr:last-child td{border-bottom:none}
 .toast.i svg{color:var(--ac)}
 .toast svg{width:14px;height:14px;flex-shrink:0}
 
-.div{height:1px;background:var(--bdr);margin:14px 0}
+/* IMPORT NOTA */
+.imp-nota-row-ok td{background:transparent}
+.imp-nota-row-warn td{background:rgba(245,197,66,.05)}
+.imp-nota-row-err td{background:rgba(255,92,92,.07)}
+.imp-match{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px}
+.imp-match.ok{background:var(--gr-d);color:var(--gr)}
+.imp-match.new{background:var(--ye-d);color:var(--ye)}
+.imp-match.none{background:var(--re-d);color:var(--re)}
 
 /* MASTER DATA */
 .md-new-group-form{margin-bottom:14px;animation:fi .2s ease}
@@ -601,6 +608,7 @@ tbody tr:last-child td{border-bottom:none}
         <div><div class="st">📦 Barang Masuk</div><div class="ss">Pencatatan penerimaan stok dari supplier</div></div>
         <div class="export-group">
           <button class="btn btn-gr btn-sm" id="btn-exp-nota-xlsx"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+          <button class="btn btn-cy btn-sm" id="btn-imp-nota"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Import Spreadsheet</button>
           <button class="btn btn-p btn-sm" id="btn-new-nota"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Catat Barang Masuk</button>
         </div>
       </div>
@@ -811,6 +819,96 @@ tbody tr:last-child td{border-bottom:none}
     <div class="ctit">Konfirmasi</div>
     <div class="csb2" id="conf-msg">Yakin?</div>
     <div class="cact"><button class="btn btn-g btn-sm" id="conf-cancel">Batal</button><button class="btn btn-d btn-sm" id="conf-ok">Ya, Hapus</button></div>
+  </div>
+</div>
+
+<!-- MODAL IMPORT BARANG MASUK -->
+<div class="mo" id="imp-nota-ov">
+  <div class="modal wide" id="imp-nota-modal">
+    <div class="mh">
+      <div class="mt">📥 Import Barang Masuk dari Spreadsheet</div>
+      <div class="icon-btn" id="imp-nota-close"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    </div>
+    <div class="mb">
+
+      <!-- STEP 1: Upload -->
+      <div id="imp-nota-step1">
+        <div class="stok-hint" style="margin-bottom:14px">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Upload file CSV atau XLSX. Kolom yang dikenali: <strong>nama_barang / nama</strong>, <strong>qty / jumlah</strong>, <strong>harga_beli</strong>, <strong>no_nota</strong>, <strong>tanggal</strong>, <strong>supplier</strong>
+        </div>
+        <label class="idrop" id="imp-nota-drop" for="imp-nota-file" style="margin-bottom:12px">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p><strong>Klik atau drag & drop</strong> file CSV / XLSX di sini</p>
+          <p style="font-size:11px;margin-top:5px;color:var(--cy)">Format: nama_barang, qty, harga_beli, no_nota, tanggal, supplier, catatan</p>
+          <input type="file" id="imp-nota-file" accept=".csv,.xlsx,.xls" style="display:none">
+        </label>
+        <!-- Template download -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn btn-g btn-sm" id="imp-nota-tmpl-xlsx">⬇️ Download Template XLSX</button>
+          <button class="btn btn-g btn-sm" id="imp-nota-tmpl-csv">⬇️ Download Template CSV</button>
+        </div>
+        <!-- Format info -->
+        <div class="tc" style="padding:14px">
+          <div style="font-size:11.5px;font-weight:600;color:var(--ts);margin-bottom:8px">Kolom yang dikenali (tidak harus semua ada):</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px">
+            ${[
+              ['nama_barang / nama','Nama barang (wajib)','var(--re)'],
+              ['qty / jumlah','Jumlah diterima','var(--gr)'],
+              ['harga_beli','Harga beli per unit','var(--or)'],
+              ['no_nota / nomor','Nomor nota','var(--ac)'],
+              ['tanggal','Tanggal masuk','var(--ts)'],
+              ['supplier','Nama supplier','var(--ts)'],
+              ['catatan','Catatan tambahan','var(--ts)'],
+            ].map(([k,v,c])=>`<div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:${c};font-weight:600">${k}</span><br><span style="color:var(--tm)">${v}</span></div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Preview -->
+      <div id="imp-nota-step2" style="display:none">
+        <div class="stok-hint" style="margin-bottom:12px;background:rgba(45,212,160,.07);border-color:rgba(45,212,160,.25)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>File berhasil dibaca. Periksa data di bawah sebelum disimpan. Baris berwarna merah = nama barang tidak ditemukan di sistem.</span>
+        </div>
+        <!-- Info header -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+          <div id="imp-nota-info" style="font-size:12px;color:var(--ts)"></div>
+          <button class="btn btn-g btn-sm" id="imp-nota-back">← Upload Ulang</button>
+        </div>
+        <!-- Group by nota controls -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+          <div class="fg" style="flex:1;min-width:160px">
+            <label class="flbl">No. Nota (untuk semua baris tanpa nota)</label>
+            <input type="text" class="fi" id="imp-nota-default-no" placeholder="MSK-AUTO" style="margin-top:3px">
+          </div>
+          <div class="fg" style="flex:1;min-width:140px">
+            <label class="flbl">Tanggal (untuk baris tanpa tanggal)</label>
+            <input type="date" class="fi" id="imp-nota-default-tgl" style="margin-top:3px">
+          </div>
+          <div class="fg" style="flex:1;min-width:140px">
+            <label class="flbl">Supplier (untuk baris tanpa supplier)</label>
+            <input type="text" class="fi" id="imp-nota-default-sup" placeholder="Opsional" style="margin-top:3px">
+          </div>
+        </div>
+        <!-- Preview table -->
+        <div class="tc"><div class="tw">
+          <table id="imp-nota-preview-tbl">
+            <thead><tr>
+              <th style="width:28px"><input type="checkbox" id="imp-nota-check-all" checked></th>
+              <th>#</th><th>Nama Barang</th><th>Match di Sistem</th><th>Qty</th><th>Harga Beli</th><th>No. Nota</th><th>Tanggal</th><th>Supplier</th>
+            </tr></thead>
+            <tbody id="imp-nota-preview-body"></tbody>
+          </table>
+        </div></div>
+        <div id="imp-nota-warn" style="margin-top:8px;font-size:11.5px;color:var(--ye)"></div>
+      </div>
+
+    </div>
+    <div class="mf">
+      <button class="btn btn-g" id="imp-nota-cancel">Batal</button>
+      <button class="btn btn-p" id="imp-nota-save" style="display:none">📦 Simpan & Tambah Stok</button>
+    </div>
   </div>
 </div>
 
@@ -1242,6 +1340,216 @@ function exportNotaXLSX(){
   XLSX.writeFile(wb,`barang_masuk_${new Date().toISOString().slice(0,10)}.xlsx`);
   toast('Export XLSX berhasil!','success');
 }
+
+// ═══════════════════════════════════════
+//  IMPORT BARANG MASUK (SPREADSHEET)
+// ═══════════════════════════════════════
+let _impNotaRows=[];// parsed preview rows
+
+function openImpNotaModal(){
+  $('imp-nota-ov').classList.add('open');
+  $('imp-nota-step1').style.display='block';
+  $('imp-nota-step2').style.display='none';
+  $('imp-nota-save').style.display='none';
+  $('imp-nota-file').value='';
+  $('imp-nota-default-tgl').value=new Date().toISOString().slice(0,10);
+  $('imp-nota-default-no').value='';
+  $('imp-nota-default-sup').value='';
+  _impNotaRows=[];
+}
+function closeImpNotaModal(){$('imp-nota-ov').classList.remove('open');_impNotaRows=[];}
+
+function impNotaDownloadTemplate(type){
+  const hdr=['no_nota','tanggal','supplier','nama_barang','qty','harga_beli','catatan'];
+  const ex=[['MSK-001',new Date().toISOString().slice(0,10),'PT Supplier ABC','Oli Mesin Honda 1L',10,45000,''],
+            ['MSK-001',new Date().toISOString().slice(0,10),'PT Supplier ABC','Filter Udara Beat',5,35000,''],
+            ['MSK-002',new Date().toISOString().slice(0,10),'Toko Sparepart','Busi NGK',20,25000,'Promo']];
+  if(type==='xlsx'){
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet([hdr,...ex]);
+    ws['!cols']=[{wch:14},{wch:13},{wch:22},{wch:30},{wch:8},{wch:12},{wch:20}];
+    XLSX.utils.book_append_sheet(wb,ws,'Template Barang Masuk');
+    XLSX.writeFile(wb,'template_barang_masuk.xlsx');
+  } else {
+    const csv=[hdr.join(','),...ex.map(r=>r.map(v=>`"${v}"`).join(','))].join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+    a.download='template_barang_masuk.csv';a.click();
+  }
+  toast('Template didownload!','success');
+}
+
+function impNotaParseFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
+    const reader=new FileReader();
+    reader.onload=e=>{
+      try{
+        const wb=XLSX.read(e.target.result,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        impNotaProcessRows(data);
+      }catch(err){toast('Gagal baca file: '+err.message,'error');}
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const text=e.target.result.replace(/^\uFEFF/,'');
+      const lines=text.split('\n').filter(l=>l.trim());
+      const data=lines.map(l=>parseCSV(l));
+      impNotaProcessRows(data);
+    };
+    reader.readAsText(file);
+  }
+}
+
+function impNotaProcessRows(data){
+  if(!data||data.length<2){toast('File kosong atau tidak ada data','error');return;}
+  // Detect header
+  const rawHdr=data[0].map(h=>String(h||'').toLowerCase().trim());
+  const map=(names)=>names.map(n=>rawHdr.indexOf(n)).find(i=>i>=0)??-1;
+  const colNama  =map(['nama_barang','nama','name','barang','item','produk']);
+  const colQty   =map(['qty','jumlah','quantity','jumlah_masuk','amount','pcs']);
+  const colHarga =map(['harga_beli','harga','price','harga_masuk','harga_satuan','cost']);
+  const colNota  =map(['no_nota','nomor','nota','no_faktur','invoice','no']);
+  const colTgl   =map(['tanggal','date','tgl','tanggal_masuk']);
+  const colSup   =map(['supplier','pemasok','vendor','from']);
+  const colCat   =map(['catatan','note','notes','keterangan','ket']);
+
+  if(colNama<0){toast('Kolom nama barang tidak ditemukan! Gunakan header: nama_barang atau nama','error');return;}
+
+  const rows=[];
+  for(let i=1;i<data.length;i++){
+    const r=data[i];
+    const nama=String(r[colNama]||'').trim();
+    if(!nama)continue;
+    const qty=colQty>=0?Math.max(1,parseInt(r[colQty])||1):1;
+    const hargaBeli=colHarga>=0?Math.max(0,parseInt(r[colHarga])||0):0;
+    const noNota=colNota>=0?String(r[colNota]||'').trim():'';
+    const tanggal=colTgl>=0?impNotaParseTgl(r[colTgl]):'';
+    const supplier=colSup>=0?String(r[colSup]||'').trim():'';
+    const catatan=colCat>=0?String(r[colCat]||'').trim():'';
+    // Match item in S.items
+    const matched=S.items.find(it=>it.nama.toLowerCase()===nama.toLowerCase())
+      ||S.items.find(it=>it.nama.toLowerCase().includes(nama.toLowerCase()));
+    rows.push({nama,qty,hargaBeli,noNota,tanggal,supplier,catatan,matched,checked:true,rowIdx:i});
+  }
+
+  if(!rows.length){toast('Tidak ada baris data yang valid','error');return;}
+  _impNotaRows=rows;
+  impNotaShowPreview(rows);
+}
+
+function impNotaParseTgl(val){
+  if(!val)return'';
+  const s=String(val).trim();
+  // Excel serial date
+  if(/^\d{4,5}$/.test(s)){const d=new Date((parseInt(s)-25569)*86400000);return isNaN(d)?'':d.toISOString().slice(0,10);}
+  // Already ISO
+  if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+  // Try parse
+  const d=new Date(s);return isNaN(d)?'':d.toISOString().slice(0,10);
+}
+
+function impNotaShowPreview(rows){
+  $('imp-nota-step1').style.display='none';
+  $('imp-nota-step2').style.display='block';
+  $('imp-nota-save').style.display='inline-flex';
+
+  const ok=rows.filter(r=>r.matched).length;
+  const warn=rows.filter(r=>!r.matched).length;
+  $('imp-nota-info').innerHTML=`<span style="color:var(--gr);font-weight:600">${ok} barang cocok</span> · <span style="color:var(--ye);font-weight:600">${warn} tidak ditemukan di sistem</span> · ${rows.length} baris total`;
+  if(warn>0){$('imp-nota-warn').innerHTML=`⚠️ ${warn} barang tidak ditemukan di sistem dan akan <strong>dilewati</strong> saat simpan. Pastikan nama barang sama persis dengan yang ada di Data Barang.`;}
+  else{$('imp-nota-warn').innerHTML='';}
+
+  const tbody=$('imp-nota-preview-body');
+  tbody.innerHTML=rows.map((r,i)=>{
+    const rowClass=r.matched?'imp-nota-row-ok':r.matched===undefined?'imp-nota-row-warn':'imp-nota-row-err';
+    const matchHtml=r.matched
+      ?`<span class="imp-match ok">✓ ${esc(r.matched.nama)}</span>`
+      :`<span class="imp-match none">✗ Tidak ada</span>`;
+    return`<tr class="${rowClass}" id="imp-row-${i}">
+      <td style="text-align:center"><input type="checkbox" class="imp-nota-chk" data-idx="${i}" ${r.checked?'checked':''}></td>
+      <td style="color:var(--tm);font-family:var(--mono);font-size:10.5px">${r.rowIdx}</td>
+      <td style="font-weight:500">${esc(r.nama)}</td>
+      <td>${matchHtml}</td>
+      <td><input type="number" class="fi imp-qty-inp" value="${r.qty}" min="1" data-idx="${i}" style="width:70px;padding:4px 6px;font-size:12px;text-align:center"></td>
+      <td><div style="position:relative"><span style="position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--tm)">Rp</span><input type="number" class="fi imp-hb-inp" value="${r.hargaBeli||''}" min="0" placeholder="0" data-idx="${i}" style="padding-left:26px;width:110px;font-size:12px"></div></td>
+      <td style="font-size:11.5px;color:var(--ts);font-family:var(--mono)">${esc(r.noNota||'—')}</td>
+      <td style="font-size:11.5px;color:var(--ts)">${esc(r.tanggal||'—')}</td>
+      <td style="font-size:11.5px;color:var(--ts)">${esc(r.supplier||'—')}</td>
+    </tr>`;
+  }).join('');
+
+  // Bind editable inputs
+  tbody.querySelectorAll('.imp-nota-chk').forEach(el=>el.addEventListener('change',e=>{
+    const idx=+e.target.dataset.idx;_impNotaRows[idx].checked=e.target.checked;
+  }));
+  tbody.querySelectorAll('.imp-qty-inp').forEach(el=>el.addEventListener('input',e=>{
+    const idx=+e.target.dataset.idx;_impNotaRows[idx].qty=Math.max(1,parseInt(e.target.value)||1);
+  }));
+  tbody.querySelectorAll('.imp-hb-inp').forEach(el=>el.addEventListener('input',e=>{
+    const idx=+e.target.dataset.idx;_impNotaRows[idx].hargaBeli=Math.max(0,parseInt(e.target.value)||0);
+  }));
+  // Check all
+  $('imp-nota-check-all').addEventListener('change',e=>{
+    _impNotaRows.forEach(r=>r.checked=e.target.checked);
+    tbody.querySelectorAll('.imp-nota-chk').forEach(el=>el.checked=e.target.checked);
+  });
+}
+
+function impNotaSave(){
+  const selected=_impNotaRows.filter(r=>r.checked&&r.matched);
+  if(!selected.length){toast('Tidak ada barang yang cocok dan dipilih','error');return;}
+
+  const defaultNo=$('imp-nota-default-no').value.trim();
+  const defaultTgl=$('imp-nota-default-tgl').value||new Date().toISOString().slice(0,10);
+  const defaultSup=$('imp-nota-default-sup').value.trim();
+  const now=new Date().toISOString();
+
+  // Group rows by no_nota — rows with same nota number → same nota
+  const groups={};
+  selected.forEach(r=>{
+    const key=(r.noNota||defaultNo||('MSK-IMP-'+Date.now().toString(36))).toUpperCase();
+    if(!groups[key])groups[key]={nomor:key,tanggal:r.tanggal||defaultTgl,supplier:r.supplier||defaultSup,rows:[]};
+    groups[key].rows.push(r);
+    // Update tanggal & supplier from first row that has it
+    if(!groups[key].tanggal&&r.tanggal)groups[key].tanggal=r.tanggal;
+    if(!groups[key].supplier&&r.supplier)groups[key].supplier=r.supplier;
+  });
+
+  // Handle rows with no nota → group by tanggal
+  let autoIdx=S.notas.length+1;
+  const noNotaRows=selected.filter(r=>!r.noNota);
+  if(noNotaRows.length&&!defaultNo){
+    // Each unique tanggal gets its own auto nota
+    const byDate={};
+    noNotaRows.forEach(r=>{
+      const d=r.tanggal||defaultTgl;
+      if(!byDate[d])byDate[d]=[];
+      byDate[d].push(r);
+    });
+    Object.entries(byDate).forEach(([d,rows])=>{
+      const key='MSK-'+String(autoIdx++).padStart(3,'0');
+      groups[key]={nomor:key,tanggal:d,supplier:defaultSup,rows};
+    });
+  }
+
+  let totalNota=0,totalUnit=0;
+  Object.values(groups).forEach(g=>{
+    const items=g.rows.map(r=>({itemId:r.matched.id,nama:r.matched.nama,qty:r.qty,hargaBeli:r.hargaBeli||null}));
+    // Add stok
+    items.forEach(it=>{const item=S.items.find(i=>i.id===it.itemId);if(item)item.stok=(parseInt(item.stok)||0)+it.qty;});
+    S.notas.push({id:uid(),nomor:g.nomor,tanggal:g.tanggal||defaultTgl,pelanggan:g.supplier||'',catatan:'Import Spreadsheet',items,createdAt:now,updatedAt:now});
+    totalNota++;totalUnit+=items.reduce((s,it)=>s+it.qty,0);
+  });
+
+  storeSave();closeImpNotaModal();refreshAll();
+  toast(`Import berhasil! ${totalNota} nota dibuat · +${totalUnit} unit stok ditambahkan`,'success');
+}
+
+
 
 // ═══════════════════════════════════════
 //  CATEGORIES
@@ -1690,6 +1998,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-exp-xlsx-b').addEventListener('click',()=>exportXLSX(S.lastFiltered||S.items,'data_barang'));
   $('btn-exp-xlsx-ls').addEventListener('click',()=>exportXLSX(S.items.filter(i=>stockSt(i)!=='aman'),'stok_menipis'));
   $('btn-exp-nota-xlsx').addEventListener('click',exportNotaXLSX);
+  // Import nota
+  $('btn-imp-nota').addEventListener('click',openImpNotaModal);
+  $('imp-nota-close').addEventListener('click',closeImpNotaModal);
+  $('imp-nota-cancel').addEventListener('click',closeImpNotaModal);
+  $('imp-nota-ov').addEventListener('click',e=>{if(e.target===$('imp-nota-ov'))closeImpNotaModal();});
+  $('imp-nota-save').addEventListener('click',impNotaSave);
+  $('imp-nota-back').addEventListener('click',()=>{$('imp-nota-step1').style.display='block';$('imp-nota-step2').style.display='none';$('imp-nota-save').style.display='none';});
+  $('imp-nota-tmpl-xlsx').addEventListener('click',()=>impNotaDownloadTemplate('xlsx'));
+  $('imp-nota-tmpl-csv').addEventListener('click',()=>impNotaDownloadTemplate('csv'));
+  $('imp-nota-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)impNotaParseFile(f);e.target.value='';});
+  const impDrop=$('imp-nota-drop');
+  impDrop.addEventListener('dragover',e=>{e.preventDefault();impDrop.classList.add('dv');});
+  impDrop.addEventListener('dragleave',()=>impDrop.classList.remove('dv'));
+  impDrop.addEventListener('drop',e=>{e.preventDefault();impDrop.classList.remove('dv');const f=e.dataTransfer.files[0];if(f)impNotaParseFile(f);});
   // Topbar
   $('btn-add-top').addEventListener('click',()=>openModal());
   $('btn-add-barang').addEventListener('click',()=>openModal());
