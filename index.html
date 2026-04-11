@@ -338,6 +338,25 @@ tbody tr:last-child td{border-bottom:none}
 .toast svg{width:14px;height:14px;flex-shrink:0}
 
 .div{height:1px;background:var(--bdr);margin:14px 0}
+
+/* MASTER DATA */
+.md-section{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.md-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.md-section-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--tp)}
+.md-section-title svg{color:var(--ac)}
+.md-count{font-family:var(--mono);font-size:10.5px;color:var(--tm);background:var(--bg-3);padding:2px 9px;border-radius:99px;border:1px solid var(--bdr)}
+.md-add-row{display:flex;gap:8px;margin-bottom:14px}
+.md-add-row .fi{flex:1}
+.md-chip-grid{display:flex;flex-wrap:wrap;gap:7px;min-height:32px}
+.md-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 12px;border-radius:8px;
+  background:var(--bg-3);border:1px solid var(--bdr-b);font-size:12px;font-weight:500;color:var(--tp);
+  transition:all .15s}
+.md-chip:hover{border-color:var(--re);background:var(--re-d)}
+.md-chip-del{width:16px;height:16px;border-radius:3px;background:transparent;border:none;
+  color:var(--tm);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;line-height:1;transition:color .15s;padding:0}
+.md-chip:hover .md-chip-del{color:var(--re)}
+.md-empty{font-size:11.5px;color:var(--tm);padding:8px 0;font-style:italic}
 .export-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .restock-hint{background:rgba(79,124,255,.07);border:1px solid rgba(79,124,255,.15);border-radius:var(--rs);
   padding:9px 12px;font-size:11.5px;color:var(--ts);margin-top:8px;display:flex;align-items:center;gap:7px}
@@ -432,6 +451,9 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <div class="ni" data-page="categories">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Kategori
+    </div>
+    <div class="ni" data-page="masterdata">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>Master Data
     </div>
     <div class="ni" data-page="labels">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Label Barang
@@ -626,6 +648,60 @@ tbody tr:last-child td{border-bottom:none}
       <div class="empty" id="lbl-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><h3>Belum ada label</h3><p>Buat label baru di atas.</p></div>
     </div>
 
+    <!-- MASTER DATA -->
+    <div class="page" id="page-masterdata">
+      <div class="sh"><div><div class="st">⚙️ Master Data</div><div class="ss">Kelola daftar Tipe Motor, Merek, dan Kategori sesuai kebutuhan</div></div></div>
+
+      <!-- TIPE MOTOR -->
+      <div class="md-section">
+        <div class="md-section-hdr">
+          <div class="md-section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Tipe Motor
+          </div>
+          <span class="md-count" id="md-tipe-count">0 tipe</span>
+        </div>
+        <div class="md-add-row">
+          <input type="text" class="fi" id="md-tipe-inp" placeholder="Contoh: Honda Beat 2023, Yamaha NMAX..." maxlength="60">
+          <button class="btn btn-p btn-sm" id="md-tipe-add-btn">+ Tambah</button>
+        </div>
+        <div class="md-chip-grid" id="md-tipe-grid"></div>
+      </div>
+
+      <!-- MEREK -->
+      <div class="md-section">
+        <div class="md-section-hdr">
+          <div class="md-section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            Merek / Brand
+          </div>
+          <span class="md-count" id="md-merek-count">0 merek</span>
+        </div>
+        <div class="md-add-row">
+          <input type="text" class="fi" id="md-merek-inp" placeholder="Contoh: Honda, Yamaha, Bosch, NGK..." maxlength="60">
+          <button class="btn btn-p btn-sm" id="md-merek-add-btn">+ Tambah</button>
+        </div>
+        <div class="md-chip-grid" id="md-merek-grid"></div>
+      </div>
+
+      <!-- KATEGORI -->
+      <div class="md-section">
+        <div class="md-section-hdr">
+          <div class="md-section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            Kategori Barang
+          </div>
+          <span class="md-count" id="md-kat-count">0 kategori</span>
+        </div>
+        <div class="md-add-row">
+          <input type="text" class="fi" id="md-kat-inp" placeholder="Contoh: Oli Mesin, Spare Part, Aksesoris..." maxlength="60">
+          <button class="btn btn-p btn-sm" id="md-kat-add-btn">+ Tambah</button>
+        </div>
+        <div class="md-chip-grid" id="md-kat-grid"></div>
+      </div>
+
+    </div>
+
     <!-- IMPORT -->
     <div class="page" id="page-import">
       <div class="sh"><div><div class="st">Import Data</div><div class="ss">Import barang dari file CSV atau Excel (XLSX) — hanya nama barang yang wajib ada</div></div></div>
@@ -764,12 +840,13 @@ tbody tr:last-child td{border-bottom:none}
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
   localStorage.setItem('sp4_cats',JSON.stringify(S.categories));
   localStorage.setItem('sp4_tipes',JSON.stringify(S.tipeMotors));
+  localStorage.setItem('sp4_mereks',JSON.stringify(S.merekList));
   localStorage.setItem('sp4_lbls',JSON.stringify(S.labels));
   localStorage.setItem('sp4_notas',JSON.stringify(S.notas));
 }
@@ -778,6 +855,7 @@ function storeLoad(){
   tryLoad(['sp4_items','sp3_items','sbt2_items'],'items');
   tryLoad(['sp4_cats','sp3_cats'],'categories',true);
   tryLoad(['sp4_tipes'],'tipeMotors',true);
+  tryLoad(['sp4_mereks'],'merekList',true);
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
 }
@@ -806,7 +884,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data',masterdata:'⚙️ Master Data'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -820,6 +898,7 @@ function navigateTo(page){
   if(page==='nota')renderNotas();
   if(page==='categories')renderCategories();
   if(page==='labels')renderLabels();
+  if(page==='masterdata')renderMasterData();
 }
 function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderCategories();renderLabels();updateBadge();updateFooter();}
 
@@ -1207,6 +1286,57 @@ function populateLblPicker(sel=[]){const c=$('f-lbl-picker');if(!c)return;if(!S.
 function getPickedLabels(){return[...document.querySelectorAll('#f-lbl-picker .lo.sel')].map(el=>el.dataset.lid).filter(Boolean);}
 
 // ═══════════════════════════════════════
+//  MASTER DATA
+// ═══════════════════════════════════════
+function renderMasterData(){
+  renderMdSection('tipe','md-tipe-grid','md-tipe-count',S.tipeMotors,'tipeMotors');
+  renderMdSection('merek','md-merek-grid','md-merek-count',S.merekList,'merekList');
+  renderMdSection('kat','md-kat-grid','md-kat-count',S.categories,'categories');
+}
+
+function renderMdSection(key,gridId,countId,arr,prop){
+  const grid=$(gridId),cnt=$(countId);
+  const labels={tipeMotors:'tipe',merekList:'merek',categories:'kategori'};
+  cnt.textContent=arr.length+' '+(labels[prop]||'item');
+  if(!arr.length){grid.innerHTML=`<span class="md-empty">Belum ada data. Tambahkan di atas.</span>`;return;}
+  grid.innerHTML=arr.map((val,i)=>{
+    const usedCount=prop==='tipeMotors'?S.items.filter(it=>it.tipeMotor===val).length
+      :prop==='merekList'?S.items.filter(it=>it.merek===val).length
+      :S.items.filter(it=>it.kategori===val).length;
+    return`<div class="md-chip">
+      <span>${esc(val)}</span>
+      ${usedCount>0?`<span style="font-size:9.5px;color:var(--tm);font-family:var(--mono)">(${usedCount})</span>`:''}
+      <button class="md-chip-del" onclick="mdDelete(${JSON.stringify(prop)},${JSON.stringify(val)})" title="Hapus">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function mdAdd(prop,inpId){
+  const val=$(inpId).value.trim();
+  if(!val){toast('Nama tidak boleh kosong','error');return;}
+  if(S[prop].map(v=>v.toLowerCase()).includes(val.toLowerCase())){toast('Sudah ada di daftar','error');return;}
+  S[prop].push(val);
+  storeSave();renderMasterData();
+  $(inpId).value='';
+  toast(`"${val}" ditambahkan`,'success');
+}
+
+function mdDelete(prop,val){
+  const labelMap={tipeMotors:'tipe motor',merekList:'merek',categories:'kategori'};
+  const usedCount=prop==='tipeMotors'?S.items.filter(i=>i.tipeMotor===val).length
+    :prop==='merekList'?S.items.filter(i=>i.merek===val).length
+    :S.items.filter(i=>i.kategori===val).length;
+  const msg=usedCount>0
+    ?`"${val}" dipakai di ${usedCount} barang. Tetap hapus dari daftar?`
+    :`Hapus ${labelMap[prop]||'item'} "${val}"?`;
+  confirm2(msg,()=>{
+    S[prop]=S[prop].filter(v=>v!==val);
+    storeSave();renderMasterData();
+    toast(`"${val}" dihapus`,'success');
+  });
+}
+
+// ═══════════════════════════════════════
 //  MODAL BARANG
 // ═══════════════════════════════════════
 function openModal(editId){
@@ -1214,6 +1344,11 @@ function openModal(editId){
   const ks=$('f-kat-sel');ks.innerHTML='<option value="">Pilih kategori (opsional)</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   // Populate tipe motor dropdown
   const ts=$('f-tipe-sel');ts.innerHTML='<option value="">-- Pilih Tipe Motor --</option>'+S.tipeMotors.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+  // Populate merek datalist
+  let dl=$('merek-datalist');
+  if(!dl){dl=document.createElement('datalist');dl.id='merek-datalist';document.body.appendChild(dl);}
+  dl.innerHTML=S.merekList.map(m=>`<option value="${esc(m)}">`).join('');
+  $('f-merek-inp').setAttribute('list','merek-datalist');
   clearErrors();
   if(editId){
     const item=S.items.find(i=>i.id===editId);if(!item)return;
@@ -1519,6 +1654,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Categories
   $('btn-add-cat').addEventListener('click',()=>{addCategory($('new-cat').value.trim());$('new-cat').value='';});
   $('new-cat').addEventListener('keydown',e=>{if(e.key==='Enter'){addCategory($('new-cat').value.trim());$('new-cat').value='';}});
+  // Master Data
+  $('md-tipe-add-btn').addEventListener('click',()=>mdAdd('tipeMotors','md-tipe-inp'));
+  $('md-tipe-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('tipeMotors','md-tipe-inp');});
+  $('md-merek-add-btn').addEventListener('click',()=>mdAdd('merekList','md-merek-inp'));
+  $('md-merek-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('merekList','md-merek-inp');});
+  $('md-kat-add-btn').addEventListener('click',()=>mdAdd('categories','md-kat-inp'));
+  $('md-kat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')mdAdd('categories','md-kat-inp');});
   // Labels
   $('btn-create-lbl').addEventListener('click',createLabel);$('nl-name').addEventListener('input',updateLblPreview);
   $('clr-palette').addEventListener('click',e=>{const sw=e.target.closest('.csw');if(sw)pickColor(sw.dataset.c,sw);});
