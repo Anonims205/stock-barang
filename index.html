@@ -139,6 +139,20 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 
 /* TOOLBAR */
 .toolbar{display:flex;gap:7px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+/* SIDEBAR FILTER ORDER */
+.sb-filter-section{padding:4px 8px 8px;border-top:1px solid var(--bdr);margin-top:4px}
+.sb-filter-lbl{font-size:9.5px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.12em;padding:6px 10px 4px;display:block}
+.sb-filter-item{display:flex;align-items:center;gap:7px;padding:6px 10px 6px 6px;border-radius:var(--rs);
+  cursor:default;font-size:12.5px;font-weight:500;color:var(--ts);
+  margin-bottom:1px;user-select:none}
+.sb-filter-item:hover{background:var(--bg-3);color:var(--tp)}
+.sb-filter-item.sb-drag-over{border-top:2px solid var(--ac);background:var(--ac-d)}
+.sb-filter-item.sb-dragging{opacity:.3}
+.sb-filter-drag{width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+  cursor:grab;color:var(--tm);font-size:12px;opacity:.45;flex-shrink:0;user-select:none}
+.sb-filter-drag:hover{opacity:1;color:var(--ac)}
+.sb-filter-drag:active{cursor:grabbing}
+.sb-filter-hint{font-size:9.5px;color:var(--tm);padding:0 10px 6px;font-style:italic;opacity:.7}
 .sw{position:relative;flex:1;min-width:170px}
 .sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--tm);pointer-events:none}
 .si{width:100%;background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);
@@ -225,6 +239,14 @@ tbody tr:last-child td{border-bottom:none}
 .trash-item-actions{display:flex;gap:6px;flex-shrink:0}
 .ib.r:hover{background:var(--gr-d);color:var(--gr);border-color:rgba(45,212,160,.25)}
 
+/* DRAG ROW TABLE */
+.drag-handle{width:18px;height:28px;display:flex;align-items:center;justify-content:center;
+  cursor:grab;color:var(--tm);opacity:.5;transition:opacity .15s;font-size:15px;user-select:none;flex-shrink:0}
+.drag-handle:hover{opacity:1;color:var(--ts)}
+tbody tr.dragging-row{opacity:.35;background:var(--bg-3)!important}
+tbody tr.drag-over-row{border-top:2px solid var(--ac)!important;background:rgba(79,124,255,.06)!important}
+tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
+
 /* STOCK BAR */
 .skw{display:flex;align-items:center;gap:6px}
 .skb{flex:1;height:3px;background:var(--bg-4);border-radius:2px;overflow:hidden;max-width:60px}
@@ -267,6 +289,29 @@ tbody tr:last-child td{border-bottom:none}
   margin-bottom:9px;display:flex;align-items:center;gap:5px}
 .gt svg{width:12px;height:12px}
 .gr2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+/* CUSTOM FIELD PICKER (mirip tipe motor) */
+.cpicker-box{position:relative;width:100%}
+.cpicker-selected{min-height:34px;background:var(--bg-1);border:1px solid var(--bdr);border-radius:var(--rs);
+  padding:4px 8px;cursor:pointer;display:flex;flex-wrap:wrap;gap:4px;align-items:center;transition:border-color .15s;user-select:none}
+.cpicker-selected:hover{border-color:var(--bdr-b)}
+.cpicker-selected:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-d)}
+.cpicker-placeholder{font-size:12.5px;color:var(--tm);pointer-events:none;padding:2px 2px}
+.cpicker-chip{display:inline-flex;align-items:center;gap:4px;background:var(--pu-d);color:var(--pu);
+  border:1px solid rgba(167,139,250,.3);border-radius:5px;padding:2px 6px 2px 8px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.cpicker-chip-del{background:none;border:none;color:var(--pu);cursor:pointer;font-size:13px;line-height:1;padding:0 1px;opacity:.7}
+.cpicker-chip-del:hover{opacity:1}
+.cpicker-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-1);
+  border:1px solid var(--bdr-b);border-radius:var(--r);box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:50;overflow:hidden;animation:fi .15s ease;display:none}
+.cpicker-dropdown.open{display:block}
+.cpicker-opts{max-height:180px;overflow-y:auto;padding:4px 6px}
+.cpicker-opt{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ts);transition:background .1s;user-select:none}
+.cpicker-opt:hover{background:var(--bg-3);color:var(--tp)}
+.cpicker-opt.sel{background:var(--pu-d);color:var(--pu)}
+.cpicker-opt-chk{width:14px;height:14px;border:1.5px solid var(--bdr-b);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px}
+.cpicker-opt.sel .cpicker-opt-chk{background:var(--pu);border-color:var(--pu);color:#fff}
+.cpicker-new-row{display:flex;gap:6px;padding:6px 8px 8px;border-top:1px solid var(--bdr)}
+.cpicker-empty{padding:10px 8px;font-size:12px;color:var(--tm);text-align:center;font-style:italic}
 
 /* MIN STOK BOX */
 .msbox{background:var(--bg-3);border:1px solid rgba(167,139,250,.18);border-radius:var(--rs);padding:13px;margin-top:3px}
@@ -399,6 +444,11 @@ tbody tr:last-child td{border-bottom:none}
 .imp-match.none{background:var(--re-d);color:var(--re)}
 
 /* MASTER DATA */
+.md-chip-grid.drag-over{background:rgba(79,124,255,.06);border:1px dashed var(--ac);border-radius:var(--rs);padding:6px}
+.md-chip.dragging{opacity:.4;transform:scale(.95)}
+.md-chip.drag-target{outline:2px solid var(--ac);outline-offset:2px}
+.md-chip{cursor:grab}
+.md-chip:active{cursor:grabbing}
 .md-new-group-form{margin-bottom:14px;animation:fi .2s ease}
 .md-ngf-inner{background:var(--bg-2);border:1px solid rgba(79,124,255,.3);border-radius:var(--r);padding:16px;box-shadow:0 0 0 3px var(--ac-d)}
 .md-section{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px;transition:border-color .15s}
@@ -411,9 +461,11 @@ tbody tr:last-child td{border-bottom:none}
 .md-add-row{display:flex;gap:8px;margin-bottom:14px}
 .md-add-row .fi{flex:1}
 .md-chip-grid{display:flex;flex-wrap:wrap;gap:7px;min-height:28px}
-.md-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 12px;border-radius:8px;
+.md-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 6px 5px 8px;border-radius:8px;
   background:var(--bg-3);border:1px solid var(--bdr-b);font-size:12px;font-weight:500;color:var(--tp);
-  transition:all .15s;animation:fi .15s ease}
+  transition:all .15s;animation:fi .15s ease;user-select:none}
+.md-chip-drag{color:var(--tm);font-size:14px;line-height:1;cursor:grab;padding:0 2px;opacity:.6;transition:opacity .15s}
+.md-chip:hover .md-chip-drag{opacity:1}
 .md-chip-del{width:18px;height:18px;border-radius:3px;background:transparent;border:none;
   color:var(--tm);cursor:pointer;display:flex;align-items:center;justify-content:center;
   font-size:12px;line-height:1;transition:all .15s;padding:0;flex-shrink:0}
@@ -480,6 +532,59 @@ tbody tr:last-child td{border-bottom:none}
 .hbeli-badge{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;color:var(--cy);
   background:var(--cy-d);border:1px solid rgba(6,182,212,.2);padding:1px 6px;border-radius:99px}
 
+/* FILTER KATEGORI PAGE */
+.fk-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:4px}
+.fk-group{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;
+  transition:all .15s;display:flex;flex-direction:column}
+.fk-group:hover{border-color:var(--bdr-b)}
+.fk-group.fk-group-dragging{opacity:.3;transform:scale(.97);pointer-events:none}
+.fk-group.fk-group-drag-over{outline:3px solid var(--ac);outline-offset:2px}
+.fk-group-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px 10px;
+  border-bottom:1px solid var(--bdr);background:var(--bg-1);cursor:default}
+.fk-group-drag-handle{display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:5px;cursor:grab;color:var(--tm);
+  font-size:14px;opacity:.4;transition:all .12s;flex-shrink:0;user-select:none}
+.fk-group-hdr:hover .fk-group-drag-handle{opacity:.8}
+.fk-group-drag-handle:hover{opacity:1;color:var(--ac);background:var(--ac-d)}
+.fk-group-drag-handle:active{cursor:grabbing}
+.fk-group-icon{font-size:18px;line-height:1;flex-shrink:0}
+.fk-group-name{font-size:13px;font-weight:700;color:var(--tp);flex:1}
+.fk-group-count{font-size:10px;font-family:var(--mono);color:var(--tm);
+  background:var(--bg-3);padding:1px 7px;border-radius:99px;border:1px solid var(--bdr)}
+.fk-group-acts{display:flex;gap:4px;align-items:center}
+.fk-items{padding:10px 10px 6px;flex:1;min-height:60px}
+.fk-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:7px;
+  margin-bottom:4px;background:var(--bg-3);border:1px solid var(--bdr);
+  cursor:default;user-select:none;transition:all .12s}
+.fk-item:hover{border-color:var(--bdr-b);background:var(--bg-4)}
+.fk-item.fk-dragging{opacity:.3;transform:scale(.97)}
+.fk-item.fk-drag-over{border-top:2px solid var(--ac);background:var(--ac-d)}
+.fk-drag-handle{color:var(--tm);font-size:13px;cursor:grab;opacity:.45;
+  padding:0 2px;flex-shrink:0;transition:opacity .12s}
+.fk-item:hover .fk-drag-handle{opacity:.9}
+.fk-drag-handle:active{cursor:grabbing}
+.fk-item-name{flex:1;font-size:12.5px;font-weight:500;color:var(--tp)}
+.fk-item-del{width:20px;height:20px;border-radius:4px;background:transparent;border:none;
+  color:var(--tm);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:12px;transition:all .12s;flex-shrink:0;opacity:0}
+.fk-item:hover .fk-item-del{opacity:1}
+.fk-item-del:hover{background:var(--re-d);color:var(--re)}
+.fk-add-row{display:flex;gap:6px;padding:8px 10px 10px;border-top:1px solid var(--bdr)}
+.fk-add-row .fi{flex:1;font-size:12px;padding:5px 8px}
+.fk-add-btn{flex-shrink:0}
+.fk-empty-items{padding:12px 8px;text-align:center;font-size:11.5px;color:var(--tm);font-style:italic}
+.fk-new-group-box{background:var(--bg-2);border:2px dashed var(--bdr-b);border-radius:var(--r);
+  padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;cursor:pointer;transition:all .15s;min-height:140px}
+.fk-new-group-box:hover{border-color:var(--ac);background:var(--ac-d)}
+.fk-new-group-box svg{width:24px;height:24px;color:var(--tm)}
+.fk-new-group-box:hover svg{color:var(--ac)}
+.fk-new-group-box span{font-size:12.5px;color:var(--tm);font-weight:500}
+.fk-new-group-box:hover span{color:var(--ac)}
+.fk-create-form{background:var(--bg-2);border:1px solid rgba(79,124,255,.3);border-radius:var(--r);
+  padding:16px;box-shadow:0 0 0 3px var(--ac-d);display:none}
+.fk-color-strip{height:4px;border-radius:0 0 var(--rs) var(--rs);width:100%;margin-top:-1px}
+
 @media(max-width:1000px){.sg{grid-template-columns:repeat(3,1fr)}.cs{grid-template-columns:1fr}}
 @media(max-width:700px){
   .sidebar{transform:translateX(-100%)}.sidebar.mob{transform:translateX(0);box-shadow:0 8px 48px rgba(0,0,0,.6)}
@@ -513,14 +618,14 @@ tbody tr:last-child td{border-bottom:none}
     <div class="ni" data-page="nota">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="ni-badge-cy" id="nota-badge">0</span>
     </div>
-    <div class="ni" data-page="categories">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>Kategori
-    </div>
     <div class="ni" data-page="masterdata">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>Master Data
     </div>
     <div class="ni" data-page="labels">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Label Barang
+    </div>
+    <div class="ni" data-page="filterkat">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Filter Kategori
     </div>
     <div class="nav-lbl" style="margin-top:8px">Export & Import</div>
     <div class="ni" id="nav-exp-xlsx">
@@ -537,6 +642,12 @@ tbody tr:last-child td{border-bottom:none}
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Tempat Sampah<span class="ni-badge" id="trash-badge" style="display:none">0</span>
     </div>
   </nav>
+  <!-- FILTER ORDER SECTION -->
+  <div class="sb-filter-section" id="sb-filter-section" style="display:none">
+    <span class="sb-filter-lbl">Urutan Filter Data Barang</span>
+    <div id="sb-filter-list"></div>
+    <div class="sb-filter-hint">⠿ Drag untuk urutkan filter</div>
+  </div>
   <div class="sb-foot">💾 Data tersimpan lokal<br><span id="foot-count">0 item</span></div>
 </aside>
 <div class="sb-ov" id="sb-ov"></div>
@@ -597,11 +708,9 @@ tbody tr:last-child td{border-bottom:none}
           <button class="btn btn-p btn-sm" id="btn-add-barang"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
         </div>
       </div>
-      <div class="toolbar">
+      <div class="toolbar" id="filter-toolbar">
         <div class="sw"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="srch" placeholder="Cari nama / merek / lokasi / supplier..."></div>
-        <select class="fsl" id="f-kat-filter"></select>
-        <select class="fsl" id="f-merek-filter"></select>
-        <select class="fsl" id="f-tipe-filter"></select>
+        <div id="dynamic-filters" style="display:contents"></div>
         <select class="fsl" id="f-status-filter"><option value="">Semua Status</option><option value="aman">Stok Aman</option><option value="menipis">Stok Menipis</option><option value="habis">Stok Habis</option></select>
         <select class="fsl" id="f-lbl-filter" style="min-width:110px"></select>
         <select class="fsl" id="f-harga-range" style="min-width:120px">
@@ -613,11 +722,15 @@ tbody tr:last-child td{border-bottom:none}
           <option value="5000000-99999999999">Rp 5jt+</option>
         </select>
         <button class="btn btn-g btn-sm" id="btn-reset">Reset</button>
+        <div id="drag-hint" style="font-size:10.5px;color:var(--tm);display:none;align-items:center;gap:4px;margin-left:4px">
+          <span>⠿</span> Drag baris untuk urutkan
+        </div>
       </div>
       <div class="tc">
         <div class="tw"><table>
           <thead><tr>
-            <th>#</th>
+            <th style="width:30px;cursor:default"></th>
+            <th style="width:30px;cursor:default">#</th>
             <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
             <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
             <th data-sort="merek">Merek<span class="sort-ic"></span></th>
@@ -688,17 +801,6 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </div>
 
-    <!-- KATEGORI -->
-    <div class="page" id="page-categories">
-      <div class="sh"><div><div class="st">Manajemen Kategori</div><div class="ss">Kelola kategori barang</div></div></div>
-      <div class="tc" style="padding:16px;margin-bottom:12px">
-        <div class="st" style="font-size:12.5px;margin-bottom:9px">Tambah Kategori Baru</div>
-        <div class="car"><input type="text" class="fi" id="new-cat" placeholder="Nama kategori baru..." maxlength="40"><button class="btn btn-p btn-sm" id="btn-add-cat">Tambah</button></div>
-      </div>
-      <div class="cg" id="cat-grid"></div>
-      <div class="empty" id="cat-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg><h3>Belum ada kategori</h3><p>Tambah kategori baru di atas.</p></div>
-    </div>
-
     <!-- LABELS -->
     <div class="page" id="page-labels">
       <div class="sh"><div><div class="st">Label Barang</div><div class="ss">Label custom berwarna</div></div></div>
@@ -717,6 +819,50 @@ tbody tr:last-child td{border-bottom:none}
       <div style="font-size:11.5px;color:var(--ts);margin-bottom:7px">Label Tersimpan</div>
       <div class="lmg" id="lbl-grid"></div>
       <div class="empty" id="lbl-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><h3>Belum ada label</h3><p>Buat label baru di atas.</p></div>
+    </div>
+
+    <!-- FILTER KATEGORI -->
+    <div class="page" id="page-filterkat">
+      <div class="sh">
+        <div>
+          <div class="st">🔽 Filter Kategori</div>
+          <div class="ss">Buat grup filter kustom untuk Data Barang — drag item untuk mengatur urutan</div>
+        </div>
+        <button class="btn btn-p btn-sm" id="fk-new-group-btn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Buat Grup Baru
+        </button>
+      </div>
+      <!-- Form buat grup baru -->
+      <div class="fk-create-form" id="fk-create-form" style="display:none;margin-bottom:16px">
+        <div style="font-size:12.5px;font-weight:700;color:var(--tp);margin-bottom:12px">✨ Buat Grup Filter Baru</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:160px">
+            <label class="flbl">Nama Grup <span class="req">*</span></label>
+            <input type="text" class="fi" id="fk-ng-name" placeholder="Contoh: Warna, Ukuran, Kondisi..." maxlength="40">
+          </div>
+          <div class="fg" style="width:70px">
+            <label class="flbl">Ikon</label>
+            <input type="text" class="fi" id="fk-ng-icon" placeholder="🏷️" maxlength="4" style="font-size:18px;text-align:center">
+          </div>
+          <div style="display:flex;gap:6px;padding-bottom:1px">
+            <button class="btn btn-p btn-sm" id="fk-ng-save-btn">Simpan</button>
+            <button class="btn btn-g btn-sm" id="fk-ng-cancel-btn">Batal</button>
+          </div>
+        </div>
+      </div>
+      <!-- Info box -->
+      <div class="stok-hint" style="margin-bottom:14px;background:rgba(79,124,255,.06);border-color:rgba(79,124,255,.2)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--ac)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Grup filter di sini otomatis muncul sebagai <strong>dropdown filter di halaman Data Barang</strong>. Drag item dalam grup untuk mengatur urutan tampilan.
+      </div>
+      <!-- Papan grup -->
+      <div class="fk-board" id="fk-board"></div>
+      <div class="empty" id="fk-empty" style="display:none;padding:48px">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" width="42" height="42" style="margin:0 auto 12px;opacity:.25"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <h3>Belum ada grup filter</h3>
+        <p>Klik "Buat Grup Baru" untuk mulai.</p>
+      </div>
     </div>
 
     <!-- MASTER DATA -->
@@ -825,6 +971,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="fg"><label class="flbl">Kategori</label><select class="fs2" id="f-kat-sel"></select></div>
         <div class="fg"><label class="flbl">Kategori Baru (opsional)</label><div class="car"><input type="text" class="fi" id="f-kat-new" placeholder="Ketik lalu klik +"><button class="btn btn-s btn-sm" id="f-kat-add">+</button></div></div>
         <div class="fg"><label class="flbl">Merek</label><input type="text" class="fi" id="f-merek-inp" placeholder="Merek / Brand"></div>
+        <div class="fg full" id="modal-custom-fields"></div>
         <div class="fg full">
           <label class="flbl">Tipe Motor Kompatibel <span style="color:var(--tm);font-weight:400;font-size:10.5px">(bisa pilih lebih dari satu)</span></label>
           <div class="tipe-picker-box" id="f-tipe-picker-box">
@@ -1034,7 +1181,7 @@ tbody tr:last-child td{border-bottom:none}
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],trashItems:[],trashNotas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],trashItems:[],trashNotas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[],filterOrder:null,activeFilters:{},filterGroups:[]};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
@@ -1046,6 +1193,8 @@ function storeSave(){
   localStorage.setItem('sp4_notas',JSON.stringify(S.notas));
   localStorage.setItem('sp4_trash_items',JSON.stringify(S.trashItems||[]));
   localStorage.setItem('sp4_trash_notas',JSON.stringify(S.trashNotas||[]));
+  if(S.filterOrder)localStorage.setItem('sp4_filterorder',JSON.stringify(S.filterOrder));
+  localStorage.setItem('sp4_filtergroups',JSON.stringify(S.filterGroups||[]));
 }
 function storeLoad(){
   const tryLoad=(keys,prop,merge)=>{for(const k of keys){try{const v=localStorage.getItem(k);if(v){const arr=JSON.parse(v);if(merge?arr.length>S[prop].length:!S[prop].length){S[prop]=arr;return;}}}catch(e){}}};
@@ -1058,6 +1207,8 @@ function storeLoad(){
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
   try{const ti=localStorage.getItem('sp4_trash_items');if(ti)S.trashItems=JSON.parse(ti);}catch(e){}
+  try{const fo=localStorage.getItem('sp4_filterorder');if(fo)S.filterOrder=JSON.parse(fo);}catch(e){}
+  try{const fg=localStorage.getItem('sp4_filtergroups');if(fg)S.filterGroups=JSON.parse(fg);}catch(e){}
   try{const tn=localStorage.getItem('sp4_trash_notas');if(tn)S.trashNotas=JSON.parse(tn);}catch(e){}
   // Sync legacy → masterGroups if masterGroups empty
   if(!S.masterGroups||!S.masterGroups.length)mdSeedBuiltins();
@@ -1092,7 +1243,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',categories:'Kategori',labels:'Label Barang',import:'Import Data',masterdata:'⚙️ Master Data',trash:'🗑️ Tempat Sampah'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',labels:'Label Barang',filterkat:'🔽 Filter Kategori',import:'Import Data',masterdata:'⚙️ Master Data',trash:'🗑️ Tempat Sampah'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -1104,12 +1255,15 @@ function navigateTo(page){
   if(page==='barang')renderBarang();
   if(page==='lowstock')renderLowStock();
   if(page==='nota')renderNotas();
-  if(page==='categories')renderCategories();
   if(page==='labels')renderLabels();
+  if(page==='filterkat')renderFilterKat();
   if(page==='masterdata')renderMasterData();
   if(page==='trash')renderTrash();
+  // Tampilkan sidebar filter order hanya di halaman barang
+  const sec=$('sb-filter-section');
+  if(sec)sec.style.display=page==='barang'?'block':'none';
 }
-function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderCategories();renderLabels();updateBadge();updateFooter();updateTrashBadge();}
+function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderLabels();updateBadge();updateFooter();updateTrashBadge();}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -1195,7 +1349,8 @@ function renderBarang(filtered){
     const marginHtml=marginRp!==null
       ?`<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginRp>=0?'+':''}${rp(marginRp)}</div><div style="font-size:9.5px;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginPct}%</div>`
       :'<span style="color:var(--tm);font-size:10.5px">—</span>';
-    return`<tr>
+    return`<tr draggable="true" data-id="${item.id}" class="barang-row">
+      <td style="padding:0 4px"><div class="drag-handle" title="Drag untuk urutkan">⠿</div></td>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
       <td><span class="ct">${esc(item.kategori||'—')}</span></td>
@@ -1218,42 +1373,252 @@ function renderBarang(filtered){
     </tr>`;
   }).join('');
   updateSortIcons();
+  setTimeout(initRowDrag,0);
 }
 function updateSortIcons(){document.querySelectorAll('#page-barang thead th[data-sort]').forEach(th=>{th.classList.remove('asc','desc');if(th.dataset.sort===S.sortKey)th.classList.add(S.sortDir);});}
 
+// ═══════════════════════════════════════
+//  DRAG & DROP ROWS — DATA BARANG
+// ═══════════════════════════════════════
+let _rowDragId=null;
+
+function initRowDrag(){
+  const tbody=$('main-tbody');if(!tbody)return;
+  const rows=tbody.querySelectorAll('tr.barang-row');
+
+  rows.forEach(row=>{
+    // hanya drag handle yang trigger dragstart
+    const handle=row.querySelector('.drag-handle');
+    if(handle){
+      handle.addEventListener('mousedown',()=>{row.setAttribute('draggable','true');});
+      handle.addEventListener('mouseup',()=>{});
+    }
+
+    row.addEventListener('dragstart',e=>{
+      // hanya jika mousedown dari handle
+      _rowDragId=row.dataset.id;
+      row.classList.add('dragging-row');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',_rowDragId);
+    });
+
+    row.addEventListener('dragend',()=>{
+      row.classList.remove('dragging-row');
+      tbody.querySelectorAll('tr').forEach(r=>r.classList.remove('drag-over-row'));
+      _rowDragId=null;
+    });
+
+    row.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(!_rowDragId||row.dataset.id===_rowDragId)return;
+      tbody.querySelectorAll('tr').forEach(r=>r.classList.remove('drag-over-row'));
+      row.classList.add('drag-over-row');
+    });
+
+    row.addEventListener('dragleave',()=>{
+      row.classList.remove('drag-over-row');
+    });
+
+    row.addEventListener('drop',e=>{
+      e.preventDefault();
+      row.classList.remove('drag-over-row');
+      if(!_rowDragId||row.dataset.id===_rowDragId)return;
+
+      const fromId=_rowDragId;
+      const toId=row.dataset.id;
+
+      // Cari posisi di S.items (array asli, bukan filtered)
+      const fromIdx=S.items.findIndex(i=>i.id===fromId);
+      const toIdx=S.items.findIndex(i=>i.id===toId);
+      if(fromIdx<0||toIdx<0)return;
+
+      // Reorder S.items
+      const moved=S.items.splice(fromIdx,1)[0];
+      // Kalau dragged ke bawah, toIdx sudah bergeser -1
+      const newToIdx=S.items.findIndex(i=>i.id===toId);
+      S.items.splice(newToIdx,0,moved);
+
+      // Reset sort (manual order)
+      S.sortKey=null;S.sortDir='asc';
+      storeSave();
+      renderBarang();
+      // Reinit drag setelah re-render
+      setTimeout(initRowDrag,0);
+    });
+  });
+}
+
+// ═══════════════════════════════════════
+//  DYNAMIC FILTER BAR (dari Master Data, bisa di-drag)
+// ═══════════════════════════════════════
+
+// Mapping group id → field di item
+const BUILTIN_FIELD={'kategori':'kategori','merek':'merek','tipeMotor':'tipeMotors'};
+
+function getFilterOrder(){
+  // Gabungkan masterGroups + filterGroups (custom)
+  const masterIds=(S.masterGroups||[]).map(g=>g.id);
+  const customIds=(S.filterGroups||[]).map(g=>g.id);
+  const allIds=[...masterIds,...customIds];
+  if(!S.filterOrder)return allIds;
+  const extra=allIds.filter(id=>!S.filterOrder.includes(id));
+  return[...S.filterOrder.filter(id=>allIds.includes(id)),...extra];
+}
+
+function buildDynamicFilters(){
+  const cont=$('dynamic-filters');if(!cont)return;
+  const order=getFilterOrder();
+  // Simpan nilai aktif sebelum rebuild
+  const saved={};
+  cont.querySelectorAll('select[data-gid]').forEach(s=>{saved[s.dataset.gid]=s.value;});
+
+  let html='';
+  order.forEach(gid=>{
+    const g=(S.masterGroups||[]).find(x=>x.id===gid)||(S.filterGroups||[]).find(x=>x.id===gid);if(!g)return;
+    let opts=[];
+    if(gid==='kategori'){
+      const mdO=g.items,itO=[...new Set(S.items.map(i=>i.kategori).filter(Boolean))];
+      opts=[...mdO,...itO.filter(c=>!mdO.includes(c))];
+    }else if(gid==='merek'){
+      const mdO=g.items,itO=[...new Set(S.items.map(i=>i.merek).filter(Boolean))];
+      opts=[...mdO,...itO.filter(c=>!mdO.includes(c))];
+    }else if(gid==='tipeMotor'){
+      const mdO=g.items,itO=[...new Set(S.items.flatMap(i=>Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[])))];
+      opts=[...mdO,...itO.filter(t=>!mdO.includes(t))];
+    }else{
+      // Cari di filterGroups (custom)
+      const fg=(S.filterGroups||[]).find(x=>x.id===gid);
+      opts=fg?fg.items:(g?g.items:[]);
+    }
+    const cur=saved[gid]||'';
+    const optsHtml=opts.map(v=>`<option value="${esc(v)}"${cur===v?' selected':''}>${esc(v)}</option>`).join('');
+    html+=`<select class="fsl" data-gid="${gid}" id="dyn-f-${gid}" onchange="doFilter()">
+      <option value="">Semua ${esc(g.name)}</option>${optsHtml}
+    </select>`;
+  });
+  cont.innerHTML=html;
+  renderSidebarFilterOrder();
+}
+
+function getActiveFilterValues(){
+  const vals={};
+  document.querySelectorAll('#dynamic-filters select[data-gid]').forEach(s=>{
+    vals[s.dataset.gid]=s.value;
+  });
+  return vals;
+}
+
 function populateFilters(){
-  const cats=[...new Set(S.items.map(i=>i.kategori).filter(Boolean))].sort();
-  const merks=[...new Set(S.items.map(i=>i.merek).filter(Boolean))].sort();
-  const tipes=[...new Set(S.items.flatMap(i=>Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[])))].sort();
-  const fk=$('f-kat-filter'),fm=$('f-merek-filter'),ft=$('f-tipe-filter'),fl=$('f-lbl-filter');
-  const[sk,sm,st2,sl]=[fk.value,fm.value,ft?ft.value:'',fl?fl.value:''];
-  fk.innerHTML='<option value="">Semua Kategori</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-  fm.innerHTML='<option value="">Semua Merek</option>'+merks.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-  if(ft)ft.innerHTML='<option value="">Semua Tipe Motor</option>'+tipes.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
-  if(fl){fl.innerHTML='<option value="">Semua Label</option>'+S.labels.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('');fl.value=sl;}
-  fk.value=sk;fm.value=sm;if(ft)ft.value=st2;
+  buildDynamicFilters();
+  const fl=$('f-lbl-filter');
+  if(fl){const sl=fl.value;fl.innerHTML='<option value="">Semua Label</option>'+S.labels.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('');fl.value=sl;}
 }
 
 function doFilter(){
   const q=$('srch').value.toLowerCase();
-  const kat=$('f-kat-filter').value,merek=$('f-merek-filter').value,tipe=$('f-tipe-filter')?$('f-tipe-filter').value:'';
+  const dh=$('drag-hint');
+  const dynVals=getActiveFilterValues();
+  const hasFilter=q||Object.values(dynVals).some(Boolean)||$('f-status-filter').value||$('f-lbl-filter').value||$('f-harga-range').value||S.sortKey;
+  if(dh)dh.style.display=hasFilter?'flex':'none';
   const st=$('f-status-filter').value,lbl=$('f-lbl-filter').value;
   const hr=$('f-harga-range').value;
   let hMin=0,hMax=Infinity;
   if(hr){const p=hr.split('-');hMin=parseInt(p[0]);hMax=parseInt(p[1]);}
   renderBarang(S.items.filter(i=>{
     if(q&&!i.nama.toLowerCase().includes(q)&&!(i.merek||'').toLowerCase().includes(q)&&!(i.lokasi||'').toLowerCase().includes(q)&&!(i.supplier||'').toLowerCase().includes(q)&&!(i.catatan||'').toLowerCase().includes(q)&&!(Array.isArray(i.tipeMotors)?i.tipeMotors.join(' '):i.tipeMotor||'').toLowerCase().includes(q))return false;
-    if(kat&&i.kategori!==kat)return false;
-    if(merek&&i.merek!==merek)return false;
-    if(tipe){const tipes=Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[]);if(!tipes.includes(tipe))return false;}
+    for(const [gid,val] of Object.entries(dynVals)){
+      if(!val)continue;
+      if(gid==='kategori'&&i.kategori!==val)return false;
+      if(gid==='merek'&&i.merek!==val)return false;
+      if(gid==='tipeMotor'){const ts=Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[]);if(!ts.includes(val))return false;}
+    }
     if(st&&stockSt(i)!==st)return false;
     if(lbl&&!(i.labels||[]).includes(lbl))return false;
     const h=parseInt(i.harga)||0;if(hr&&(h<hMin||h>hMax))return false;
     return true;
   }));
 }
-function resetFilter(){$('srch').value='';$('f-kat-filter').value='';$('f-merek-filter').value='';$('f-status-filter').value='';$('f-lbl-filter').value='';$('f-harga-range').value='';S.sortKey=null;S.sortDir='asc';renderBarang();}
 
+function resetFilter(){
+  $('srch').value='';
+  document.querySelectorAll('#dynamic-filters select[data-gid]').forEach(s=>s.value='');
+  $('f-status-filter').value='';$('f-lbl-filter').value='';$('f-harga-range').value='';
+  S.sortKey=null;S.sortDir='asc';
+  const dh=$('drag-hint');if(dh)dh.style.display='none';
+  renderBarang();
+}
+
+// ═══════════════════════════════════════
+//  SIDEBAR FILTER ORDER — drag & drop
+// ═══════════════════════════════════════
+let _sfDragGid=null;
+
+function renderSidebarFilterOrder(){
+  const sec=$('sb-filter-section'),list=$('sb-filter-list');
+  if(!sec||!list)return;
+  // Tampilkan section hanya saat halaman barang aktif
+  const onBarang=document.querySelector('#page-barang.active');
+  sec.style.display=onBarang?'block':'none';
+  if(!onBarang)return;
+
+  const order=getFilterOrder();
+  list.innerHTML=order.map(gid=>{
+    const g=(S.masterGroups||[]).find(x=>x.id===gid);if(!g)return'';
+    return`<div class="sb-filter-item" data-gid="${gid}">
+      <span class="sb-filter-drag" title="Drag untuk urutkan">⠿</span>
+      <span class="sb-filter-icon">${g.icon||'📋'}</span>
+      <span class="sb-filter-name">${esc(g.name)}</span>
+    </div>`;
+  }).join('');
+
+  // Bind drag events pada setiap item
+  list.querySelectorAll('.sb-filter-item').forEach(item=>{
+    const handle=item.querySelector('.sb-filter-drag');
+
+    // Set draggable hanya saat handle di-mousedown
+    handle.addEventListener('mousedown',e=>{
+      e.stopPropagation();
+      item.setAttribute('draggable','true');
+    });
+    item.addEventListener('dragstart',e=>{
+      if(item.getAttribute('draggable')!=='true'){e.preventDefault();return;}
+      _sfDragGid=item.dataset.gid;
+      item.classList.add('sb-dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',_sfDragGid);
+    });
+    item.addEventListener('dragend',()=>{
+      item.classList.remove('sb-dragging');
+      item.setAttribute('draggable','false');
+      list.querySelectorAll('.sb-filter-item').forEach(i=>i.classList.remove('sb-drag-over'));
+      _sfDragGid=null;
+    });
+    item.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(!_sfDragGid||item.dataset.gid===_sfDragGid)return;
+      list.querySelectorAll('.sb-filter-item').forEach(i=>i.classList.remove('sb-drag-over'));
+      item.classList.add('sb-drag-over');
+    });
+    item.addEventListener('dragleave',()=>item.classList.remove('sb-drag-over'));
+    item.addEventListener('drop',e=>{
+      e.preventDefault();
+      item.classList.remove('sb-drag-over');
+      const toGid=item.dataset.gid;
+      if(!_sfDragGid||toGid===_sfDragGid)return;
+      const order=getFilterOrder();
+      const fi=order.indexOf(_sfDragGid),ti=order.indexOf(toGid);
+      if(fi<0||ti<0)return;
+      order.splice(fi,1);order.splice(ti,0,_sfDragGid);
+      S.filterOrder=order;storeSave();
+      buildDynamicFilters();
+      toast('Urutan filter diperbarui','success');
+    });
+  });
+}
+
+function initFilterDrag(){
+  // Legacy stub — now handled by renderSidebarFilterOrder
+}
 // ═══════════════════════════════════════
 //  LOW STOCK
 // ═══════════════════════════════════════
@@ -1690,16 +2055,17 @@ function impNotaSave(){
 // ═══════════════════════════════════════
 //  CATEGORIES
 // ═══════════════════════════════════════
-function renderCategories(){
-  const grid=$('cat-grid'),empty=$('cat-empty');
-  if(!S.categories.length){grid.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  grid.innerHTML=S.categories.map(cat=>{
-    const count=S.items.filter(i=>i.kategori===cat).length;
-    return`<div class="ccard"><div class="ccard-i"><h4>${esc(cat)}</h4><p>${count} barang</p></div><div class="ib d" data-cat="${esc(cat)}" onclick="deleteCategory(this.dataset.cat)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div></div>`;
-  }).join('');
+// renderCategories removed - category management is now in Master Data
+function addCategory(name){
+  if(!name){toast('Nama kosong','error');return;}
+  if(S.categories.map(c=>c.toLowerCase()).includes(name.toLowerCase())){toast('Sudah ada','error');return;}
+  S.categories.push(name);
+  // Also add to masterGroups kategori
+  const kg=S.masterGroups&&S.masterGroups.find(x=>x.id==='kategori');
+  if(kg&&!kg.items.map(v=>v.toLowerCase()).includes(name.toLowerCase()))kg.items.push(name);
+  storeSave();
+  toast(`Kategori "${name}" ditambahkan`,'success');
 }
-function addCategory(name){if(!name){toast('Nama kosong','error');return;}if(S.categories.map(c=>c.toLowerCase()).includes(name.toLowerCase())){toast('Sudah ada','error');return;}S.categories.push(name);storeSave();renderCategories();toast(`Kategori "${name}" ditambahkan`,'success');}
 function deleteCategory(cat){const used=S.items.filter(i=>i.kategori===cat).length;confirm2(used>0?`"${cat}" digunakan ${used} barang. Tetap hapus?`:`Hapus "${cat}"?`,()=>{S.categories=S.categories.filter(c=>c!==cat);storeSave();renderCategories();toast('Dihapus','success');});}
 
 // ═══════════════════════════════════════
@@ -1740,11 +2106,13 @@ function renderMasterData(){
   if(!S.masterGroups.length){cont.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   cont.innerHTML=S.masterGroups.map(g=>mdGroupHtml(g)).join('');
+  setTimeout(mdInitDrag,0);
 }
 
 function mdGroupHtml(g){
   const chipsHtml=g.items.length
-    ?g.items.map(val=>`<div class="md-chip">
+    ?g.items.map((val,idx)=>`<div class="md-chip" draggable="true" data-gid="${g.id}" data-idx="${idx}" data-val="${esc(val)}">
+        <span class="md-chip-drag" title="Drag untuk urutkan">⠿</span>
         <span>${esc(val)}</span>
         <button class="md-chip-del" onclick="mdDeleteItem('${g.id}',this.dataset.val)" data-val="${esc(val)}" title="Hapus">✕</button>
       </div>`).join('')
@@ -1758,6 +2126,7 @@ function mdGroupHtml(g){
         <span class="md-count">${g.items.length} item</span>
       </div>
       <div class="md-section-actions">
+        <span style="font-size:10px;color:var(--tm);margin-right:4px">⠿ drag untuk urutkan</span>
         <button class="btn btn-g btn-sm" onclick="mdRenameGroup('${g.id}')" title="Ubah nama & ikon">✏️ Edit</button>
         <button class="btn btn-d btn-sm" onclick="mdDeleteGroup('${g.id}')" title="Hapus daftar ini">🗑️</button>
       </div>
@@ -1847,6 +2216,8 @@ function mdNewGroupSave(){
   const id='grp_'+Date.now().toString(36);
   S.masterGroups.push({id,icon,name,items:[]});
   storeSave();mdNewGroupClose();renderMasterData();
+  // Rebuild filter bar (filter baru otomatis muncul)
+  if(document.querySelector('#page-barang.active'))setTimeout(buildDynamicFilters,0);
   toast(`Daftar "${name}" dibuat!`,'success');
   // Scroll to new group
   setTimeout(()=>{const el=$('md-sec-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
@@ -1860,6 +2231,309 @@ function mdSyncLegacy(){
   if(tg)S.tipeMotors=tg.items;
   if(mg)S.merekList=mg.items;
   if(kg)S.categories=kg.items;
+  // Rebuild dynamic filters jika halaman barang aktif
+  if(document.querySelector('#page-barang.active'))setTimeout(buildDynamicFilters,0);
+}
+
+// ═══════════════════════════════════════
+//  MASTER DATA DRAG & DROP SORT
+// ═══════════════════════════════════════
+let _dragGid=null,_dragIdx=null;
+
+function mdInitDrag(){
+  document.querySelectorAll('.md-chip[draggable]').forEach(chip=>{
+    chip.addEventListener('dragstart',e=>{
+      _dragGid=chip.dataset.gid;
+      _dragIdx=parseInt(chip.dataset.idx);
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',_dragIdx);
+    });
+    chip.addEventListener('dragend',()=>{
+      chip.classList.remove('dragging');
+      document.querySelectorAll('.md-chip').forEach(c=>c.classList.remove('drag-target'));
+      document.querySelectorAll('.md-chip-grid').forEach(g=>g.classList.remove('drag-over'));
+    });
+    chip.addEventListener('dragover',e=>{
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      if(chip.dataset.gid!==_dragGid)return;
+      document.querySelectorAll('.md-chip').forEach(c=>c.classList.remove('drag-target'));
+      if(parseInt(chip.dataset.idx)!==_dragIdx) chip.classList.add('drag-target');
+    });
+    chip.addEventListener('drop',e=>{
+      e.preventDefault();
+      const toIdx=parseInt(chip.dataset.idx);
+      const gid=chip.dataset.gid;
+      if(gid!==_dragGid||toIdx===_dragIdx)return;
+      const g=S.masterGroups.find(x=>x.id===gid);if(!g)return;
+      // Reorder
+      const moved=g.items.splice(_dragIdx,1)[0];
+      g.items.splice(toIdx,0,moved);
+      mdSyncLegacy();storeSave();renderMasterData();
+      // Re-init drag after re-render
+      setTimeout(mdInitDrag,50);
+      toast('Urutan diperbarui','success');
+    });
+  });
+  // Highlight grid on dragover
+  document.querySelectorAll('.md-chip-grid').forEach(grid=>{
+    grid.addEventListener('dragover',e=>{e.preventDefault();grid.classList.add('drag-over');});
+    grid.addEventListener('dragleave',()=>grid.classList.remove('drag-over'));
+    grid.addEventListener('drop',()=>grid.classList.remove('drag-over'));
+  });
+}
+
+// ═══════════════════════════════════════
+//  FILTER KATEGORI PAGE
+// ═══════════════════════════════════════
+// S.filterGroups = [{id, icon, name, items:[...]}]
+// Grup ini TERPISAH dari masterGroups — khusus untuk filter custom di halaman Data Barang
+
+let _fkDragGid=null, _fkDragItemIdx=null, _fkDragItemGid=null;
+
+function renderFilterKat(){
+  const board=$('fk-board'), empty=$('fk-empty');
+  if(!board)return;
+  S.filterGroups=S.filterGroups||[];
+
+  if(!S.filterGroups.length){
+    board.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+
+  board.innerHTML=S.filterGroups.map(g=>fkGroupHtml(g)).join('');
+  fkInitDrag();
+}
+
+function fkGroupHtml(g){
+  const items=g.items||[];
+  const colors=['#4f7cff','#2dd4a0','#f5c542','#ff8c42','#a78bfa','#ff5c5c','#06b6d4','#ec4899'];
+  const color=g.color||colors[Math.abs(g.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%colors.length];
+  const itemsHtml=items.length
+    ?items.map((item,idx)=>`
+      <div class="fk-item" data-gid="${g.id}" data-idx="${idx}" draggable="false">
+        <span class="fk-drag-handle" data-gid="${g.id}" data-idx="${idx}">⠿</span>
+        <span class="fk-item-name">${esc(item)}</span>
+        <button class="fk-item-del" onclick="fkDeleteItem('${g.id}',${idx})" title="Hapus">✕</button>
+      </div>`).join('')
+    :`<div class="fk-empty-items">Belum ada item — tambahkan di bawah</div>`;
+
+  return`<div class="fk-group" id="fkg-${g.id}" data-gid="${g.id}">
+    <div class="fk-color-strip" style="background:${color};height:3px;border-radius:var(--r) var(--r) 0 0"></div>
+    <div class="fk-group-hdr">
+      <span class="fk-group-drag-handle" data-gid="${g.id}" title="Tahan & drag untuk urutkan grup">⠿</span>
+      <span class="fk-group-icon">${g.icon||'🏷️'}</span>
+      <span class="fk-group-name">${esc(g.name)}</span>
+      <span class="fk-group-count">${items.length} item</span>
+      <div class="fk-group-acts">
+        <div class="ib e" onclick="fkEditGroup('${g.id}')" title="Edit nama & ikon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <div class="ib d" onclick="fkDeleteGroup('${g.id}')" title="Hapus grup"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+      </div>
+    </div>
+    <div class="fk-items" id="fki-${g.id}">${itemsHtml}</div>
+    <div class="fk-add-row">
+      <input type="text" class="fi fk-add-inp" id="fki-inp-${g.id}" placeholder="Tambah item..." maxlength="60"
+        onkeydown="if(event.key==='Enter')fkAddItem('${g.id}')">
+      <button class="btn btn-p btn-sm fk-add-btn" onclick="fkAddItem('${g.id}')">+ Tambah</button>
+    </div>
+  </div>`;
+}
+
+function fkInitDrag(){
+  let _mode=null; // 'item' atau 'group'
+
+  // ── DRAG GRUP ──
+  document.querySelectorAll('.fk-group-drag-handle').forEach(handle=>{
+    handle.addEventListener('mousedown',e=>{
+      e.stopPropagation();
+      const group=handle.closest('.fk-group');
+      if(group){group.setAttribute('draggable','true');_mode='group';}
+    });
+  });
+
+  document.querySelectorAll('.fk-group[data-gid]').forEach(group=>{
+    group.addEventListener('dragstart',e=>{
+      if(_mode!=='group'||group.getAttribute('draggable')!=='true'){e.preventDefault();return;}
+      _fkDragGid=group.dataset.gid;
+      setTimeout(()=>group.classList.add('fk-group-dragging'),0);
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain','group:'+_fkDragGid);
+    });
+    group.addEventListener('dragend',()=>{
+      group.classList.remove('fk-group-dragging');
+      group.setAttribute('draggable','false');
+      document.querySelectorAll('.fk-group').forEach(g=>g.classList.remove('fk-group-drag-over'));
+      _fkDragGid=null;_mode=null;
+    });
+    group.addEventListener('dragover',e=>{
+      if(_mode!=='group'||!_fkDragGid||group.dataset.gid===_fkDragGid)return;
+      e.preventDefault();
+      document.querySelectorAll('.fk-group').forEach(g=>g.classList.remove('fk-group-drag-over'));
+      group.classList.add('fk-group-drag-over');
+    });
+    group.addEventListener('dragleave',e=>{
+      if(!e.relatedTarget||!e.relatedTarget.closest(`#fkg-${group.dataset.gid}`))
+        group.classList.remove('fk-group-drag-over');
+    });
+    group.addEventListener('drop',e=>{
+      group.classList.remove('fk-group-drag-over');
+      if(_mode!=='group')return;
+      e.preventDefault();e.stopPropagation();
+      const toGid=group.dataset.gid;
+      if(!_fkDragGid||toGid===_fkDragGid)return;
+      const fi=S.filterGroups.findIndex(x=>x.id===_fkDragGid);
+      const ti=S.filterGroups.findIndex(x=>x.id===toGid);
+      if(fi<0||ti<0)return;
+      const moved=S.filterGroups.splice(fi,1)[0];
+      S.filterGroups.splice(ti,0,moved);
+      // Sinkronkan filterOrder juga
+      if(S.filterOrder){
+        const foi=S.filterOrder.indexOf(_fkDragGid);
+        const toi=S.filterOrder.indexOf(toGid);
+        if(foi>=0&&toi>=0){S.filterOrder.splice(foi,1);S.filterOrder.splice(toi,0,_fkDragGid);}
+      }
+      storeSave();renderFilterKat();buildDynamicFilters();
+      toast('Urutan grup diperbarui','success');
+    });
+  });
+
+  // ── DRAG ITEM DALAM GRUP ──
+  document.querySelectorAll('.fk-drag-handle').forEach(handle=>{
+    handle.addEventListener('mousedown',e=>{
+      e.stopPropagation();
+      const item=handle.closest('.fk-item');
+      if(item){item.setAttribute('draggable','true');_mode='item';}
+    });
+  });
+
+  document.querySelectorAll('.fk-item').forEach(item=>{
+    item.addEventListener('dragstart',e=>{
+      if(_mode!=='item'||item.getAttribute('draggable')!=='true'){e.preventDefault();return;}
+      _fkDragItemGid=item.dataset.gid;
+      _fkDragItemIdx=parseInt(item.dataset.idx);
+      item.classList.add('fk-dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain','item:'+_fkDragItemIdx);
+    });
+    item.addEventListener('dragend',()=>{
+      item.classList.remove('fk-dragging');
+      item.setAttribute('draggable','false');
+      document.querySelectorAll('.fk-item').forEach(i=>i.classList.remove('fk-drag-over'));
+      _fkDragItemGid=null;_fkDragItemIdx=null;_mode=null;
+    });
+    item.addEventListener('dragover',e=>{
+      if(_mode!=='item')return;
+      e.preventDefault();e.stopPropagation();
+      if(!_fkDragItemGid||item.dataset.gid!==_fkDragItemGid)return;
+      if(parseInt(item.dataset.idx)===_fkDragItemIdx)return;
+      document.querySelectorAll('.fk-item').forEach(i=>i.classList.remove('fk-drag-over'));
+      item.classList.add('fk-drag-over');
+    });
+    item.addEventListener('dragleave',()=>item.classList.remove('fk-drag-over'));
+    item.addEventListener('drop',e=>{
+      e.preventDefault();e.stopPropagation();
+      item.classList.remove('fk-drag-over');
+      if(_mode!=='item')return;
+      const toIdx=parseInt(item.dataset.idx);
+      const gid=item.dataset.gid;
+      if(!_fkDragItemGid||gid!==_fkDragItemGid||toIdx===_fkDragItemIdx)return;
+      const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+      const moved=g.items.splice(_fkDragItemIdx,1)[0];
+      g.items.splice(toIdx,0,moved);
+      storeSave();renderFilterKat();buildDynamicFilters();
+      toast('Urutan item diperbarui','success');
+    });
+  });
+
+  // Reset draggable pada mouseup global
+  document.addEventListener('mouseup',()=>{
+    document.querySelectorAll('.fk-group[draggable="true"]').forEach(g=>g.setAttribute('draggable','false'));
+    document.querySelectorAll('.fk-item[draggable="true"]').forEach(i=>i.setAttribute('draggable','false'));
+  });
+}
+
+function fkAddItem(gid){
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const inp=$('fki-inp-'+gid);if(!inp)return;
+  const val=inp.value.trim();
+  if(!val){toast('Item tidak boleh kosong','error');return;}
+  if((g.items||[]).map(v=>v.toLowerCase()).includes(val.toLowerCase())){toast('Sudah ada','error');return;}
+  g.items=g.items||[];
+  g.items.push(val);
+  storeSave();renderFilterKat();buildDynamicFilters();
+  toast(`"${val}" ditambahkan`,'success');
+  setTimeout(()=>{const el=$('fki-inp-'+gid);if(el)el.focus();},50);
+}
+
+function fkDeleteItem(gid,idx){
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const val=g.items[idx];
+  confirm2(`Hapus "${val}" dari grup ${g.name}?`,()=>{
+    g.items.splice(idx,1);
+    storeSave();renderFilterKat();buildDynamicFilters();
+    toast(`"${val}" dihapus`,'success');
+  });
+}
+
+function fkDeleteGroup(gid){
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  confirm2(`Hapus grup filter "${g.name}" beserta ${(g.items||[]).length} item-nya?`,()=>{
+    S.filterGroups=S.filterGroups.filter(x=>x.id!==gid);
+    // Hapus juga dari filterOrder jika ada
+    if(S.filterOrder)S.filterOrder=S.filterOrder.filter(id=>id!==gid);
+    storeSave();renderFilterKat();buildDynamicFilters();
+    toast(`Grup "${g.name}" dihapus`,'success');
+  });
+}
+
+function fkEditGroup(gid){
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const nameEl=document.querySelector(`#fkg-${gid} .fk-group-name`);
+  const iconEl=document.querySelector(`#fkg-${gid} .fk-group-icon`);
+  const actsEl=document.querySelector(`#fkg-${gid} .fk-group-acts`);
+  if(!nameEl||!actsEl)return;
+  const oldName=g.name,oldIcon=g.icon||'🏷️';
+  nameEl.outerHTML=`<input class="fi fk-rename-inp" id="fkr-name-${gid}" value="${esc(oldName)}" maxlength="40" style="flex:1;padding:3px 7px;font-size:13px;font-weight:700">`;
+  iconEl.outerHTML=`<input class="fi fk-rename-inp" id="fkr-icon-${gid}" value="${esc(oldIcon)}" maxlength="4" style="width:42px;font-size:16px;text-align:center;padding:3px 5px">`;
+  actsEl.innerHTML=`<button class="btn btn-p btn-sm" onclick="fkSaveEdit('${gid}')">✓</button><button class="btn btn-g btn-sm" onclick="renderFilterKat()">✕</button>`;
+  const ri=$('fkr-name-'+gid);if(ri){ri.focus();ri.addEventListener('keydown',e=>{if(e.key==='Enter')fkSaveEdit(gid);if(e.key==='Escape')renderFilterKat();});}
+}
+
+function fkSaveEdit(gid){
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const name=($('fkr-name-'+gid)||{}).value?.trim();
+  const icon=($('fkr-icon-'+gid)||{}).value?.trim()||'🏷️';
+  if(!name){toast('Nama tidak boleh kosong','error');return;}
+  g.name=name;g.icon=icon;
+  storeSave();renderFilterKat();buildDynamicFilters();
+  toast('Grup diperbarui','success');
+}
+
+function fkNewGroupOpen(){
+  $('fk-create-form').style.display='block';
+  $('fk-ng-name').focus();
+  $('fk-ng-icon').value='🏷️';
+  $('fk-ng-name').value='';
+}
+function fkNewGroupClose(){$('fk-create-form').style.display='none';}
+
+function fkNewGroupSave(){
+  const name=$('fk-ng-name').value.trim();
+  const icon=$('fk-ng-icon').value.trim()||'🏷️';
+  if(!name){toast('Nama grup wajib diisi','error');$('fk-ng-name').classList.add('err');return;}
+  $('fk-ng-name').classList.remove('err');
+  const id='fkg_'+Date.now().toString(36);
+  S.filterGroups=S.filterGroups||[];
+  S.filterGroups.push({id,icon,name,items:[]});
+  // Tambah ke filterOrder agar langsung muncul di filter bar
+  if(!S.filterOrder)S.filterOrder=getFilterOrder();
+  S.filterOrder.push(id);
+  storeSave();fkNewGroupClose();renderFilterKat();buildDynamicFilters();
+  toast(`Grup "${name}" dibuat!`,'success');
+  setTimeout(()=>{const el=$('fkg-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
 }
 
 // Legacy stubs so old event listeners don't break
@@ -1877,10 +2551,15 @@ function mdDelete(prop,val){
 // ═══════════════════════════════════════
 function openModal(editId){
   S.editingId=editId||null;$('modal-ov').classList.add('open');
-  const ks=$('f-kat-sel');ks.innerHTML='<option value="">Pilih kategori (opsional)</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  const ks=$('f-kat-sel');
+  const _katG=S.masterGroups&&S.masterGroups.find(x=>x.id==='kategori');
+  const _orderedCats=_katG?_katG.items:S.categories;
+  ks.innerHTML='<option value="">Pilih kategori (opsional)</option>'+_orderedCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   let dl=$('merek-datalist');
   if(!dl){dl=document.createElement('datalist');dl.id='merek-datalist';document.body.appendChild(dl);}
-  dl.innerHTML=S.merekList.map(m=>`<option value="${esc(m)}">`).join('');
+  const _merekG=S.masterGroups&&S.masterGroups.find(x=>x.id==='merek');
+  const _orderedMereks=_merekG?_merekG.items:S.merekList;
+  dl.innerHTML=_orderedMereks.map(m=>`<option value="${esc(m)}">`).join('');
   $('f-merek-inp').setAttribute('list','merek-datalist');
   clearErrors();
   if(editId){
@@ -1896,10 +2575,12 @@ function openModal(editId){
     $('f-catatan').value=item.catatan||'';populateLblPicker(item.labels||[]);
     const tipes=Array.isArray(item.tipeMotors)?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);
     tipePicker.setSelected(tipes);
+    buildModalCustomFields(item);
   }else{
     $('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='\u{1F4BE} Simpan';
     clearForm();$('f-tgl').value=new Date().toISOString().slice(0,10);populateLblPicker([]);
     tipePicker.setSelected([]);
+    buildModalCustomFields(null);
   }
   tipePicker.renderOptions();
 }
@@ -1934,7 +2615,9 @@ const tipePicker={
   },
   renderOptions(filter=''){
     const cont=$('f-tipe-options');if(!cont)return;
-    const filtered=filter?S.tipeMotors.filter(t=>t.toLowerCase().includes(filter.toLowerCase())):S.tipeMotors;
+    const _tipeG=S.masterGroups&&S.masterGroups.find(x=>x.id==='tipeMotor');
+    const _tipeList=_tipeG?_tipeG.items:S.tipeMotors;
+    const filtered=filter?_tipeList.filter(t=>t.toLowerCase().includes(filter.toLowerCase())):_tipeList;
     if(!filtered.length){cont.innerHTML=`<div class="tipe-empty-opt">Tidak ada tipe yang cocok</div>`;return;}
     cont.innerHTML=filtered.map(t=>{const sel=this._sel.includes(t);return`<div class="tipe-opt${sel?' sel':''}" data-val="${esc(t)}"><div class="tipe-opt-chk">${sel?'\u2713':''}</div><span>${esc(t)}</span></div>`;}).join('');
     cont.querySelectorAll('.tipe-opt').forEach(el=>el.addEventListener('mousedown',e=>{e.preventDefault();tipePicker.toggle(el.dataset.val);}));
@@ -1988,6 +2671,138 @@ function initTipePicker(){
   });
 }
 
+// ═══════════════════════════════════════
+//  CUSTOM FIELD PICKERS (dari filterGroups)
+// ═══════════════════════════════════════
+// S.cusPickers = { gid: { sel:[], isOpen:false } }
+const cusPickers={};
+
+function buildModalCustomFields(itemData){
+  const cont=$('modal-custom-fields');if(!cont)return;
+  S.filterGroups=S.filterGroups||[];
+  if(!S.filterGroups.length){cont.innerHTML='';return;}
+
+  // Buat state picker untuk setiap grup
+  S.filterGroups.forEach(g=>{
+    if(!cusPickers[g.id])cusPickers[g.id]={sel:[]};
+    else cusPickers[g.id].sel=[];
+    // Load nilai existing jika edit
+    if(itemData&&itemData.customFields&&itemData.customFields[g.id]){
+      cusPickers[g.id].sel=[...itemData.customFields[g.id]];
+    }
+  });
+
+  cont.innerHTML=S.filterGroups.map(g=>`
+    <div class="fg full" style="margin-top:4px">
+      <label class="flbl">${esc(g.icon||'🏷️')} ${esc(g.name)} <span style="color:var(--tm);font-weight:400;font-size:10.5px">(bisa pilih lebih dari satu)</span></label>
+      <div class="cpicker-box" id="cpb-${g.id}">
+        <div class="cpicker-selected" id="cps-${g.id}" onclick="cusPickerToggle('${g.id}')">
+          <span class="cpicker-placeholder" id="cpp-${g.id}">Klik untuk pilih ${esc(g.name)}...</span>
+        </div>
+        <div class="cpicker-dropdown" id="cpd-${g.id}">
+          <div class="cpicker-opts" id="cpo-${g.id}"></div>
+          <div class="cpicker-new-row">
+            <input type="text" class="fi" id="cpn-${g.id}" placeholder="Tambah opsi baru..." style="flex:1;font-size:12px;padding:5px 8px"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();cusPickerAddNew('${g.id}');}">
+            <button class="btn btn-s btn-sm" onclick="cusPickerAddNew('${g.id}')">+ Tambah</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Render chips dan opsi untuk semua picker
+  S.filterGroups.forEach(g=>{
+    cusPickerRenderChips(g.id);
+    cusPickerRenderOpts(g.id);
+  });
+
+  // Close on outside click
+  document.removeEventListener('click',_closeCusPickers);
+  document.addEventListener('click',_closeCusPickers);
+}
+
+function _closeCusPickers(e){
+  if(!e.target.closest('.cpicker-box')){
+    document.querySelectorAll('.cpicker-dropdown.open').forEach(d=>d.classList.remove('open'));
+  }
+}
+
+function cusPickerToggle(gid){
+  const dd=$('cpd-'+gid);if(!dd)return;
+  const isOpen=dd.classList.contains('open');
+  // Tutup semua
+  document.querySelectorAll('.cpicker-dropdown.open').forEach(d=>d.classList.remove('open'));
+  if(!isOpen){dd.classList.add('open');cusPickerRenderOpts(gid);}
+}
+
+function cusPickerRenderChips(gid){
+  const box=$('cps-'+gid),ph=$('cpp-'+gid);if(!box)return;
+  box.querySelectorAll('.cpicker-chip').forEach(c=>c.remove());
+  const sel=cusPickers[gid]?.sel||[];
+  if(sel.length){
+    ph.style.display='none';
+    sel.forEach(val=>{
+      const chip=document.createElement('div');chip.className='cpicker-chip';
+      chip.innerHTML=`<span>${esc(val)}</span><button class="cpicker-chip-del" onclick="event.stopPropagation();cusPickerRemove('${gid}','${val.replace(/'/g,"\\'")}')">✕</button>`;
+      box.appendChild(chip);
+    });
+  }else{ph.style.display='';}
+}
+
+function cusPickerRenderOpts(gid){
+  const cont=$('cpo-'+gid);if(!cont)return;
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const sel=cusPickers[gid]?.sel||[];
+  if(!g.items.length){cont.innerHTML=`<div class="cpicker-empty">Belum ada opsi — tambahkan di bawah</div>`;return;}
+  cont.innerHTML=g.items.map(v=>{
+    const isSel=sel.includes(v);
+    return`<div class="cpicker-opt${isSel?' sel':''}" onmousedown="event.preventDefault();cusPickerToggleVal('${gid}','${v.replace(/'/g,"\\'")}')">
+      <div class="cpicker-opt-chk">${isSel?'✓':''}</div>
+      <span>${esc(v)}</span>
+    </div>`;
+  }).join('');
+}
+
+function cusPickerToggleVal(gid,val){
+  if(!cusPickers[gid])cusPickers[gid]={sel:[]};
+  const idx=cusPickers[gid].sel.indexOf(val);
+  if(idx>=0)cusPickers[gid].sel.splice(idx,1);
+  else cusPickers[gid].sel.push(val);
+  cusPickerRenderChips(gid);
+  cusPickerRenderOpts(gid);
+}
+
+function cusPickerRemove(gid,val){
+  if(!cusPickers[gid])return;
+  cusPickers[gid].sel=cusPickers[gid].sel.filter(v=>v!==val);
+  cusPickerRenderChips(gid);
+  cusPickerRenderOpts(gid);
+}
+
+function cusPickerAddNew(gid){
+  const inp=$('cpn-'+gid);if(!inp)return;
+  const val=inp.value.trim();if(!val)return;
+  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  if(!g.items.map(v=>v.toLowerCase()).includes(val.toLowerCase())){
+    g.items.push(val);storeSave();
+    // Rebuild filter
+    buildDynamicFilters();
+  }
+  cusPickerToggleVal(gid,val);
+  inp.value='';
+  toast(`"${val}" ditambahkan & dipilih`,'success');
+}
+
+function cusPickerGetAll(){
+  // Return {gid: [val,...], ...} hanya yang ada pilihan
+  const result={};
+  S.filterGroups.forEach(g=>{
+    const sel=cusPickers[g.id]?.sel||[];
+    if(sel.length)result[g.id]=sel;
+  });
+  return result;
+}
+
 function saveBarang(){
   clearErrors();
   const nama=$('f-nama').value.trim();
@@ -2003,6 +2818,7 @@ function saveBarang(){
   const lokasi=$('f-lokasi').value.trim();
   const hG=$('f-harga-grosir').value,mG=$('f-min-grosir').value,mS=$('f-min-stok').value;
   const hM=$('f-harga-modal').value;
+  const customFields=cusPickerGetAll();
   const data={
     nama,kategori:kat||'Lainnya',merek:merek||'',
     tipeMotors,tipeMotor:tipeMotors[0]||'',
@@ -2016,7 +2832,9 @@ function saveBarang(){
     lokasi:lokasi||'Tidak ditentukan',
     tanggal:$('f-tgl').value||now.slice(0,10),
     catatan:$('f-catatan').value.trim(),
-    labels:getPickedLabels(),updatedAt:now
+    labels:getPickedLabels(),
+    customFields,
+    updatedAt:now
   };
   if(S.editingId){const idx=S.items.findIndex(i=>i.id===S.editingId);if(idx>-1)S.items[idx]={...S.items[idx],...data};toast('Diperbarui!','success');}
   else{S.items.unshift({id:uid(),...data,createdAt:now});toast('Ditambahkan!','success');}
@@ -2398,22 +3216,21 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('conf-cancel').addEventListener('click',closeConfirm);
   $('conf-ok').addEventListener('click',()=>{if(S.confirmCb)S.confirmCb();closeConfirm();});
   $('conf-ov').addEventListener('click',e=>{if(e.target===$('conf-ov'))closeConfirm();});
-  // Filters
+  // Filters (dynamic filters bind via onchange="doFilter()" in HTML)
   $('srch').addEventListener('input',doFilter);
-  $('f-kat-filter').addEventListener('change',doFilter);
-  $('f-merek-filter').addEventListener('change',doFilter);
-  $('f-tipe-filter').addEventListener('change',doFilter);
   $('f-status-filter').addEventListener('change',doFilter);
   $('f-lbl-filter').addEventListener('change',doFilter);
   $('f-harga-range').addEventListener('change',doFilter);
   $('btn-reset').addEventListener('click',resetFilter);
   // Sort
   document.querySelector('#page-barang thead').addEventListener('click',e=>{const th=e.target.closest('th[data-sort]');if(!th)return;const key=th.dataset.sort;if(S.sortKey===key){S.sortDir=S.sortDir==='asc'?'desc':'asc';}else{S.sortKey=key;S.sortDir='asc';}doFilter();});
-  // Categories
-  $('btn-add-cat').addEventListener('click',()=>{addCategory($('new-cat').value.trim());$('new-cat').value='';});
-  $('new-cat').addEventListener('keydown',e=>{if(e.key==='Enter'){addCategory($('new-cat').value.trim());$('new-cat').value='';}});
   // Master Data
   $('md-new-group-btn').addEventListener('click',mdNewGroupOpen);
+  // Filter Kategori
+  $('fk-new-group-btn').addEventListener('click',fkNewGroupOpen);
+  $('fk-ng-save-btn').addEventListener('click',fkNewGroupSave);
+  $('fk-ng-cancel-btn').addEventListener('click',fkNewGroupClose);
+  $('fk-ng-name').addEventListener('keydown',e=>{if(e.key==='Enter')fkNewGroupSave();if(e.key==='Escape')fkNewGroupClose();});
   $('md-ng-save-btn').addEventListener('click',mdNewGroupSave);
   $('md-ng-cancel-btn').addEventListener('click',mdNewGroupClose);
   $('md-ng-name').addEventListener('keydown',e=>{if(e.key==='Enter')mdNewGroupSave();if(e.key==='Escape')mdNewGroupClose();});
