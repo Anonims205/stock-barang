@@ -258,6 +258,17 @@ tbody tr:last-child td{border-bottom:none}
   margin-bottom:9px;display:flex;align-items:center;gap:5px}
 .mst svg{width:12px;height:12px}
 
+/* HARGA MODAL BOX */
+.mbox{background:var(--bg-3);border:1px solid rgba(6,182,212,.18);border-radius:var(--rs);padding:13px}
+.mbt{font-size:10px;font-weight:700;color:var(--cy);text-transform:uppercase;letter-spacing:.07em;
+  margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.mbt svg{width:12px;height:12px;color:var(--cy)}
+.margin-preview{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.margin-item{flex:1;min-width:130px;background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 11px}
+.margin-lbl{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+.margin-val{font-family:var(--mono);font-size:13px;font-weight:700;display:block}
+.margin-val.pos{color:var(--gr)}.margin-val.neg{color:var(--re)}.margin-val.zero{color:var(--tm)}
+
 /* CAT ADD */
 .car{display:flex;gap:6px}
 .car .fi{flex:1}
@@ -593,8 +604,10 @@ tbody tr:last-child td{border-bottom:none}
             <th data-sort="tipeMotor">Tipe Motor<span class="sort-ic"></span></th>
             <th data-sort="stok">Stok<span class="sort-ic"></span></th>
             <th>Min Stok</th>
+            <th data-sort="hargaModal">Harga Modal<span class="sort-ic"></span></th>
             <th data-sort="harga">Harga Ecer<span class="sort-ic"></span></th>
             <th>Harga Grosir</th>
+            <th data-sort="margin">Margin<span class="sort-ic"></span></th>
             <th data-sort="nilai">Nilai Stok<span class="sort-ic"></span></th>
             <th>Lokasi</th>
             <th>Label</th>
@@ -788,6 +801,15 @@ tbody tr:last-child td{border-bottom:none}
             </div>
             <div class="fg" style="margin-top:9px"><label class="flbl" style="color:var(--or)">Min. Qty untuk Harga Grosir</label><input type="number" class="fi" id="f-min-grosir" placeholder="Contoh: 5" min="1"></div>
           </div>
+          <!-- Harga Modal Box -->
+          <div class="mbox" style="margin-top:8px">
+            <div class="mbt"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Harga Modal / HPP</div>
+            <div class="fg"><label class="flbl" style="color:var(--cy)">Harga Modal per unit</label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga-modal" placeholder="0" min="0"></div></div>
+            <div class="margin-preview" id="margin-preview" style="display:none">
+              <div class="margin-item"><span class="margin-lbl">Margin Ecer</span><span class="margin-val" id="margin-ecer">—</span></div>
+              <div class="margin-item"><span class="margin-lbl">Margin Grosir</span><span class="margin-val" id="margin-grosir">—</span></div>
+            </div>
+          </div>
         </div>
         <div class="fg full">
           <label class="flbl">Pengaturan Stok Minimal</label>
@@ -894,15 +916,13 @@ tbody tr:last-child td{border-bottom:none}
         <div class="tc" style="padding:14px">
           <div style="font-size:11.5px;font-weight:600;color:var(--ts);margin-bottom:8px">Kolom yang dikenali (tidak harus semua ada):</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px">
-            ${[
-              ['nama_barang / nama','Nama barang (wajib)','var(--re)'],
-              ['qty / jumlah','Jumlah diterima','var(--gr)'],
-              ['harga_beli','Harga beli per unit','var(--or)'],
-              ['no_nota / nomor','Nomor nota','var(--ac)'],
-              ['tanggal','Tanggal masuk','var(--ts)'],
-              ['supplier','Nama supplier','var(--ts)'],
-              ['catatan','Catatan tambahan','var(--ts)'],
-            ].map(([k,v,c])=>`<div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:${c};font-weight:600">${k}</span><br><span style="color:var(--tm)">${v}</span></div>`).join('')}
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--re);font-weight:600">nama_barang / nama</span><br><span style="color:var(--tm)">Nama barang (wajib)</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--gr);font-weight:600">qty / jumlah</span><br><span style="color:var(--tm)">Jumlah diterima</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--or);font-weight:600">harga_beli</span><br><span style="color:var(--tm)">Harga beli per unit</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--ac);font-weight:600">no_nota / nomor</span><br><span style="color:var(--tm)">Nomor nota</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--ts);font-weight:600">tanggal</span><br><span style="color:var(--tm)">Tanggal masuk</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--ts);font-weight:600">supplier</span><br><span style="color:var(--tm)">Nama supplier</span></div>
+            <div style="font-size:11px;padding:5px 8px;background:var(--bg-3);border-radius:5px;border:1px solid var(--bdr)"><span style="font-family:var(--mono);color:var(--ts);font-weight:600">catatan</span><br><span style="color:var(--tm)">Catatan tambahan</span></div>
           </div>
         </div>
       </div>
@@ -1084,7 +1104,11 @@ function sortItems(items){
   if(!S.sortKey)return items;
   return[...items].sort((a,b)=>{let va,vb;
     if(S.sortKey==='nilai'){va=(parseInt(a.stok)||0)*(parseInt(a.harga)||0);vb=(parseInt(b.stok)||0)*(parseInt(b.harga)||0);}
-    else if(S.sortKey==='stok'||S.sortKey==='harga'){va=parseInt(a[S.sortKey])||0;vb=parseInt(b[S.sortKey])||0;}
+    else if(S.sortKey==='margin'){
+      va=a.hargaModal&&a.harga?(parseInt(a.harga)-parseInt(a.hargaModal))/parseInt(a.hargaModal)*100:-Infinity;
+      vb=b.hargaModal&&b.harga?(parseInt(b.harga)-parseInt(b.hargaModal))/parseInt(b.hargaModal)*100:-Infinity;
+    }
+    else if(S.sortKey==='stok'||S.sortKey==='harga'||S.sortKey==='hargaModal'){va=parseInt(a[S.sortKey])||0;vb=parseInt(b[S.sortKey])||0;}
     else{va=(a[S.sortKey]||'').toLowerCase();vb=(b[S.sortKey]||'').toLowerCase();}
     if(va<vb)return S.sortDir==='asc'?-1:1;if(va>vb)return S.sortDir==='asc'?1:-1;return 0;
   });
@@ -1105,6 +1129,13 @@ function renderBarang(filtered){
     const bc=st==='aman'?'var(--gr)':st==='menipis'?'var(--ye)':'var(--re)';
     const iLbls=(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)).filter(Boolean);
     const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1}</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
+    const hModal=parseInt(item.hargaModal)||0;
+    const hEcer=parseInt(item.harga)||0;
+    const marginRp=hModal&&hEcer?hEcer-hModal:null;
+    const marginPct=hModal&&hEcer?((hEcer-hModal)/hModal*100).toFixed(1):null;
+    const marginHtml=marginRp!==null
+      ?`<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginRp>=0?'+':''}${rp(marginRp)}</div><div style="font-size:9.5px;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginPct}%</div>`
+      :'<span style="color:var(--tm);font-size:10.5px">—</span>';
     return`<tr>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
@@ -1113,8 +1144,10 @@ function renderBarang(filtered){
       <td>${(()=>{const tipes=Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);return tipes.length?`<div style="display:flex;flex-wrap:wrap;gap:3px">${tipes.map(t=>`<span style="background:var(--cy-d);color:var(--cy);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:600;white-space:nowrap">${esc(t)}</span>`).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';})()}</td>
       <td><div class="skw"><span class="cm">${item.stok}</span><div class="skb"><div class="skf" style="width:${pct}%;background:${bc}"></div></div></div></td>
       <td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td>
+      <td class="cm" style="color:var(--cy)">${hModal?rp(hModal):'<span style="color:var(--tm);font-size:10.5px">—</span>'}</td>
       <td class="cm">${rp(item.harga)}</td>
       <td>${gHtml}</td>
+      <td>${marginHtml}</td>
       <td class="cm" style="color:var(--ts)">${rp((parseInt(item.stok)||0)*(parseInt(item.harga)||0))}</td>
       <td style="font-size:11.5px;color:var(--ts)">${esc(item.lokasi)}</td>
       <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td>
@@ -1798,6 +1831,7 @@ function openModal(editId){
     $('f-harga-grosir').value=item.hargaGrosir||'';$('f-min-grosir').value=item.minGrosir||'';
     $('f-min-stok').value=item.minStok||'';$('f-supplier').value=item.supplier||'';
     $('f-lokasi').value=item.lokasi||'';$('f-tgl').value=item.tanggal||'';
+    $('f-harga-modal').value=item.hargaModal||'';
     $('f-catatan').value=item.catatan||'';populateLblPicker(item.labels||[]);
     const tipes=Array.isArray(item.tipeMotors)?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);
     tipePicker.setSelected(tipes);
@@ -1810,9 +1844,10 @@ function openModal(editId){
 }
 function closeModal(){$('modal-ov').classList.remove('open');S.editingId=null;tipePicker.close();}
 function clearForm(){
-  ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new','f-harga-modal'].forEach(id=>{const el=$(id);if(el)el.value='';});
   $('f-kat-sel').value='';
   tipePicker.setSelected([]);
+  $('margin-preview').style.display='none';
 }
 function clearErrors(){['e-nama'].forEach(id=>{const el=$(id);if(el)el.textContent='';});['f-nama'].forEach(id=>{$(id)?.classList.remove('err');});}
 function addCategoryModal(){const val=$('f-kat-new').value.trim();if(!val)return;if(!S.categories.map(c=>c.toLowerCase()).includes(val.toLowerCase())){S.categories.push(val);storeSave();}const sel=$('f-kat-sel');if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;sel.value=val;$('f-kat-new').value='';toast(`Kategori "${val}" ditambahkan`,'success');}
@@ -1867,6 +1902,29 @@ function initTipePicker(){
     toast(`"${val}" ditambahkan & dipilih`,'success');
   });
   $('f-tipe-new2').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('f-tipe-add2').click();}});
+  // Margin calculator
+  function updateMargin(){
+    const modal=parseInt($('f-harga-modal').value)||0;
+    const ecer=parseInt($('f-harga').value)||0;
+    const grosir=parseInt($('f-harga-grosir').value)||0;
+    const preview=$('margin-preview');
+    if(!modal){preview.style.display='none';return;}
+    preview.style.display='flex';
+    function fmtMargin(jual,beli){
+      if(!jual||!beli)return{txt:'—',cls:'zero'};
+      const margin=jual-beli;
+      const pct=((margin/beli)*100).toFixed(1);
+      const cls=margin>0?'pos':margin<0?'neg':'zero';
+      return{txt:`${rp(margin)} (${pct}%)`,cls};
+    }
+    const me=fmtMargin(ecer,modal);
+    const mg=fmtMargin(grosir,modal);
+    $('margin-ecer').textContent=me.txt;$('margin-ecer').className='margin-val '+me.cls;
+    $('margin-grosir').textContent=grosir?mg.txt:'—';$('margin-grosir').className='margin-val '+(grosir?mg.cls:'zero');
+  }
+  ['f-harga-modal','f-harga','f-harga-grosir'].forEach(id=>{
+    const el=$(id);if(el)el.addEventListener('input',updateMargin);
+  });
 }
 
 function saveBarang(){
@@ -1883,11 +1941,13 @@ function saveBarang(){
   const hargaRaw=$('f-harga').value;
   const lokasi=$('f-lokasi').value.trim();
   const hG=$('f-harga-grosir').value,mG=$('f-min-grosir').value,mS=$('f-min-stok').value;
+  const hM=$('f-harga-modal').value;
   const data={
     nama,kategori:kat||'Lainnya',merek:merek||'',
     tipeMotors,tipeMotor:tipeMotors[0]||'',
     stok:stokRaw!==''&&!isNaN(stokRaw)?Math.max(0,parseInt(stokRaw)):0,
     harga:hargaRaw!==''&&!isNaN(hargaRaw)?Math.max(0,parseInt(hargaRaw)):0,
+    hargaModal:hM&&parseInt(hM)>0?parseInt(hM):null,
     hargaGrosir:hG&&parseInt(hG)>0?parseInt(hG):null,
     minGrosir:mG&&parseInt(mG)>0?parseInt(mG):null,
     minStok:mS&&parseInt(mS)>=0?parseInt(mS):5,
@@ -1918,8 +1978,15 @@ function toast(msg,type='info'){
 //  EXPORT XLSX / CSV
 // ═══════════════════════════════════════
 function buildXLSXData(items){
-  const hdr=['No','Nama','Kategori','Merek','Stok','Stok Min','Harga Ecer','Harga Grosir','Min Qty Grosir','Nilai Stok','Supplier','Lokasi','Tanggal','Status','Label','Catatan'];
-  return[hdr,...items.map((item,i)=>[i+1,item.nama,item.kategori,item.merek,parseInt(item.stok)||0,parseInt(item.minStok)||5,parseInt(item.harga)||0,item.hargaGrosir?parseInt(item.hargaGrosir):'',item.minGrosir?parseInt(item.minGrosir):'',(parseInt(item.stok)||0)*(parseInt(item.harga)||0),item.supplier||'',item.lokasi||'',item.tanggal||'',{aman:'Aman',menipis:'Menipis',habis:'Habis'}[stockSt(item)],(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)?.name||'').filter(Boolean).join(', '),item.catatan||''])];
+  const hdr=['No','Nama','Kategori','Merek','Tipe Motor','Stok','Stok Min','Harga Modal','Harga Ecer','Margin (Rp)','Margin (%)','Harga Grosir','Min Qty Grosir','Nilai Stok','Supplier','Lokasi','Tanggal','Status','Label','Catatan'];
+  return[hdr,...items.map((item,i)=>{
+    const hModal=parseInt(item.hargaModal)||0;
+    const hEcer=parseInt(item.harga)||0;
+    const marginRp=hModal&&hEcer?hEcer-hModal:'';
+    const marginPct=hModal&&hEcer?((hEcer-hModal)/hModal*100).toFixed(1)+'%':'';
+    const tipes=(Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[])).join(', ');
+    return[i+1,item.nama,item.kategori,item.merek,tipes,parseInt(item.stok)||0,parseInt(item.minStok)||5,hModal||'',hEcer,marginRp,marginPct,item.hargaGrosir?parseInt(item.hargaGrosir):'',item.minGrosir?parseInt(item.minGrosir):'',(parseInt(item.stok)||0)*hEcer,item.supplier||'',item.lokasi||'',item.tanggal||'',{aman:'Aman',menipis:'Menipis',habis:'Habis'}[stockSt(item)],(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)?.name||'').filter(Boolean).join(', '),item.catatan||''];
+  })];
 }
 function exportXLSX(items,filename){
   if(!items?.length){toast('Tidak ada data','error');return;}
@@ -2107,8 +2174,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('modal-save').addEventListener('click',saveBarang);
   $('f-kat-add').addEventListener('click',addCategoryModal);
   $('f-kat-new').addEventListener('keydown',e=>{if(e.key==='Enter')addCategoryModal();});
-  $('f-tipe-add').addEventListener('click',addTipeModal);
-  $('f-tipe-new').addEventListener('keydown',e=>{if(e.key==='Enter')addTipeModal();});
   $('f-lbl-picker').addEventListener('click',e=>{const lo=e.target.closest('.lo');if(lo)lo.classList.toggle('sel');});
   // Modal barang masuk
   $('btn-new-nota').addEventListener('click',()=>openNotaModal());
