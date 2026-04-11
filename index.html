@@ -337,7 +337,32 @@ tbody tr:last-child td{border-bottom:none}
 .toast.i svg{color:var(--ac)}
 .toast svg{width:14px;height:14px;flex-shrink:0}
 
-/* IMPORT NOTA */
+/* TIPE MOTOR MULTI-PICKER */
+.tipe-picker-box{position:relative;width:100%}
+.tipe-selected{min-height:38px;background:var(--bg-1);border:1px solid var(--bdr);border-radius:var(--rs);
+  padding:5px 8px;cursor:pointer;display:flex;flex-wrap:wrap;gap:5px;align-items:center;transition:border-color .15s}
+.tipe-selected:hover,.tipe-selected:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-d)}
+.tipe-placeholder{font-size:12.5px;color:var(--tm);pointer-events:none;padding:2px 2px}
+.tipe-chip{display:inline-flex;align-items:center;gap:4px;background:var(--cy-d);color:var(--cy);
+  border:1px solid rgba(6,182,212,.3);border-radius:5px;padding:2px 6px 2px 8px;font-size:11.5px;font-weight:600;
+  animation:fi .15s ease;white-space:nowrap}
+.tipe-chip-del{background:none;border:none;color:var(--cy);cursor:pointer;font-size:13px;line-height:1;
+  padding:0 1px;opacity:.7;transition:opacity .15s}
+.tipe-chip-del:hover{opacity:1}
+.tipe-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-1);
+  border:1px solid var(--bdr-b);border-radius:var(--r);box-shadow:0 8px 32px rgba(0,0,0,.5);
+  z-index:50;overflow:hidden;animation:fi .15s ease}
+.tipe-search-row{padding:8px 8px 4px}
+.tipe-options{max-height:200px;overflow-y:auto;padding:4px 6px}
+.tipe-opt{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;
+  font-size:12.5px;color:var(--ts);transition:background .1s;user-select:none}
+.tipe-opt:hover{background:var(--bg-3);color:var(--tp)}
+.tipe-opt.sel{background:var(--cy-d);color:var(--cy)}
+.tipe-opt-chk{width:14px;height:14px;border:1.5px solid var(--bdr-b);border-radius:3px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;transition:all .15s}
+.tipe-opt.sel .tipe-opt-chk{background:var(--cy);border-color:var(--cy);color:#fff}
+.tipe-new-row{display:flex;gap:6px;padding:6px 8px 8px;border-top:1px solid var(--bdr);margin-top:4px}
+.tipe-empty-opt{padding:10px 8px;font-size:12px;color:var(--tm);text-align:center;font-style:italic}
 .imp-nota-row-ok td{background:transparent}
 .imp-nota-row-warn td{background:rgba(245,197,66,.05)}
 .imp-nota-row-err td{background:rgba(255,92,92,.07)}
@@ -734,7 +759,24 @@ tbody tr:last-child td{border-bottom:none}
         <div class="fg"><label class="flbl">Kategori</label><select class="fs2" id="f-kat-sel"></select></div>
         <div class="fg"><label class="flbl">Kategori Baru (opsional)</label><div class="car"><input type="text" class="fi" id="f-kat-new" placeholder="Ketik lalu klik +"><button class="btn btn-s btn-sm" id="f-kat-add">+</button></div></div>
         <div class="fg"><label class="flbl">Merek</label><input type="text" class="fi" id="f-merek-inp" placeholder="Merek / Brand"></div>
-        <div class="fg"><label class="flbl">Tipe Motor</label><div class="car"><select class="fs2" id="f-tipe-sel"><option value="">-- Pilih Tipe Motor --</option></select><button class="btn btn-s btn-sm" id="f-tipe-add" title="Tambah tipe baru">+</button></div><input type="text" class="fi" id="f-tipe-new" placeholder="Ketik tipe motor baru..." style="margin-top:5px;display:none"></div>
+        <div class="fg full">
+          <label class="flbl">Tipe Motor Kompatibel <span style="color:var(--tm);font-weight:400;font-size:10.5px">(bisa pilih lebih dari satu)</span></label>
+          <div class="tipe-picker-box" id="f-tipe-picker-box">
+            <div class="tipe-selected" id="f-tipe-selected">
+              <span class="tipe-placeholder" id="f-tipe-placeholder">Klik untuk pilih tipe motor...</span>
+            </div>
+            <div class="tipe-dropdown" id="f-tipe-dropdown" style="display:none">
+              <div class="tipe-search-row">
+                <input type="text" class="fi" id="f-tipe-search" placeholder="Cari tipe motor..." autocomplete="off" style="font-size:12px;padding:6px 9px">
+              </div>
+              <div class="tipe-options" id="f-tipe-options"></div>
+              <div class="tipe-new-row">
+                <input type="text" class="fi" id="f-tipe-new2" placeholder="Tambah tipe baru..." style="font-size:12px;padding:6px 9px;flex:1">
+                <button class="btn btn-s btn-sm" id="f-tipe-add2">+ Tambah</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="fg"><label class="flbl">Jumlah Stok</label><input type="number" class="fi" id="f-stok" placeholder="0" min="0"></div>
         <div class="fg full">
           <label class="flbl">Pengaturan Harga</label>
@@ -1031,7 +1073,7 @@ function renderRecent(){
     const st=stockSt(item);
     const iLbls=(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)).filter(Boolean);
     const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1} pcs</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
-    return`<tr><td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek||'')}${item.tipeMotor?' · '+esc(item.tipeMotor):''}</div></td><td><span class="ct">${esc(item.kategori)}</span></td><td class="cm">${item.stok}</td><td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td><td class="cm">${rp(item.harga)}</td><td>${gHtml}</td><td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td><td>${badgeHtml(st)}</td></tr>`;
+    return`<tr><td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek||'')}${(Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[])).map(t=>' · '+esc(t)).join('')}</div></td><td><span class="ct">${esc(item.kategori)}</span></td><td class="cm">${item.stok}</td><td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td><td class="cm">${rp(item.harga)}</td><td>${gHtml}</td><td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td><td>${badgeHtml(st)}</td></tr>`;
   }).join('');
 }
 
@@ -1068,7 +1110,7 @@ function renderBarang(filtered){
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
       <td><span class="ct">${esc(item.kategori||'—')}</span></td>
       <td style="color:var(--ts);font-size:12px">${esc(item.merek||'—')}</td>
-      <td style="color:var(--cy);font-size:11.5px;font-weight:500">${item.tipeMotor?`<span style="background:var(--cy-d);padding:2px 7px;border-radius:4px;border:1px solid rgba(6,182,212,.2)">${esc(item.tipeMotor)}</span>`:'—'}</td>
+      <td>${(()=>{const tipes=Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);return tipes.length?`<div style="display:flex;flex-wrap:wrap;gap:3px">${tipes.map(t=>`<span style="background:var(--cy-d);color:var(--cy);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:600;white-space:nowrap">${esc(t)}</span>`).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';})()}</td>
       <td><div class="skw"><span class="cm">${item.stok}</span><div class="skb"><div class="skf" style="width:${pct}%;background:${bc}"></div></div></div></td>
       <td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td>
       <td class="cm">${rp(item.harga)}</td>
@@ -1090,7 +1132,7 @@ function updateSortIcons(){document.querySelectorAll('#page-barang thead th[data
 function populateFilters(){
   const cats=[...new Set(S.items.map(i=>i.kategori).filter(Boolean))].sort();
   const merks=[...new Set(S.items.map(i=>i.merek).filter(Boolean))].sort();
-  const tipes=[...new Set(S.items.map(i=>i.tipeMotor).filter(Boolean))].sort();
+  const tipes=[...new Set(S.items.flatMap(i=>Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[])))].sort();
   const fk=$('f-kat-filter'),fm=$('f-merek-filter'),ft=$('f-tipe-filter'),fl=$('f-lbl-filter');
   const[sk,sm,st2,sl]=[fk.value,fm.value,ft?ft.value:'',fl?fl.value:''];
   fk.innerHTML='<option value="">Semua Kategori</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
@@ -1108,10 +1150,10 @@ function doFilter(){
   let hMin=0,hMax=Infinity;
   if(hr){const p=hr.split('-');hMin=parseInt(p[0]);hMax=parseInt(p[1]);}
   renderBarang(S.items.filter(i=>{
-    if(q&&!i.nama.toLowerCase().includes(q)&&!(i.merek||'').toLowerCase().includes(q)&&!(i.lokasi||'').toLowerCase().includes(q)&&!(i.supplier||'').toLowerCase().includes(q)&&!(i.catatan||'').toLowerCase().includes(q)&&!(i.tipeMotor||'').toLowerCase().includes(q))return false;
+    if(q&&!i.nama.toLowerCase().includes(q)&&!(i.merek||'').toLowerCase().includes(q)&&!(i.lokasi||'').toLowerCase().includes(q)&&!(i.supplier||'').toLowerCase().includes(q)&&!(i.catatan||'').toLowerCase().includes(q)&&!(Array.isArray(i.tipeMotors)?i.tipeMotors.join(' '):i.tipeMotor||'').toLowerCase().includes(q))return false;
     if(kat&&i.kategori!==kat)return false;
     if(merek&&i.merek!==merek)return false;
-    if(tipe&&i.tipeMotor!==tipe)return false;
+    if(tipe){const tipes=Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[]);if(!tipes.includes(tipe))return false;}
     if(st&&stockSt(i)!==st)return false;
     if(lbl&&!(i.labels||[]).includes(lbl))return false;
     const h=parseInt(i.harga)||0;if(hr&&(h<hMin||h>hMax))return false;
@@ -1742,9 +1784,6 @@ function mdDelete(prop,val){
 function openModal(editId){
   S.editingId=editId||null;$('modal-ov').classList.add('open');
   const ks=$('f-kat-sel');ks.innerHTML='<option value="">Pilih kategori (opsional)</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-  // Populate tipe motor dropdown
-  const ts=$('f-tipe-sel');ts.innerHTML='<option value="">-- Pilih Tipe Motor --</option>'+S.tipeMotors.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
-  // Populate merek datalist
   let dl=$('merek-datalist');
   if(!dl){dl=document.createElement('datalist');dl.id='merek-datalist';document.body.appendChild(dl);}
   dl.innerHTML=S.merekList.map(m=>`<option value="${esc(m)}">`).join('');
@@ -1752,36 +1791,82 @@ function openModal(editId){
   clearErrors();
   if(editId){
     const item=S.items.find(i=>i.id===editId);if(!item)return;
-    $('modal-title').textContent='Edit Barang';$('modal-save').textContent='💾 Update';
+    $('modal-title').textContent='Edit Barang';$('modal-save').textContent='\u{1F4BE} Update';
     $('f-nama').value=item.nama;$('f-kat-sel').value=item.kategori||'';
-    $('f-merek-inp').value=item.merek||'';$('f-tipe-sel').value=item.tipeMotor||'';
+    $('f-merek-inp').value=item.merek||'';
     $('f-stok').value=item.stok||'';$('f-harga').value=item.harga||'';
     $('f-harga-grosir').value=item.hargaGrosir||'';$('f-min-grosir').value=item.minGrosir||'';
     $('f-min-stok').value=item.minStok||'';$('f-supplier').value=item.supplier||'';
     $('f-lokasi').value=item.lokasi||'';$('f-tgl').value=item.tanggal||'';
     $('f-catatan').value=item.catatan||'';populateLblPicker(item.labels||[]);
+    const tipes=Array.isArray(item.tipeMotors)?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);
+    tipePicker.setSelected(tipes);
   }else{
-    $('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='💾 Simpan';
+    $('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='\u{1F4BE} Simpan';
     clearForm();$('f-tgl').value=new Date().toISOString().slice(0,10);populateLblPicker([]);
+    tipePicker.setSelected([]);
   }
+  tipePicker.renderOptions();
 }
-function closeModal(){$('modal-ov').classList.remove('open');S.editingId=null;}
+function closeModal(){$('modal-ov').classList.remove('open');S.editingId=null;tipePicker.close();}
 function clearForm(){
   ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});
-  $('f-kat-sel').value='';$('f-tipe-sel').value='';
-  $('f-tipe-new').style.display='none';$('f-tipe-new').value='';
+  $('f-kat-sel').value='';
+  tipePicker.setSelected([]);
 }
 function clearErrors(){['e-nama'].forEach(id=>{const el=$(id);if(el)el.textContent='';});['f-nama'].forEach(id=>{$(id)?.classList.remove('err');});}
 function addCategoryModal(){const val=$('f-kat-new').value.trim();if(!val)return;if(!S.categories.map(c=>c.toLowerCase()).includes(val.toLowerCase())){S.categories.push(val);storeSave();}const sel=$('f-kat-sel');if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;sel.value=val;$('f-kat-new').value='';toast(`Kategori "${val}" ditambahkan`,'success');}
-function addTipeModal(){
-  const inp=$('f-tipe-new');
-  if(inp.style.display==='none'){inp.style.display='block';inp.focus();return;}
-  const val=inp.value.trim();if(!val)return;
-  if(!S.tipeMotors.map(t=>t.toLowerCase()).includes(val.toLowerCase())){S.tipeMotors.push(val);storeSave();}
-  const sel=$('f-tipe-sel');
-  if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;
-  sel.value=val;inp.value='';inp.style.display='none';
-  toast(`Tipe "${val}" ditambahkan`,'success');
+
+const tipePicker={
+  _sel:[],
+  setSelected(arr){this._sel=[...arr];this.renderChips();},
+  getSelected(){return[...this._sel];},
+  toggle(val){const i=this._sel.indexOf(val);if(i>=0)this._sel.splice(i,1);else this._sel.push(val);this.renderChips();this.renderOptions();},
+  removeOne(val){this._sel=this._sel.filter(v=>v!==val);this.renderChips();if(this.isOpen())this.renderOptions();},
+  renderChips(){
+    const box=$('f-tipe-selected'),ph=$('f-tipe-placeholder');
+    box.querySelectorAll('.tipe-chip').forEach(el=>el.remove());
+    if(this._sel.length){
+      ph.style.display='none';
+      this._sel.forEach(val=>{
+        const chip=document.createElement('div');chip.className='tipe-chip';
+        chip.innerHTML=`<span>${esc(val)}</span><button class="tipe-chip-del" tabindex="-1">\u2715</button>`;
+        chip.querySelector('.tipe-chip-del').addEventListener('click',e=>{e.stopPropagation();tipePicker.removeOne(val);});
+        box.appendChild(chip);
+      });
+    }else{ph.style.display='';}
+  },
+  renderOptions(filter=''){
+    const cont=$('f-tipe-options');if(!cont)return;
+    const filtered=filter?S.tipeMotors.filter(t=>t.toLowerCase().includes(filter.toLowerCase())):S.tipeMotors;
+    if(!filtered.length){cont.innerHTML=`<div class="tipe-empty-opt">Tidak ada tipe yang cocok</div>`;return;}
+    cont.innerHTML=filtered.map(t=>{const sel=this._sel.includes(t);return`<div class="tipe-opt${sel?' sel':''}" data-val="${esc(t)}"><div class="tipe-opt-chk">${sel?'\u2713':''}</div><span>${esc(t)}</span></div>`;}).join('');
+    cont.querySelectorAll('.tipe-opt').forEach(el=>el.addEventListener('mousedown',e=>{e.preventDefault();tipePicker.toggle(el.dataset.val);}));
+  },
+  open(){const dd=$('f-tipe-dropdown');if(!dd)return;dd.style.display='block';this.renderOptions();$('f-tipe-search').value='';$('f-tipe-search').focus();},
+  close(){const dd=$('f-tipe-dropdown');if(dd)dd.style.display='none';},
+  isOpen(){return $('f-tipe-dropdown')?.style.display!=='none';}
+};
+
+function initTipePicker(){
+  const box=$('f-tipe-selected');if(!box)return;
+  box.addEventListener('click',()=>{tipePicker.isOpen()?tipePicker.close():tipePicker.open();});
+  document.addEventListener('click',e=>{if(!e.target.closest('.tipe-picker-box'))tipePicker.close();});
+  $('f-tipe-search').addEventListener('input',e=>tipePicker.renderOptions(e.target.value));
+  $('f-tipe-search').addEventListener('keydown',e=>{if(e.key==='Escape')tipePicker.close();});
+  $('f-tipe-add2').addEventListener('click',()=>{
+    const val=$('f-tipe-new2').value.trim();if(!val)return;
+    if(!S.tipeMotors.map(t=>t.toLowerCase()).includes(val.toLowerCase())){
+      S.tipeMotors.push(val);
+      const mg=S.masterGroups&&S.masterGroups.find(g=>g.id==='tipeMotor');
+      if(mg&&!mg.items.map(t=>t.toLowerCase()).includes(val.toLowerCase()))mg.items.push(val);
+      storeSave();
+    }
+    tipePicker.toggle(val);$('f-tipe-new2').value='';
+    tipePicker.renderOptions($('f-tipe-search').value);
+    toast(`"${val}" ditambahkan & dipilih`,'success');
+  });
+  $('f-tipe-new2').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('f-tipe-add2').click();}});
 }
 
 function saveBarang(){
@@ -1793,16 +1878,14 @@ function saveBarang(){
   const now=new Date().toISOString();
   const kat=$('f-kat-sel').value;
   const merek=$('f-merek-inp').value.trim();
-  const tipeMotor=$('f-tipe-sel').value;
+  const tipeMotors=tipePicker.getSelected();
   const stokRaw=$('f-stok').value;
   const hargaRaw=$('f-harga').value;
   const lokasi=$('f-lokasi').value.trim();
   const hG=$('f-harga-grosir').value,mG=$('f-min-grosir').value,mS=$('f-min-stok').value;
   const data={
-    nama,
-    kategori:kat||'Lainnya',
-    merek:merek||'',
-    tipeMotor:tipeMotor||'',
+    nama,kategori:kat||'Lainnya',merek:merek||'',
+    tipeMotors,tipeMotor:tipeMotors[0]||'',
     stok:stokRaw!==''&&!isNaN(stokRaw)?Math.max(0,parseInt(stokRaw)):0,
     harga:hargaRaw!==''&&!isNaN(hargaRaw)?Math.max(0,parseInt(hargaRaw)):0,
     hargaGrosir:hG&&parseInt(hG)>0?parseInt(hG):null,
@@ -1812,8 +1895,7 @@ function saveBarang(){
     lokasi:lokasi||'Tidak ditentukan',
     tanggal:$('f-tgl').value||now.slice(0,10),
     catatan:$('f-catatan').value.trim(),
-    labels:getPickedLabels(),
-    updatedAt:now
+    labels:getPickedLabels(),updatedAt:now
   };
   if(S.editingId){const idx=S.items.findIndex(i=>i.id===S.editingId);if(idx>-1)S.items[idx]={...S.items[idx],...data};toast('Diperbarui!','success');}
   else{S.items.unshift({id:uid(),...data,createdAt:now});toast('Ditambahkan!','success');}
@@ -1989,6 +2071,7 @@ function closeSidebar(){$('sidebar').classList.remove('mob');$('sb-ov').classLis
 // ═══════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   storeLoad();
+  initTipePicker();
   // Nav
   document.querySelectorAll('.ni[data-page]').forEach(el=>el.addEventListener('click',()=>navigateTo(el.dataset.page)));
   // Exports
