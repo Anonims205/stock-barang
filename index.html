@@ -1207,7 +1207,7 @@ function storeLoad(){
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
   try{const ti=localStorage.getItem('sp4_trash_items');if(ti)S.trashItems=JSON.parse(ti);}catch(e){}
-  try{const fo=localStorage.getItem('sp4_filterorder');if(fo)S.filterOrder=JSON.parse(fo);}catch(e){}
+  try{const fo=localStorage.getItem('sp4_filterorder');if(fo){const arr=JSON.parse(fo);S.filterOrder=[...new Set(arr)];}}catch(e){}
   try{const fg=localStorage.getItem('sp4_filtergroups');if(fg)S.filterGroups=JSON.parse(fg);}catch(e){}
   try{const tn=localStorage.getItem('sp4_trash_notas');if(tn)S.trashNotas=JSON.parse(tn);}catch(e){}
   // Sync legacy → masterGroups if masterGroups empty
@@ -1264,6 +1264,14 @@ function navigateTo(page){
   if(sec)sec.style.display=page==='barang'?'block':'none';
 }
 function refreshAll(){renderDashboard();renderBarang();renderLowStock();renderNotas();renderLabels();updateBadge();updateFooter();updateTrashBadge();}
+function cleanupFilterOrder(){
+  // Hapus id yang tidak ada di masterGroups maupun filterGroups
+  if(!S.filterOrder)return;
+  const validIds=new Set([...(S.masterGroups||[]).map(g=>g.id),...(S.filterGroups||[]).map(g=>g.id)]);
+  const before=S.filterOrder.length;
+  S.filterOrder=[...new Set(S.filterOrder)].filter(id=>validIds.has(id));
+  if(S.filterOrder.length!==before)storeSave();
+}
 
 // ═══════════════════════════════════════
 //  DASHBOARD
@@ -1456,13 +1464,16 @@ function initRowDrag(){
 const BUILTIN_FIELD={'kategori':'kategori','merek':'merek','tipeMotor':'tipeMotors'};
 
 function getFilterOrder(){
-  // Gabungkan masterGroups + filterGroups (custom)
+  // Gabungkan masterGroups + filterGroups (custom), tanpa duplikat
   const masterIds=(S.masterGroups||[]).map(g=>g.id);
   const customIds=(S.filterGroups||[]).map(g=>g.id);
-  const allIds=[...masterIds,...customIds];
+  // Pastikan tidak ada id yang sama di kedua array (jaga-jaga)
+  const allIds=[...new Set([...masterIds,...customIds])];
   if(!S.filterOrder)return allIds;
-  const extra=allIds.filter(id=>!S.filterOrder.includes(id));
-  return[...S.filterOrder.filter(id=>allIds.includes(id)),...extra];
+  // Bersihkan filterOrder dari id yang tidak ada lagi
+  const cleanOrder=[...new Set(S.filterOrder)].filter(id=>allIds.includes(id));
+  const extra=allIds.filter(id=>!cleanOrder.includes(id));
+  return[...cleanOrder,...extra];
 }
 
 function buildDynamicFilters(){
@@ -1473,7 +1484,10 @@ function buildDynamicFilters(){
   cont.querySelectorAll('select[data-gid]').forEach(s=>{saved[s.dataset.gid]=s.value;});
 
   let html='';
+  const seenGids=new Set();
   order.forEach(gid=>{
+    if(seenGids.has(gid))return; // skip duplikat
+    seenGids.add(gid);
     const g=(S.masterGroups||[]).find(x=>x.id===gid)||(S.filterGroups||[]).find(x=>x.id===gid);if(!g)return;
     let opts=[];
     if(gid==='kategori'){
@@ -1563,7 +1577,7 @@ function renderSidebarFilterOrder(){
 
   const order=getFilterOrder();
   list.innerHTML=order.map(gid=>{
-    const g=(S.masterGroups||[]).find(x=>x.id===gid);if(!g)return'';
+    const g=(S.masterGroups||[]).find(x=>x.id===gid)||(S.filterGroups||[]).find(x=>x.id===gid);if(!g)return'';
     return`<div class="sb-filter-item" data-gid="${gid}">
       <span class="sb-filter-drag" title="Drag untuk urutkan">⠿</span>
       <span class="sb-filter-icon">${g.icon||'📋'}</span>
@@ -2525,12 +2539,16 @@ function fkNewGroupSave(){
   const icon=$('fk-ng-icon').value.trim()||'🏷️';
   if(!name){toast('Nama grup wajib diisi','error');$('fk-ng-name').classList.add('err');return;}
   $('fk-ng-name').classList.remove('err');
-  const id='fkg_'+Date.now().toString(36);
   S.filterGroups=S.filterGroups||[];
+  // Cek duplikat nama
+  if(S.filterGroups.some(g=>g.name.toLowerCase()===name.toLowerCase())){
+    toast('Nama grup sudah ada','error');return;
+  }
+  const id='fkg_'+Date.now().toString(36);
   S.filterGroups.push({id,icon,name,items:[]});
   // Tambah ke filterOrder agar langsung muncul di filter bar
   if(!S.filterOrder)S.filterOrder=getFilterOrder();
-  S.filterOrder.push(id);
+  if(!S.filterOrder.includes(id))S.filterOrder.push(id);
   storeSave();fkNewGroupClose();renderFilterKat();buildDynamicFilters();
   toast(`Grup "${name}" dibuat!`,'success');
   setTimeout(()=>{const el=$('fkg-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
@@ -3246,7 +3264,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   // Keyboard
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
 
-  refreshAll();updateTrashBadge();navigateTo('dashboard');
+  cleanupFilterOrder();refreshAll();updateTrashBadge();navigateTo('dashboard');
 });
 </script>
 </body>
