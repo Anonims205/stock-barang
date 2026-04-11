@@ -511,6 +511,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="sw"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="srch" placeholder="Cari nama / merek / lokasi / supplier..."></div>
         <select class="fsl" id="f-kat-filter"></select>
         <select class="fsl" id="f-merek-filter"></select>
+        <select class="fsl" id="f-tipe-filter"></select>
         <select class="fsl" id="f-status-filter"><option value="">Semua Status</option><option value="aman">Stok Aman</option><option value="menipis">Stok Menipis</option><option value="habis">Stok Habis</option></select>
         <select class="fsl" id="f-lbl-filter" style="min-width:110px"></select>
         <select class="fsl" id="f-harga-range" style="min-width:120px">
@@ -530,6 +531,7 @@ tbody tr:last-child td{border-bottom:none}
             <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
             <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
             <th data-sort="merek">Merek<span class="sort-ic"></span></th>
+            <th data-sort="tipeMotor">Tipe Motor<span class="sort-ic"></span></th>
             <th data-sort="stok">Stok<span class="sort-ic"></span></th>
             <th>Min Stok</th>
             <th data-sort="harga">Harga Ecer<span class="sort-ic"></span></th>
@@ -665,16 +667,17 @@ tbody tr:last-child td{border-bottom:none}
     <div class="mb">
       <div class="fg2">
         <div class="fg full"><label class="flbl">Nama Barang <span class="req">*</span></label><input type="text" class="fi" id="f-nama" placeholder="Masukkan nama barang"><span class="ferr" id="e-nama"></span></div>
-        <div class="fg"><label class="flbl">Kategori <span class="req">*</span></label><select class="fs2" id="f-kat-sel"></select><span class="ferr" id="e-kat"></span></div>
+        <div class="fg"><label class="flbl">Kategori</label><select class="fs2" id="f-kat-sel"></select></div>
         <div class="fg"><label class="flbl">Kategori Baru (opsional)</label><div class="car"><input type="text" class="fi" id="f-kat-new" placeholder="Ketik lalu klik +"><button class="btn btn-s btn-sm" id="f-kat-add">+</button></div></div>
-        <div class="fg"><label class="flbl">Merek <span class="req">*</span></label><input type="text" class="fi" id="f-merek-inp" placeholder="Merek / Brand"><span class="ferr" id="e-merek"></span></div>
-        <div class="fg"><label class="flbl">Jumlah Stok <span class="req">*</span></label><input type="number" class="fi" id="f-stok" placeholder="0" min="0"><span class="ferr" id="e-stok"></span></div>
+        <div class="fg"><label class="flbl">Merek</label><input type="text" class="fi" id="f-merek-inp" placeholder="Merek / Brand"></div>
+        <div class="fg"><label class="flbl">Tipe Motor</label><div class="car"><select class="fs2" id="f-tipe-sel"><option value="">-- Pilih Tipe Motor --</option></select><button class="btn btn-s btn-sm" id="f-tipe-add" title="Tambah tipe baru">+</button></div><input type="text" class="fi" id="f-tipe-new" placeholder="Ketik tipe motor baru..." style="margin-top:5px;display:none"></div>
+        <div class="fg"><label class="flbl">Jumlah Stok</label><input type="number" class="fi" id="f-stok" placeholder="0" min="0"></div>
         <div class="fg full">
-          <label class="flbl">Pengaturan Harga <span class="req">*</span></label>
+          <label class="flbl">Pengaturan Harga</label>
           <div class="gbox">
             <div class="gt"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Harga Jual</div>
             <div class="gr2">
-              <div class="fg"><label class="flbl">Harga Ecer <span class="req">*</span></label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga" placeholder="0" min="0"></div><span class="ferr" id="e-harga"></span></div>
+              <div class="fg"><label class="flbl">Harga Ecer</label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga" placeholder="0" min="0"></div></div>
               <div class="fg"><label class="flbl" style="color:var(--or)">Harga Grosir (opsional)</label><div class="pfx"><span class="pfx-lbl">Rp</span><input type="number" class="fi" id="f-harga-grosir" placeholder="0" min="0"></div></div>
             </div>
             <div class="fg" style="margin-top:9px"><label class="flbl" style="color:var(--or)">Min. Qty untuk Harga Grosir</label><input type="number" class="fi" id="f-min-grosir" placeholder="Contoh: 5" min="1"></div>
@@ -689,7 +692,7 @@ tbody tr:last-child td{border-bottom:none}
           </div>
         </div>
         <div class="fg"><label class="flbl">Supplier (opsional)</label><input type="text" class="fi" id="f-supplier" placeholder="Nama supplier"></div>
-        <div class="fg"><label class="flbl">Lokasi Penyimpanan <span class="req">*</span></label><input type="text" class="fi" id="f-lokasi" placeholder="Rak A1, Gudang B..."><span class="ferr" id="e-lokasi"></span></div>
+        <div class="fg"><label class="flbl">Lokasi Penyimpanan</label><input type="text" class="fi" id="f-lokasi" placeholder="Rak A1, Gudang B..."></div>
         <div class="fg"><label class="flbl">Tanggal Masuk</label><input type="date" class="fi" id="f-tgl"></div>
         <div class="fg full"><label class="flbl">Catatan Tambahan</label><textarea class="fta" id="f-catatan" placeholder="Catatan tentang barang ini..."></textarea></div>
         <div class="fg full"><label class="flbl">Label Barang</label><div class="lp" id="f-lbl-picker"></div></div>
@@ -761,11 +764,12 @@ tbody tr:last-child td{border-bottom:none}
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],labels:[],notas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[]};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
   localStorage.setItem('sp4_cats',JSON.stringify(S.categories));
+  localStorage.setItem('sp4_tipes',JSON.stringify(S.tipeMotors));
   localStorage.setItem('sp4_lbls',JSON.stringify(S.labels));
   localStorage.setItem('sp4_notas',JSON.stringify(S.notas));
 }
@@ -773,6 +777,7 @@ function storeLoad(){
   const tryLoad=(keys,prop,merge)=>{for(const k of keys){try{const v=localStorage.getItem(k);if(v){const arr=JSON.parse(v);if(merge?arr.length>S[prop].length:!S[prop].length){S[prop]=arr;return;}}}catch(e){}}};
   tryLoad(['sp4_items','sp3_items','sbt2_items'],'items');
   tryLoad(['sp4_cats','sp3_cats'],'categories',true);
+  tryLoad(['sp4_tipes'],'tipeMotors',true);
   tryLoad(['sp4_lbls','sp3_lbls'],'labels');
   tryLoad(['sp4_notas'],'notas');
 }
@@ -859,7 +864,7 @@ function renderRecent(){
     const st=stockSt(item);
     const iLbls=(item.labels||[]).map(id=>S.labels.find(l=>l.id===id)).filter(Boolean);
     const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1} pcs</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
-    return`<tr><td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek)}</div></td><td><span class="ct">${esc(item.kategori)}</span></td><td class="cm">${item.stok}</td><td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td><td class="cm">${rp(item.harga)}</td><td>${gHtml}</td><td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td><td>${badgeHtml(st)}</td></tr>`;
+    return`<tr><td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.merek||'')}${item.tipeMotor?' · '+esc(item.tipeMotor):''}</div></td><td><span class="ct">${esc(item.kategori)}</span></td><td class="cm">${item.stok}</td><td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td><td class="cm">${rp(item.harga)}</td><td>${gHtml}</td><td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td><td>${badgeHtml(st)}</td></tr>`;
   }).join('');
 }
 
@@ -893,9 +898,10 @@ function renderBarang(filtered){
     const gHtml=item.hargaGrosir?`<div class="pw"><div class="pg">${rp(item.hargaGrosir)}</div><div class="pg-lbl">min ${item.minGrosir||1}</div></div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';
     return`<tr>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
-      <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi)}${item.supplier?' · '+esc(item.supplier):''}</div></td>
-      <td><span class="ct">${esc(item.kategori)}</span></td>
-      <td style="color:var(--ts);font-size:12px">${esc(item.merek)}</td>
+      <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
+      <td><span class="ct">${esc(item.kategori||'—')}</span></td>
+      <td style="color:var(--ts);font-size:12px">${esc(item.merek||'—')}</td>
+      <td style="color:var(--cy);font-size:11.5px;font-weight:500">${item.tipeMotor?`<span style="background:var(--cy-d);padding:2px 7px;border-radius:4px;border:1px solid rgba(6,182,212,.2)">${esc(item.tipeMotor)}</span>`:'—'}</td>
       <td><div class="skw"><span class="cm">${item.stok}</span><div class="skb"><div class="skf" style="width:${pct}%;background:${bc}"></div></div></div></td>
       <td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td>
       <td class="cm">${rp(item.harga)}</td>
@@ -917,25 +923,28 @@ function updateSortIcons(){document.querySelectorAll('#page-barang thead th[data
 function populateFilters(){
   const cats=[...new Set(S.items.map(i=>i.kategori).filter(Boolean))].sort();
   const merks=[...new Set(S.items.map(i=>i.merek).filter(Boolean))].sort();
-  const fk=$('f-kat-filter'),fm=$('f-merek-filter'),fl=$('f-lbl-filter');
-  const[sk,sm,sl]=[fk.value,fm.value,fl?fl.value:''];
+  const tipes=[...new Set(S.items.map(i=>i.tipeMotor).filter(Boolean))].sort();
+  const fk=$('f-kat-filter'),fm=$('f-merek-filter'),ft=$('f-tipe-filter'),fl=$('f-lbl-filter');
+  const[sk,sm,st2,sl]=[fk.value,fm.value,ft?ft.value:'',fl?fl.value:''];
   fk.innerHTML='<option value="">Semua Kategori</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   fm.innerHTML='<option value="">Semua Merek</option>'+merks.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+  if(ft)ft.innerHTML='<option value="">Semua Tipe Motor</option>'+tipes.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
   if(fl){fl.innerHTML='<option value="">Semua Label</option>'+S.labels.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('');fl.value=sl;}
-  fk.value=sk;fm.value=sm;
+  fk.value=sk;fm.value=sm;if(ft)ft.value=st2;
 }
 
 function doFilter(){
   const q=$('srch').value.toLowerCase();
-  const kat=$('f-kat-filter').value,merek=$('f-merek-filter').value;
+  const kat=$('f-kat-filter').value,merek=$('f-merek-filter').value,tipe=$('f-tipe-filter')?$('f-tipe-filter').value:'';
   const st=$('f-status-filter').value,lbl=$('f-lbl-filter').value;
   const hr=$('f-harga-range').value;
   let hMin=0,hMax=Infinity;
   if(hr){const p=hr.split('-');hMin=parseInt(p[0]);hMax=parseInt(p[1]);}
   renderBarang(S.items.filter(i=>{
-    if(q&&!i.nama.toLowerCase().includes(q)&&!i.merek.toLowerCase().includes(q)&&!(i.lokasi||'').toLowerCase().includes(q)&&!(i.supplier||'').toLowerCase().includes(q)&&!(i.catatan||'').toLowerCase().includes(q))return false;
+    if(q&&!i.nama.toLowerCase().includes(q)&&!(i.merek||'').toLowerCase().includes(q)&&!(i.lokasi||'').toLowerCase().includes(q)&&!(i.supplier||'').toLowerCase().includes(q)&&!(i.catatan||'').toLowerCase().includes(q)&&!(i.tipeMotor||'').toLowerCase().includes(q))return false;
     if(kat&&i.kategori!==kat)return false;
     if(merek&&i.merek!==merek)return false;
+    if(tipe&&i.tipeMotor!==tipe)return false;
     if(st&&stockSt(i)!==st)return false;
     if(lbl&&!(i.labels||[]).includes(lbl))return false;
     const h=parseInt(i.harga)||0;if(hr&&(h<hMin||h>hMax))return false;
@@ -1202,24 +1211,75 @@ function getPickedLabels(){return[...document.querySelectorAll('#f-lbl-picker .l
 // ═══════════════════════════════════════
 function openModal(editId){
   S.editingId=editId||null;$('modal-ov').classList.add('open');
-  const ks=$('f-kat-sel');ks.innerHTML='<option value="">Pilih kategori</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  const ks=$('f-kat-sel');ks.innerHTML='<option value="">Pilih kategori (opsional)</option>'+S.categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  // Populate tipe motor dropdown
+  const ts=$('f-tipe-sel');ts.innerHTML='<option value="">-- Pilih Tipe Motor --</option>'+S.tipeMotors.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
   clearErrors();
-  if(editId){const item=S.items.find(i=>i.id===editId);if(!item)return;$('modal-title').textContent='Edit Barang';$('modal-save').textContent='💾 Update';$('f-nama').value=item.nama;$('f-kat-sel').value=item.kategori;$('f-merek-inp').value=item.merek;$('f-stok').value=item.stok;$('f-harga').value=item.harga;$('f-harga-grosir').value=item.hargaGrosir||'';$('f-min-grosir').value=item.minGrosir||'';$('f-min-stok').value=item.minStok||'';$('f-supplier').value=item.supplier||'';$('f-lokasi').value=item.lokasi;$('f-tgl').value=item.tanggal||'';$('f-catatan').value=item.catatan||'';populateLblPicker(item.labels||[]);
-  }else{$('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='💾 Simpan';clearForm();$('f-tgl').value=new Date().toISOString().slice(0,10);populateLblPicker([]);}
+  if(editId){
+    const item=S.items.find(i=>i.id===editId);if(!item)return;
+    $('modal-title').textContent='Edit Barang';$('modal-save').textContent='💾 Update';
+    $('f-nama').value=item.nama;$('f-kat-sel').value=item.kategori||'';
+    $('f-merek-inp').value=item.merek||'';$('f-tipe-sel').value=item.tipeMotor||'';
+    $('f-stok').value=item.stok||'';$('f-harga').value=item.harga||'';
+    $('f-harga-grosir').value=item.hargaGrosir||'';$('f-min-grosir').value=item.minGrosir||'';
+    $('f-min-stok').value=item.minStok||'';$('f-supplier').value=item.supplier||'';
+    $('f-lokasi').value=item.lokasi||'';$('f-tgl').value=item.tanggal||'';
+    $('f-catatan').value=item.catatan||'';populateLblPicker(item.labels||[]);
+  }else{
+    $('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='💾 Simpan';
+    clearForm();$('f-tgl').value=new Date().toISOString().slice(0,10);populateLblPicker([]);
+  }
 }
 function closeModal(){$('modal-ov').classList.remove('open');S.editingId=null;}
-function clearForm(){['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});$('f-kat-sel').value='';}
-function clearErrors(){['e-nama','e-kat','e-merek','e-stok','e-harga','e-lokasi'].forEach(id=>{const el=$(id);if(el)el.textContent='';});['f-nama','f-kat-sel','f-merek-inp','f-stok','f-harga','f-lokasi'].forEach(id=>{$(id)?.classList.remove('err');});}
+function clearForm(){
+  ['f-nama','f-merek-inp','f-stok','f-harga','f-harga-grosir','f-min-grosir','f-min-stok','f-supplier','f-lokasi','f-catatan','f-kat-new'].forEach(id=>{const el=$(id);if(el)el.value='';});
+  $('f-kat-sel').value='';$('f-tipe-sel').value='';
+  $('f-tipe-new').style.display='none';$('f-tipe-new').value='';
+}
+function clearErrors(){['e-nama'].forEach(id=>{const el=$(id);if(el)el.textContent='';});['f-nama'].forEach(id=>{$(id)?.classList.remove('err');});}
 function addCategoryModal(){const val=$('f-kat-new').value.trim();if(!val)return;if(!S.categories.map(c=>c.toLowerCase()).includes(val.toLowerCase())){S.categories.push(val);storeSave();}const sel=$('f-kat-sel');if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;sel.value=val;$('f-kat-new').value='';toast(`Kategori "${val}" ditambahkan`,'success');}
+function addTipeModal(){
+  const inp=$('f-tipe-new');
+  if(inp.style.display==='none'){inp.style.display='block';inp.focus();return;}
+  const val=inp.value.trim();if(!val)return;
+  if(!S.tipeMotors.map(t=>t.toLowerCase()).includes(val.toLowerCase())){S.tipeMotors.push(val);storeSave();}
+  const sel=$('f-tipe-sel');
+  if(![...sel.options].find(o=>o.value===val))sel.innerHTML+=`<option value="${esc(val)}">${esc(val)}</option>`;
+  sel.value=val;inp.value='';inp.style.display='none';
+  toast(`Tipe "${val}" ditambahkan`,'success');
+}
 
 function saveBarang(){
   clearErrors();
-  const nama=$('f-nama').value.trim(),kat=$('f-kat-sel').value,merek=$('f-merek-inp').value.trim(),stok=$('f-stok').value,harga=$('f-harga').value,lokasi=$('f-lokasi').value.trim();
-  let ok=true;const err=(f,e,m)=>{$(f).classList.add('err');$(e).textContent=m;ok=false;};
-  if(!nama)err('f-nama','e-nama','Wajib diisi');if(!kat)err('f-kat-sel','e-kat','Pilih kategori');if(!merek)err('f-merek-inp','e-merek','Wajib');if(stok===''||isNaN(stok)||parseInt(stok)<0)err('f-stok','e-stok','Tidak valid');if(!harga||isNaN(harga)||parseInt(harga)<0)err('f-harga','e-harga','Tidak valid');if(!lokasi)err('f-lokasi','e-lokasi','Wajib');
+  const nama=$('f-nama').value.trim();
+  let ok=true;
+  if(!nama){$('f-nama').classList.add('err');$('e-nama').textContent='Wajib diisi';ok=false;}
   if(!ok)return;
-  const now=new Date().toISOString(),hG=$('f-harga-grosir').value,mG=$('f-min-grosir').value,mS=$('f-min-stok').value;
-  const data={nama,kategori:kat,merek,stok:parseInt(stok),harga:parseInt(harga),hargaGrosir:hG&&parseInt(hG)>0?parseInt(hG):null,minGrosir:mG&&parseInt(mG)>0?parseInt(mG):null,minStok:mS&&parseInt(mS)>=0?parseInt(mS):5,supplier:$('f-supplier').value.trim(),lokasi,tanggal:$('f-tgl').value||now.slice(0,10),catatan:$('f-catatan').value.trim(),labels:getPickedLabels(),updatedAt:now};
+  const now=new Date().toISOString();
+  const kat=$('f-kat-sel').value;
+  const merek=$('f-merek-inp').value.trim();
+  const tipeMotor=$('f-tipe-sel').value;
+  const stokRaw=$('f-stok').value;
+  const hargaRaw=$('f-harga').value;
+  const lokasi=$('f-lokasi').value.trim();
+  const hG=$('f-harga-grosir').value,mG=$('f-min-grosir').value,mS=$('f-min-stok').value;
+  const data={
+    nama,
+    kategori:kat||'Lainnya',
+    merek:merek||'',
+    tipeMotor:tipeMotor||'',
+    stok:stokRaw!==''&&!isNaN(stokRaw)?Math.max(0,parseInt(stokRaw)):0,
+    harga:hargaRaw!==''&&!isNaN(hargaRaw)?Math.max(0,parseInt(hargaRaw)):0,
+    hargaGrosir:hG&&parseInt(hG)>0?parseInt(hG):null,
+    minGrosir:mG&&parseInt(mG)>0?parseInt(mG):null,
+    minStok:mS&&parseInt(mS)>=0?parseInt(mS):5,
+    supplier:$('f-supplier').value.trim(),
+    lokasi:lokasi||'Tidak ditentukan',
+    tanggal:$('f-tgl').value||now.slice(0,10),
+    catatan:$('f-catatan').value.trim(),
+    labels:getPickedLabels(),
+    updatedAt:now
+  };
   if(S.editingId){const idx=S.items.findIndex(i=>i.id===S.editingId);if(idx>-1)S.items[idx]={...S.items[idx],...data};toast('Diperbarui!','success');}
   else{S.items.unshift({id:uid(),...data,createdAt:now});toast('Ditambahkan!','success');}
   storeSave();closeModal();refreshAll();
@@ -1415,6 +1475,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('modal-save').addEventListener('click',saveBarang);
   $('f-kat-add').addEventListener('click',addCategoryModal);
   $('f-kat-new').addEventListener('keydown',e=>{if(e.key==='Enter')addCategoryModal();});
+  $('f-tipe-add').addEventListener('click',addTipeModal);
+  $('f-tipe-new').addEventListener('keydown',e=>{if(e.key==='Enter')addTipeModal();});
   $('f-lbl-picker').addEventListener('click',e=>{const lo=e.target.closest('.lo');if(lo)lo.classList.toggle('sel');});
   // Modal barang masuk
   $('btn-new-nota').addEventListener('click',()=>openNotaModal());
@@ -1447,6 +1509,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('srch').addEventListener('input',doFilter);
   $('f-kat-filter').addEventListener('change',doFilter);
   $('f-merek-filter').addEventListener('change',doFilter);
+  $('f-tipe-filter').addEventListener('change',doFilter);
   $('f-status-filter').addEventListener('change',doFilter);
   $('f-lbl-filter').addEventListener('change',doFilter);
   $('f-harga-range').addEventListener('change',doFilter);
