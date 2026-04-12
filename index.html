@@ -728,7 +728,7 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
       </div>
       <div class="tc">
         <div class="tw"><table>
-          <thead><tr>
+          <thead><tr id="main-thead-tr">
             <th style="width:30px;cursor:default"></th>
             <th style="width:30px;cursor:default">#</th>
             <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
@@ -1335,16 +1335,62 @@ function sortItems(items){
   });
 }
 
+// ═══════════════════════════════════════
+//  DYNAMIC TABLE HEADER (dari filterGroups)
+// ═══════════════════════════════════════
+function renderTableHeader(){
+  const tr=$('main-thead-tr');if(!tr)return;
+  // Kolom tetap sebelum kolom custom
+  const fixedBefore=`
+    <th style="width:30px;cursor:default"></th>
+    <th style="width:30px;cursor:default">#</th>
+    <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
+    <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
+    <th data-sort="merek">Merek<span class="sort-ic"></span></th>
+    <th data-sort="tipeMotor">Tipe Motor<span class="sort-ic"></span></th>`;
+  // Kolom custom dari filterGroups
+  const customCols=(S.filterGroups||[]).map(g=>
+    `<th data-sort-custom="${g.id}" style="white-space:nowrap">${esc(g.icon||'')} ${esc(g.name)}<span class="sort-ic"></span></th>`
+  ).join('');
+  // Kolom tetap setelah kolom custom
+  const fixedAfter=`
+    <th data-sort="stok">Stok<span class="sort-ic"></span></th>
+    <th>Min Stok</th>
+    <th data-sort="hargaModal">Harga Modal<span class="sort-ic"></span></th>
+    <th data-sort="harga">Harga Ecer<span class="sort-ic"></span></th>
+    <th>Harga Grosir</th>
+    <th data-sort="margin">Margin<span class="sort-ic"></span></th>
+    <th data-sort="nilai">Nilai Stok<span class="sort-ic"></span></th>
+    <th>Lokasi</th>
+    <th>Label</th>
+    <th>Status</th>
+    <th>Aksi</th>`;
+  tr.innerHTML=fixedBefore+customCols+fixedAfter;
+  // Re-bind sort click
+  tr.querySelectorAll('th[data-sort]').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const key=th.dataset.sort;
+      if(S.sortKey===key){S.sortDir=S.sortDir==='asc'?'desc':'asc';}
+      else{S.sortKey=key;S.sortDir='asc';}
+      doFilter();
+    });
+  });
+  updateSortIcons();
+}
+
 function renderBarang(filtered){
   const rawItems=filtered!==undefined?filtered:S.items;S.lastFiltered=rawItems;
   const items=sortItems(rawItems);const tbody=$('main-tbody'),empty=$('main-empty');
   populateFilters();
+  renderTableHeader();
   if(!items.length){tbody.innerHTML='';empty.style.display='block';$('tbl-info').textContent='0 barang';$('tbl-nilai').textContent='Total nilai: Rp 0';$('barang-sub').textContent='Tidak ada barang ditemukan';return;}
   empty.style.display='none';
   const totalN=items.reduce((s,i)=>s+(parseInt(i.stok)||0)*(parseInt(i.harga)||0),0);
   $('tbl-info').textContent=items.length+' barang';$('tbl-nilai').textContent='Total nilai: '+rp(totalN);
   $('barang-sub').textContent=`Menampilkan ${items.length} dari ${S.items.length} barang`;
   const maxS=Math.max(...S.items.map(i=>parseInt(i.stok)||0),1);
+  // Ambil daftar filterGroups untuk render kolom custom per baris
+  const fGroups=S.filterGroups||[];
   tbody.innerHTML=items.map((item,idx)=>{
     const st=stockSt(item),pct=Math.min(100,(parseInt(item.stok)||0)/maxS*100);
     const bc=st==='aman'?'var(--gr)':st==='menipis'?'var(--ye)':'var(--re)';
@@ -1357,6 +1403,15 @@ function renderBarang(filtered){
     const marginHtml=marginRp!==null
       ?`<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginRp>=0?'+':''}${rp(marginRp)}</div><div style="font-size:9.5px;color:${marginRp>=0?'var(--gr)':'var(--re)'}">${marginPct}%</div>`
       :'<span style="color:var(--tm);font-size:10.5px">—</span>';
+    // Render kolom custom dari filterGroups
+    const customCells=fGroups.map(g=>{
+      const cf=item.customFields&&item.customFields[g.id];
+      const vals=Array.isArray(cf)?cf:(cf?[cf]:[]);
+      return`<td>${vals.length
+        ?`<div style="display:flex;flex-wrap:wrap;gap:3px">${vals.map(v=>`<span style="background:var(--pu-d);color:var(--pu);border:1px solid rgba(167,139,250,.2);border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:600;white-space:nowrap">${esc(v)}</span>`).join('')}</div>`
+        :'<span style="color:var(--tm);font-size:10.5px">—</span>'
+      }</td>`;
+    }).join('');
     return`<tr draggable="true" data-id="${item.id}" class="barang-row">
       <td style="padding:0 4px"><div class="drag-handle" title="Drag untuk urutkan">⠿</div></td>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
@@ -1364,6 +1419,7 @@ function renderBarang(filtered){
       <td><span class="ct">${esc(item.kategori||'—')}</span></td>
       <td style="color:var(--ts);font-size:12px">${esc(item.merek||'—')}</td>
       <td>${(()=>{const tipes=Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);return tipes.length?`<div style="display:flex;flex-wrap:wrap;gap:3px">${tipes.map(t=>`<span style="background:var(--cy-d);color:var(--cy);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:600;white-space:nowrap">${esc(t)}</span>`).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';})()}</td>
+      ${customCells}
       <td><div class="skw"><span class="cm">${item.stok}</span><div class="skb"><div class="skf" style="width:${pct}%;background:${bc}"></div></div></div></td>
       <td><span class="ms-badge">min: ${parseInt(item.minStok)||5}</span></td>
       <td class="cm" style="color:var(--cy)">${hModal?rp(hModal):'<span style="color:var(--tm);font-size:10.5px">—</span>'}</td>
@@ -1512,6 +1568,7 @@ function buildDynamicFilters(){
   });
   cont.innerHTML=html;
   renderSidebarFilterOrder();
+  renderTableHeader();
 }
 
 function getActiveFilterValues(){
@@ -1543,8 +1600,14 @@ function doFilter(){
     for(const [gid,val] of Object.entries(dynVals)){
       if(!val)continue;
       if(gid==='kategori'&&i.kategori!==val)return false;
-      if(gid==='merek'&&i.merek!==val)return false;
-      if(gid==='tipeMotor'){const ts=Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[]);if(!ts.includes(val))return false;}
+      else if(gid==='merek'&&i.merek!==val)return false;
+      else if(gid==='tipeMotor'){const ts=Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[]);if(!ts.includes(val))return false;}
+      else{
+        // Custom filterGroups — cek di item.customFields[gid]
+        const cf=i.customFields&&i.customFields[gid];
+        const cfArr=Array.isArray(cf)?cf:(cf?[cf]:[]);
+        if(!cfArr.includes(val))return false;
+      }
     }
     if(st&&stockSt(i)!==st)return false;
     if(lbl&&!(i.labels||[]).includes(lbl))return false;
@@ -3240,8 +3303,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('f-lbl-filter').addEventListener('change',doFilter);
   $('f-harga-range').addEventListener('change',doFilter);
   $('btn-reset').addEventListener('click',resetFilter);
-  // Sort
-  document.querySelector('#page-barang thead').addEventListener('click',e=>{const th=e.target.closest('th[data-sort]');if(!th)return;const key=th.dataset.sort;if(S.sortKey===key){S.sortDir=S.sortDir==='asc'?'desc':'asc';}else{S.sortKey=key;S.sortDir='asc';}doFilter();});
+  // Sort — dihandle di renderTableHeader() secara dinamis
   // Master Data
   $('md-new-group-btn').addEventListener('click',mdNewGroupOpen);
   // Filter Kategori
