@@ -1330,6 +1330,7 @@ function sortItems(items){
       vb=b.hargaModal&&b.harga?(parseInt(b.harga)-parseInt(b.hargaModal))/parseInt(b.hargaModal)*100:-Infinity;
     }
     else if(S.sortKey==='stok'||S.sortKey==='harga'||S.sortKey==='hargaModal'){va=parseInt(a[S.sortKey])||0;vb=parseInt(b[S.sortKey])||0;}
+    else if(S.sortKey==='updatedAt'){va=a.updatedAt||a.createdAt||'';vb=b.updatedAt||b.createdAt||'';}
     else{va=(a[S.sortKey]||'').toLowerCase();vb=(b[S.sortKey]||'').toLowerCase();}
     if(va<vb)return S.sortDir==='asc'?-1:1;if(va>vb)return S.sortDir==='asc'?1:-1;return 0;
   });
@@ -1364,6 +1365,7 @@ function renderTableHeader(){
     <th>Lokasi</th>
     <th>Label</th>
     <th>Status</th>
+    <th data-sort="updatedAt" style="white-space:nowrap">Update Terakhir<span class="sort-ic"></span></th>
     <th>Aksi</th>`;
   tr.innerHTML=fixedBefore+customCols+fixedAfter;
   // Re-bind sort click
@@ -1430,6 +1432,14 @@ function renderBarang(filtered){
       <td style="font-size:11.5px;color:var(--ts)">${esc(item.lokasi)}</td>
       <td>${iLbls.length?`<div class="lw">${iLbls.map(l=>lblChip(l)).join('')}</div>`:'—'}</td>
       <td>${badgeHtml(st)}</td>
+      <td style="white-space:nowrap">${(()=>{
+        const d=item.updatedAt||item.createdAt||'';
+        if(!d)return'<span style="color:var(--tm);font-size:10.5px">—</span>';
+        const dt=new Date(d);
+        const tgl=dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+        const jam=dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        return`<div style="font-size:11px;color:var(--ts)">${tgl}</div><div style="font-size:10px;color:var(--tm);font-family:var(--mono)">${jam}</div>`;
+      })()}</td>
       <td><div class="ca">
         <div class="ib e" onclick="openModal('${item.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
         <div class="ib d" onclick="deleteBarang('${item.id}')" title="Hapus"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
