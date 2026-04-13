@@ -648,8 +648,19 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
   .sg{grid-template-columns:1fr 1fr;gap:8px}.fg2{grid-template-columns:1fr}
   .fg.full{grid-column:1/-1}.content{padding:12px}.topbar{padding:0 12px}
   .sc-v{font-size:18px}.gr2{grid-template-columns:1fr}
+  #page-backup>div:nth-child(3){grid-template-columns:1fr}
 }
 @media(max-width:440px){.sg{grid-template-columns:1fr}}
+/* BACKUP HISTORY */
+.bk-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg-3);border:1px solid var(--bdr);border-radius:var(--rs);margin-bottom:7px;transition:border-color .15s}
+.bk-item:hover{border-color:var(--bdr-b)}
+.bk-item-ic{width:30px;height:30px;border-radius:8px;background:var(--ac-d);display:flex;align-items:center;justify-content:center;color:var(--ac);flex-shrink:0}
+.bk-item-ic svg{width:14px;height:14px}
+.bk-item-info{flex:1}
+.bk-item-time{font-size:12px;font-weight:600;color:var(--tp);font-family:var(--mono)}
+.bk-item-meta{font-size:10.5px;color:var(--tm);margin-top:2px}
+.bk-empty{text-align:center;padding:24px;color:var(--tm);font-size:12px}
+.bk-empty svg{width:36px;height:36px;margin:0 auto 8px;opacity:.2}
 </style>
 </head>
 <body>
@@ -693,6 +704,9 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
     <div class="nav-lbl" style="margin-top:8px">Lainnya</div>
     <div class="ni" data-page="trash">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Tempat Sampah<span class="ni-badge" id="trash-badge" style="display:none">0</span>
+    </div>
+    <div class="ni" data-page="backup">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Backup & Restore
     </div>
   </nav>
   <!-- FILTER ORDER SECTION -->
@@ -987,8 +1001,101 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
       </div>
     </div>
 
+    <!-- BACKUP & RESTORE -->
+    <div class="page" id="page-backup">
+      <div class="sh">
+        <div><div class="st">🛡️ Backup & Restore</div><div class="ss">Simpan dan pulihkan seluruh data inventori</div></div>
+      </div>
+
+      <!-- INFO -->
+      <div class="stok-hint" style="margin-bottom:18px;background:rgba(79,124,255,.07);border-color:rgba(79,124,255,.2)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Backup menyimpan <strong>semua data</strong>: barang, nota, label, kategori, daftar kustom, tempat sampah, dan pengaturan filter. File backup berformat <strong>.json</strong> dan dapat dipulihkan kapan saja.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <!-- BACKUP CARD -->
+        <div class="cc" style="padding:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="sc-ic ic-g" style="width:36px;height:36px;border-radius:10px">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Buat Backup</div>
+              <div style="font-size:11px;color:var(--tm)">Download semua data sebagai file JSON</div>
+            </div>
+          </div>
+          <div style="background:var(--bg-3);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px;margin-bottom:14px;font-size:11.5px;color:var(--ts)">
+            <div id="backup-stats" style="display:flex;flex-direction:column;gap:5px"></div>
+          </div>
+          <button class="btn btn-gr" id="btn-backup-download" style="width:100%;justify-content:center">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Backup (.json)
+          </button>
+        </div>
+
+        <!-- RESTORE CARD -->
+        <div class="cc" style="padding:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="sc-ic ic-r" style="width:36px;height:36px;border-radius:10px">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Pulihkan Backup</div>
+              <div style="font-size:11px;color:var(--tm)">Muat ulang data dari file backup JSON</div>
+            </div>
+          </div>
+          <div class="ab" style="margin-bottom:14px;background:rgba(255,92,92,.06);border-color:rgba(255,92,92,.18)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div><div class="at" style="color:var(--re);font-size:11.5px">Peringatan</div><div class="as" style="font-size:10.5px">Restore akan <strong>menggantikan</strong> semua data yang ada saat ini. Buat backup terlebih dahulu!</div></div>
+          </div>
+          <label class="btn btn-d" style="width:100%;justify-content:center;cursor:pointer" for="backup-restore-file">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Pilih File Backup (.json)
+          </label>
+          <input type="file" id="backup-restore-file" accept=".json" style="display:none">
+        </div>
+      </div>
+
+      <!-- BACKUP HISTORY / AUTO BACKUP -->
+      <div class="cc" style="padding:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--tp)">⏱️ Riwayat Backup Otomatis</div>
+            <div style="font-size:11px;color:var(--tm);margin-top:2px">Sistem menyimpan hingga 5 snapshot terakhir secara otomatis</div>
+          </div>
+          <button class="btn btn-cy btn-sm" id="btn-backup-auto" title="Simpan snapshot sekarang">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Simpan Snapshot
+          </button>
+        </div>
+        <div id="backup-history-list"></div>
+      </div>
+    </div>
+
   </div>
 </div>
+</div>
+
+<!-- MODAL KONFIRMASI RESTORE -->
+<div class="mo" id="restore-confirm-ov">
+  <div class="modal" style="max-width:420px" id="restore-confirm-modal">
+    <div class="mh">
+      <div class="mt">⚠️ Konfirmasi Restore</div>
+      <div class="icon-btn" onclick="closeRestoreConfirm()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    </div>
+    <div class="mb" style="padding:20px">
+      <div class="ab" style="background:rgba(255,92,92,.06);border-color:rgba(255,92,92,.18);margin-bottom:16px">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div><div class="at" style="color:var(--re)">Tindakan ini tidak bisa dibatalkan!</div><div class="as">Data yang ada sekarang akan digantikan oleh data dari backup.</div></div>
+      </div>
+      <div id="restore-preview" style="background:var(--bg-3);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--ts);margin-bottom:4px"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-g" onclick="closeRestoreConfirm()">Batal</button>
+      <button class="btn btn-d" id="restore-confirm-btn">🔄 Ya, Pulihkan Sekarang</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL ADD/EDIT BARANG -->
@@ -1277,7 +1384,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',labels:'Label Barang',filterkat:'🗂️ Kelola Daftar & Filter',import:'Import Data',trash:'🗑️ Tempat Sampah'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',labels:'Label Barang',filterkat:'🗂️ Kelola Daftar & Filter',import:'Import Data',trash:'🗑️ Tempat Sampah',backup:'🛡️ Backup & Restore'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -1293,6 +1400,7 @@ function navigateTo(page){
   if(page==='filterkat')renderFilterKat();
   if(page==='labels')renderLabels();
   if(page==='trash')renderTrash();
+  if(page==='backup'){renderBackupStats();renderBackupHistory();}
   // Tampilkan sidebar filter order hanya di halaman barang
   const sec=$('sb-filter-section');
   if(sec)sec.style.display=page==='barang'?'block':'none';
@@ -2866,19 +2974,28 @@ const cusPickers={};
 function buildModalCustomFields(itemData){
   const cont=$('modal-custom-fields');if(!cont)return;
   S.filterGroups=S.filterGroups||[];
-  if(!S.filterGroups.length){cont.innerHTML='';return;}
+  S.masterGroups=S.masterGroups||[];
+
+  // Grup bawaan yg sudah punya field khusus di form — tidak perlu ditampilkan lagi
+  const BUILTIN_IDS=['kategori','merek','tipeMotor'];
+
+  // Ambil semua grup kustom dari masterGroups (yg bukan builtin) + filterGroups (tanpa duplikat)
+  const customFromMaster=(S.masterGroups||[]).filter(g=>!BUILTIN_IDS.includes(g.id));
+  const customFromFilter=(S.filterGroups||[]).filter(g=>!BUILTIN_IDS.includes(g.id)&&!customFromMaster.find(m=>m.id===g.id));
+  const allCustom=[...customFromMaster,...customFromFilter];
+
+  if(!allCustom.length){cont.innerHTML='';return;}
 
   // Buat state picker untuk setiap grup
-  S.filterGroups.forEach(g=>{
+  allCustom.forEach(g=>{
     if(!cusPickers[g.id])cusPickers[g.id]={sel:[]};
     else cusPickers[g.id].sel=[];
-    // Load nilai existing jika edit
     if(itemData&&itemData.customFields&&itemData.customFields[g.id]){
       cusPickers[g.id].sel=[...itemData.customFields[g.id]];
     }
   });
 
-  cont.innerHTML=S.filterGroups.map(g=>`
+  cont.innerHTML=allCustom.map(g=>`
     <div class="fg full" style="margin-top:4px">
       <label class="flbl">${esc(g.icon||'🏷️')} ${esc(g.name)} <span style="color:var(--tm);font-weight:400;font-size:10.5px">(bisa pilih lebih dari satu)</span></label>
       <div class="cpicker-box" id="cpb-${g.id}">
@@ -2897,7 +3014,7 @@ function buildModalCustomFields(itemData){
     </div>`).join('');
 
   // Render chips dan opsi untuk semua picker
-  S.filterGroups.forEach(g=>{
+  allCustom.forEach(g=>{
     cusPickerRenderChips(g.id);
     cusPickerRenderOpts(g.id);
   });
@@ -2937,7 +3054,10 @@ function cusPickerRenderChips(gid){
 
 function cusPickerRenderOpts(gid){
   const cont=$('cpo-'+gid);if(!cont)return;
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const BUILTIN_IDS=['kategori','merek','tipeMotor'];
+  let g=(S.masterGroups||[]).find(x=>x.id===gid&&!BUILTIN_IDS.includes(x.id));
+  if(!g)g=(S.filterGroups||[]).find(x=>x.id===gid);
+  if(!g)return;
   const sel=cusPickers[gid]?.sel||[];
   if(!g.items.length){cont.innerHTML=`<div class="cpicker-empty">Belum ada opsi — tambahkan di bawah</div>`;return;}
   cont.innerHTML=g.items.map(v=>{
@@ -2968,10 +3088,13 @@ function cusPickerRemove(gid,val){
 function cusPickerAddNew(gid){
   const inp=$('cpn-'+gid);if(!inp)return;
   const val=inp.value.trim();if(!val)return;
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  // Cari grup di masterGroups atau filterGroups
+  const BUILTIN_IDS=['kategori','merek','tipeMotor'];
+  let g=(S.masterGroups||[]).find(x=>x.id===gid&&!BUILTIN_IDS.includes(x.id));
+  if(!g)g=(S.filterGroups||[]).find(x=>x.id===gid);
+  if(!g)return;
   if(!g.items.map(v=>v.toLowerCase()).includes(val.toLowerCase())){
     g.items.push(val);storeSave();
-    // Rebuild filter
     buildDynamicFilters();
   }
   cusPickerToggleVal(gid,val);
@@ -3532,6 +3655,162 @@ function msDuplicateSelected(){
 }
 
 // ═══════════════════════════════════════
+//  BACKUP & RESTORE
+// ═══════════════════════════════════════
+const BK_KEY='sp4_bk_history';
+const BK_MAX=5;
+
+function bkGetHistory(){try{const r=localStorage.getItem(BK_KEY);return r?JSON.parse(r):[]}catch(e){return[];}}
+function bkSetHistory(arr){try{localStorage.setItem(BK_KEY,JSON.stringify(arr));}catch(e){toast('Penyimpanan penuh','error');}}
+
+function bkBuildPayload(){
+  return{version:4,exportedAt:new Date().toISOString(),appName:'StockPro',data:{
+    items:S.items,categories:S.categories,tipeMotors:S.tipeMotors,merekList:S.merekList,
+    masterGroups:S.masterGroups,labels:S.labels,notas:S.notas,trashItems:S.trashItems,
+    trashNotas:S.trashNotas,filterOrder:S.filterOrder,filterGroups:S.filterGroups
+  }};
+}
+
+function bkDownload(){
+  const payload=bkBuildPayload();
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ts=new Date().toISOString().slice(0,19).replace(/[T:]/g,'-');
+  a.href=url;a.download=`stockpro-backup-${ts}.json`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
+  bkSaveSnapshot('Manual');
+  toast('Backup berhasil didownload!','success');
+}
+
+function bkSaveSnapshot(label){
+  const history=bkGetHistory();
+  history.unshift({id:uid(),label:label||'Manual',time:new Date().toISOString(),payload:bkBuildPayload()});
+  if(history.length>BK_MAX)history.length=BK_MAX;
+  bkSetHistory(history);
+  renderBackupHistory();
+}
+
+function bkRestoreFromPayload(payload){
+  if(!payload||!payload.data){toast('File backup tidak valid','error');return;}
+  const d=payload.data;
+  S.items=d.items||[];S.categories=d.categories||[];S.tipeMotors=d.tipeMotors||[];
+  S.merekList=d.merekList||[];S.masterGroups=d.masterGroups||[];S.labels=d.labels||[];
+  S.notas=d.notas||[];S.trashItems=d.trashItems||[];S.trashNotas=d.trashNotas||[];
+  S.filterOrder=d.filterOrder||null;S.filterGroups=d.filterGroups||[];
+  storeSave();refreshAll();
+  toast('Data berhasil dipulihkan dari backup!','success');
+}
+
+let _pendingRestorePayload=null;
+
+function bkHandleFileRestore(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const payload=JSON.parse(e.target.result);
+      if(!payload.data||!Array.isArray(payload.data.items)){toast('Format file tidak valid','error');return;}
+      _pendingRestorePayload=payload;
+      const d=payload.data;
+      $('restore-preview').innerHTML=`
+        <div style="font-size:11.5px;color:var(--ts);margin-bottom:8px">File: <strong style="color:var(--tp)">${esc(file.name)}</strong></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div>📦 <strong>${d.items?.length||0}</strong> barang</div>
+          <div>🗒️ <strong>${d.notas?.length||0}</strong> nota</div>
+          <div>🏷️ <strong>${d.labels?.length||0}</strong> label</div>
+          <div>🗑️ <strong>${(d.trashItems?.length||0)+(d.trashNotas?.length||0)}</strong> item sampah</div>
+        </div>
+        ${payload.exportedAt?`<div style="margin-top:8px;font-size:10.5px;color:var(--tm)">Dibuat: ${new Date(payload.exportedAt).toLocaleString('id-ID')}</div>`:''}
+      `;
+      $('restore-confirm-ov').classList.add('open');
+    }catch(err){toast('Gagal membaca file: '+err.message,'error');}
+  };
+  reader.readAsText(file);
+}
+
+function closeRestoreConfirm(){$('restore-confirm-ov').classList.remove('open');_pendingRestorePayload=null;}
+
+function renderBackupStats(){
+  const el=$('backup-stats');if(!el)return;
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between"><span>📦 Barang</span><strong style="color:var(--tp);font-family:var(--mono)">${S.items.length}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>🗒️ Nota Masuk</span><strong style="color:var(--tp);font-family:var(--mono)">${S.notas.length}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>🏷️ Label</span><strong style="color:var(--tp);font-family:var(--mono)">${S.labels.length}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>🗂️ Daftar Kustom</span><strong style="color:var(--tp);font-family:var(--mono)">${(S.filterGroups||[]).length}</strong></div>
+    <div style="display:flex;justify-content:space-between"><span>🗑️ Tempat Sampah</span><strong style="color:var(--tp);font-family:var(--mono)">${(S.trashItems||[]).length+(S.trashNotas||[]).length}</strong></div>
+  `;
+}
+
+function renderBackupHistory(){
+  const el=$('backup-history-list');if(!el)return;
+  const history=bkGetHistory();
+  if(!history.length){
+    el.innerHTML=`<div class="bk-empty"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="display:block;margin:0 auto 8px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Belum ada snapshot tersimpan<br><span style="font-size:10.5px;margin-top:4px;display:block">Klik "Simpan Snapshot" atau download backup untuk menyimpan riwayat</span></div>`;
+    return;
+  }
+  el.innerHTML=history.map(snap=>`
+    <div class="bk-item">
+      <div class="bk-item-ic"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="bk-item-info">
+        <div class="bk-item-time">${new Date(snap.time).toLocaleString('id-ID')}</div>
+        <div class="bk-item-meta">${esc(snap.label)} · ${snap.payload?.data?.items?.length||0} barang · ${snap.payload?.data?.notas?.length||0} nota</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-gr btn-sm" onclick="bkDownloadSnapshot('${snap.id}')" title="Download snapshot ini">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="btn btn-cy btn-sm" onclick="bkRestoreSnapshot('${snap.id}')" title="Pulihkan dari snapshot ini">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+        </button>
+        <button class="btn btn-d btn-sm" onclick="bkDeleteSnapshot('${snap.id}')" title="Hapus snapshot">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function bkDownloadSnapshot(id){
+  const snap=bkGetHistory().find(s=>s.id===id);
+  if(!snap){toast('Snapshot tidak ditemukan','error');return;}
+  const blob=new Blob([JSON.stringify(snap.payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ts=new Date(snap.time).toISOString().slice(0,19).replace(/[T:]/g,'-');
+  a.href=url;a.download=`stockpro-snapshot-${ts}.json`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
+  toast('Snapshot didownload','success');
+}
+
+function bkRestoreSnapshot(id){
+  const snap=bkGetHistory().find(s=>s.id===id);
+  if(!snap){toast('Snapshot tidak ditemukan','error');return;}
+  _pendingRestorePayload=snap.payload;
+  const d=snap.payload?.data||{};
+  $('restore-preview').innerHTML=`
+    <div style="font-size:11.5px;color:var(--ts);margin-bottom:8px">Snapshot: <strong style="color:var(--tp)">${new Date(snap.time).toLocaleString('id-ID')}</strong></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div>📦 <strong>${d.items?.length||0}</strong> barang</div>
+      <div>🗒️ <strong>${d.notas?.length||0}</strong> nota</div>
+      <div>🏷️ <strong>${d.labels?.length||0}</strong> label</div>
+      <div>🗑️ <strong>${(d.trashItems?.length||0)+(d.trashNotas?.length||0)}</strong> item sampah</div>
+    </div>
+  `;
+  $('restore-confirm-ov').classList.add('open');
+}
+
+function bkDeleteSnapshot(id){
+  confirm2('Hapus snapshot ini?',()=>{
+    bkSetHistory(bkGetHistory().filter(s=>s.id!==id));
+    renderBackupHistory();
+    toast('Snapshot dihapus','success');
+  });
+}
+
+// ═══════════════════════════════════════
 //  SIDEBAR
 // ═══════════════════════════════════════
 function toggleSidebar(){$('sidebar').classList.toggle('mob');$('sb-ov').classList.toggle('mob');}
@@ -3606,13 +3885,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('conf-cancel').addEventListener('click',closeConfirm);
   $('conf-ok').addEventListener('click',()=>{if(S.confirmCb)S.confirmCb();closeConfirm();});
   $('conf-ov').addEventListener('click',e=>{if(e.target===$('conf-ov'))closeConfirm();});
-  // Filters (dynamic filters bind via onchange="doFilter()" in HTML)
+  // Filters
   $('srch').addEventListener('input',doFilter);
   $('f-status-filter').addEventListener('change',doFilter);
   $('f-lbl-filter').addEventListener('change',doFilter);
   $('f-harga-range').addEventListener('change',doFilter);
   $('btn-reset').addEventListener('click',resetFilter);
-  // Sort — dihandle di renderTableHeader() secara dinamis
   // Filter Kategori / Kelola Daftar
   $('fk-new-group-btn').addEventListener('click',fkNewGroupOpen);
   $('fk-ng-save-btn').addEventListener('click',fkNewGroupSave);
@@ -3628,14 +3906,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   drop.addEventListener('dragleave',()=>drop.classList.remove('dv'));
   drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('dv');const f=e.dataTransfer.files[0];if(f&&(f.name.endsWith('.csv')||f.name.endsWith('.xlsx')||f.name.endsWith('.xls')))handleImport({target:{files:e.dataTransfer.files}});});
   // Keyboard
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();const mo=$('fk-tmpl-overlay');if(mo)mo.remove();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();closeRestoreConfirm();const mo=$('fk-tmpl-overlay');if(mo)mo.remove();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
   // Multi-select
   $('btn-multiselect-toggle').addEventListener('click',toggleMultiSelect);
   $('ms-delete-btn').addEventListener('click',msDeleteSelected);
   $('ms-duplicate-btn').addEventListener('click',msDuplicateSelected);
   $('ms-clear-btn').addEventListener('click',()=>{clearSelection();});
-  // Template button on Data Barang now removed (template ada di Filter Kategori per grup)
+  // Template button
   const tmplBtn=$('btn-open-template');if(tmplBtn)tmplBtn.style.display='none';
+  // Backup & Restore
+  $('btn-backup-download').addEventListener('click',bkDownload);
+  $('btn-backup-auto').addEventListener('click',()=>{bkSaveSnapshot('Manual');toast('Snapshot disimpan!','success');});
+  $('backup-restore-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)bkHandleFileRestore(f);e.target.value='';});
+  $('restore-confirm-btn').addEventListener('click',()=>{if(_pendingRestorePayload){bkRestoreFromPayload(_pendingRestorePayload);closeRestoreConfirm();}});
+  $('restore-confirm-ov').addEventListener('click',e=>{if(e.target===$('restore-confirm-ov'))closeRestoreConfirm();});
 
   cleanupFilterOrder();refreshAll();updateTrashBadge();navigateTo('dashboard');
 });
