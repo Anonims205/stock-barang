@@ -245,6 +245,62 @@ tbody tr:last-child td{border-bottom:none}
 .drag-handle:hover{opacity:1;color:var(--ts)}
 tbody tr.dragging-row{opacity:.35;background:var(--bg-3)!important}
 tbody tr.drag-over-row{border-top:2px solid var(--ac)!important;background:rgba(79,124,255,.06)!important}
+
+/* MULTI-SELECT */
+.row-cb{width:15px;height:15px;accent-color:var(--ac);cursor:pointer}
+tbody tr.row-selected{background:rgba(79,124,255,.07)!important}
+tbody tr.row-selected:hover{background:rgba(79,124,255,.11)!important}
+.ms-bar{display:none;align-items:center;gap:8px;padding:9px 14px;background:var(--ac-d);
+  border:1px solid rgba(79,124,255,.3);border-radius:var(--rs);margin-bottom:10px;flex-wrap:wrap}
+.ms-bar.show{display:flex}
+.ms-bar-info{font-size:12.5px;font-weight:600;color:var(--ac);flex:1}
+.ms-bar-info span{font-family:var(--mono);font-size:14px}
+.th-cb{width:36px;cursor:default!important}
+/* Checkbox column hidden when multiselect off */
+.cb-col{display:none}
+body.ms-active .cb-col{display:table-cell}
+body.ms-active .cb-col-th{display:table-cell}
+.cb-col-th{display:none}
+/* Toggle button active state */
+#btn-multiselect-toggle.ms-on{background:var(--ac);color:#fff;border-color:var(--ac)}
+
+/* TEMPLATE MODAL */
+.tmpl-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.tmpl-modal-ov.open{opacity:1;pointer-events:all}
+.tmpl-modal{background:var(--bg-1);border:1px solid var(--bdr-b);border-radius:var(--r);
+  width:min(640px,95vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.tmpl-header{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+.tmpl-title{font-size:14.5px;font-weight:700;flex:1}
+.tmpl-body{padding:18px 20px;overflow-y:auto;flex:1}
+.tmpl-section{margin-bottom:20px}
+.tmpl-section-title{font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bdr)}
+.tmpl-item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px}
+.tmpl-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:var(--rs);
+  background:var(--bg-2);border:1px solid var(--bdr);cursor:pointer;transition:all .15s;user-select:none}
+.tmpl-item:hover{border-color:var(--ac);background:var(--ac-d)}
+.tmpl-item.selected{border-color:var(--ac);background:var(--ac-d);box-shadow:0 0 0 2px rgba(79,124,255,.25)}
+.tmpl-item-icon{font-size:18px;flex-shrink:0}
+.tmpl-item-info{flex:1;min-width:0}
+.tmpl-item-name{font-size:12.5px;font-weight:600;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tmpl-item-meta{font-size:10.5px;color:var(--tm);margin-top:1px}
+.tmpl-item-check{width:16px;height:16px;accent-color:var(--ac);flex-shrink:0}
+.tmpl-footer{padding:14px 20px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tmpl-tabs{display:flex;gap:2px;background:var(--bg-2);border-radius:var(--rs);padding:3px}
+.tmpl-tab{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ts);transition:all .15s}
+.tmpl-tab.active{background:var(--ac);color:#fff}
+.tmpl-search{position:relative;margin-bottom:12px}
+.tmpl-search input{width:100%;background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--rs);padding:7px 10px 7px 32px;color:var(--tp);font-size:12.5px;font-family:var(--sans);outline:none}
+.tmpl-search input:focus{border-color:var(--ac)}
+.tmpl-search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--tm)}
+.tmpl-barang-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--rs);
+  background:var(--bg-2);border:1px solid var(--bdr);cursor:pointer;transition:all .15s;margin-bottom:6px}
+.tmpl-barang-row:hover{border-color:var(--bdr-b);background:var(--bg-3)}
+.tmpl-barang-row.selected{border-color:var(--ac);background:var(--ac-d)}
+.tmpl-barang-name{font-size:13px;font-weight:600;color:var(--tp);flex:1}
+.tmpl-barang-meta{font-size:11px;color:var(--tm)}
+/* Template highlight for copied field */
+.fi.tmpl-highlight{border-color:var(--ac)!important;box-shadow:0 0 0 3px var(--ac-d),0 0 0 6px rgba(79,124,255,.08)!important;animation:tmpl-pulse .8s ease}
 tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
 
 /* STOCK BAR */
@@ -618,14 +674,11 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
     <div class="ni" data-page="nota">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 1 0 0-4h14a2 2 0 1 0 0 4M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8m-9 4h4"/></svg>Barang Masuk<span class="ni-badge-cy" id="nota-badge">0</span>
     </div>
-    <div class="ni" data-page="masterdata">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>Master Data
+    <div class="ni" data-page="filterkat">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Kelola Daftar & Filter
     </div>
     <div class="ni" data-page="labels">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Label Barang
-    </div>
-    <div class="ni" data-page="filterkat">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Filter Kategori
     </div>
     <div class="nav-lbl" style="margin-top:8px">Export & Import</div>
     <div class="ni" id="nav-exp-xlsx">
@@ -705,8 +758,17 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
         <div><div class="st">Data Barang</div><div class="ss" id="barang-sub">Semua barang</div></div>
         <div class="export-group">
           <button class="btn btn-gr btn-sm" id="btn-exp-xlsx-b"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Export XLSX</button>
+          <button class="btn btn-g btn-sm" id="btn-multiselect-toggle" title="Aktifkan Multi Pilih"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="4" height="4" rx="1"/><rect x="3" y="11" width="4" height="4" rx="1"/><rect x="3" y="17" width="4" height="4" rx="1"/><line x1="10" y1="7" x2="21" y2="7"/><line x1="10" y1="13" x2="21" y2="13"/><line x1="10" y1="19" x2="21" y2="19"/></svg>Multi Pilih</button>
+          <button class="btn btn-cy btn-sm" id="btn-open-template"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>Template</button>
           <button class="btn btn-p btn-sm" id="btn-add-barang"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
         </div>
+      </div>
+      <!-- MULTI-SELECT BAR -->
+      <div class="ms-bar" id="ms-bar">
+        <div class="ms-bar-info">✓ <span id="ms-count">0</span> barang dipilih</div>
+        <button class="btn btn-or btn-sm" id="ms-duplicate-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplikat</button>
+        <button class="btn btn-d btn-sm" id="ms-delete-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Hapus Dipilih</button>
+        <button class="btn btn-g btn-sm" id="ms-clear-btn">✕ Batalkan Pilihan</button>
       </div>
       <div class="toolbar" id="filter-toolbar">
         <div class="sw"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si" id="srch" placeholder="Cari nama / merek / lokasi / supplier..."></div>
@@ -821,24 +883,24 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
       <div class="empty" id="lbl-empty" style="display:none;padding:34px"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><h3>Belum ada label</h3><p>Buat label baru di atas.</p></div>
     </div>
 
-    <!-- FILTER KATEGORI -->
+    <!-- KELOLA DAFTAR & FILTER (gabungan Master Data + Filter Kategori) -->
     <div class="page" id="page-filterkat">
       <div class="sh">
         <div>
-          <div class="st">🔽 Filter Kategori</div>
-          <div class="ss">Buat grup filter kustom untuk Data Barang — drag item untuk mengatur urutan</div>
+          <div class="st">🗂️ Kelola Daftar & Filter</div>
+          <div class="ss">Semua daftar di sini otomatis menjadi filter di halaman Data Barang</div>
         </div>
         <button class="btn btn-p btn-sm" id="fk-new-group-btn">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Buat Grup Baru
+          Buat Daftar Baru
         </button>
       </div>
       <!-- Form buat grup baru -->
       <div class="fk-create-form" id="fk-create-form" style="display:none;margin-bottom:16px">
-        <div style="font-size:12.5px;font-weight:700;color:var(--tp);margin-bottom:12px">✨ Buat Grup Filter Baru</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--tp);margin-bottom:12px">✨ Buat Daftar Baru</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
           <div class="fg" style="flex:1;min-width:160px">
-            <label class="flbl">Nama Grup <span class="req">*</span></label>
+            <label class="flbl">Nama Daftar <span class="req">*</span></label>
             <input type="text" class="fi" id="fk-ng-name" placeholder="Contoh: Warna, Ukuran, Kondisi..." maxlength="40">
           </div>
           <div class="fg" style="width:70px">
@@ -854,43 +916,14 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
       <!-- Info box -->
       <div class="stok-hint" style="margin-bottom:14px;background:rgba(79,124,255,.06);border-color:rgba(79,124,255,.2)">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--ac)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Grup filter di sini otomatis muncul sebagai <strong>dropdown filter di halaman Data Barang</strong>. Drag item dalam grup untuk mengatur urutan tampilan.
+        Setiap daftar otomatis muncul sebagai <strong>dropdown filter di halaman Data Barang</strong>. Gunakan <strong>tombol Template</strong> di tiap daftar untuk menyalin item dari daftar lain. Drag untuk mengatur urutan.
       </div>
       <!-- Papan grup -->
       <div class="fk-board" id="fk-board"></div>
       <div class="empty" id="fk-empty" style="display:none;padding:48px">
         <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" width="42" height="42" style="margin:0 auto 12px;opacity:.25"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-        <h3>Belum ada grup filter</h3>
-        <p>Klik "Buat Grup Baru" untuk mulai.</p>
-      </div>
-    </div>
-
-    <!-- MASTER DATA -->
-    <div class="page" id="page-masterdata">
-      <div class="sh">
-        <div><div class="st">⚙️ Master Data</div><div class="ss">Buat dan kelola daftar sortiran apapun sesuai kebutuhan bisnis kamu</div></div>
-        <button class="btn btn-p btn-sm" id="md-new-group-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Buat Daftar Baru</button>
-      </div>
-      <!-- Form buat grup baru -->
-      <div class="md-new-group-form" id="md-new-group-form" style="display:none">
-        <div class="md-ngf-inner">
-          <div style="font-size:12.5px;font-weight:700;color:var(--tp);margin-bottom:10px">✨ Buat Daftar Baru</div>
-          <div class="fg2">
-            <div class="fg"><label class="flbl">Nama Daftar <span class="req">*</span></label><input type="text" class="fi" id="md-ng-name" placeholder="Contoh: Ukuran, Warna, Kondisi..." maxlength="40"></div>
-            <div class="fg"><label class="flbl">Ikon (emoji)</label><input type="text" class="fi" id="md-ng-icon" placeholder="📦" maxlength="4" style="font-size:20px;text-align:center"></div>
-          </div>
-          <div style="display:flex;gap:7px;margin-top:10px">
-            <button class="btn btn-p btn-sm" id="md-ng-save-btn">Simpan Daftar</button>
-            <button class="btn btn-g btn-sm" id="md-ng-cancel-btn">Batal</button>
-          </div>
-        </div>
-      </div>
-      <!-- Container grup dinamis -->
-      <div id="md-groups-container"></div>
-      <div class="empty" id="md-empty" style="display:none;padding:48px">
-        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" width="42" height="42" style="margin:0 auto 12px;opacity:.25"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
         <h3>Belum ada daftar</h3>
-        <p>Klik "Buat Daftar Baru" untuk membuat daftar sortiran pertamamu.</p>
+        <p>Klik "Buat Daftar Baru" untuk membuat daftar filter pertamamu.</p>
       </div>
     </div>
 
@@ -1175,13 +1208,14 @@ tbody tr.drag-over-row td{border-top:2px solid var(--ac)}
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="tct" id="toast-ct"></div>
 
 <script>
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],trashItems:[],trashNotas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[],filterOrder:null,activeFilters:{},filterGroups:[]};
+const S={items:[],categories:['Elektronik','Pakaian','Makanan','Minuman','Alat Tulis','Furniture','Otomotif','Lainnya'],tipeMotors:['Honda Beat','Honda Vario','Honda Scoopy','Honda CB150R','Honda CBR','Yamaha NMAX','Yamaha Aerox','Yamaha Mio','Yamaha R15','Yamaha XSR','Kawasaki Ninja','Kawasaki KLX','Suzuki GSX','Suzuki Satria'],merekList:['Honda','Yamaha','Kawasaki','Suzuki','NGK','Federal Oil','Castrol','AHM','Bosch','Denso'],masterGroups:[],labels:[],notas:[],trashItems:[],trashNotas:[],editingId:null,editingNotaId:null,confirmCb:null,sortKey:null,sortDir:'asc',lastFiltered:null,notaItems:[],filterOrder:null,activeFilters:{},filterGroups:[],_selected:new Set()};
 
 function storeSave(){
   localStorage.setItem('sp4_items',JSON.stringify(S.items));
@@ -1243,7 +1277,7 @@ function updateFooter(){$('foot-count').textContent=S.items.length+' item';}
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',labels:'Label Barang',filterkat:'🔽 Filter Kategori',import:'Import Data',masterdata:'⚙️ Master Data',trash:'🗑️ Tempat Sampah'};
+const PAGE_TITLES={dashboard:'Dashboard',barang:'Data Barang',lowstock:'Stok Menipis',nota:'Barang Masuk',labels:'Label Barang',filterkat:'🗂️ Kelola Daftar & Filter',import:'Import Data',trash:'🗑️ Tempat Sampah'};
 function navigateTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni[data-page]').forEach(n=>n.classList.remove('active'));
@@ -1257,7 +1291,7 @@ function navigateTo(page){
   if(page==='nota')renderNotas();
   if(page==='labels')renderLabels();
   if(page==='filterkat')renderFilterKat();
-  if(page==='masterdata')renderMasterData();
+  if(page==='labels')renderLabels();
   if(page==='trash')renderTrash();
   // Tampilkan sidebar filter order hanya di halaman barang
   const sec=$('sb-filter-section');
@@ -1343,14 +1377,20 @@ function renderTableHeader(){
   const tr=$('main-thead-tr');if(!tr)return;
   // Kolom tetap sebelum kolom custom
   const fixedBefore=`
+    <th class="th-cb cb-col-th"><input type="checkbox" id="cb-all" class="row-cb" title="Pilih semua" onchange="toggleSelectAll(this.checked)"></th>
     <th style="width:30px;cursor:default"></th>
     <th style="width:30px;cursor:default">#</th>
     <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
     <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
     <th data-sort="merek">Merek<span class="sort-ic"></span></th>
     <th data-sort="tipeMotor">Tipe Motor<span class="sort-ic"></span></th>`;
-  // Kolom custom dari filterGroups
-  const customCols=(S.filterGroups||[]).map(g=>
+  // Kolom custom: semua grup NON-builtin dari masterGroups + filterGroups
+  const BUILTIN_IDS=new Set(['kategori','merek','tipeMotor']);
+  const mgCustom=(S.masterGroups||[]).filter(g=>!BUILTIN_IDS.has(g.id));
+  const mgCustomIds=new Set(mgCustom.map(g=>g.id));
+  const fgExtra=(S.filterGroups||[]).filter(g=>!mgCustomIds.has(g.id)&&!BUILTIN_IDS.has(g.id));
+  const customGroups=[...mgCustom,...fgExtra];
+  const customCols=customGroups.map(g=>
     `<th data-sort-custom="${g.id}" style="white-space:nowrap">${esc(g.icon||'')} ${esc(g.name)}<span class="sort-ic"></span></th>`
   ).join('');
   // Kolom tetap setelah kolom custom
@@ -1391,8 +1431,11 @@ function renderBarang(filtered){
   $('tbl-info').textContent=items.length+' barang';$('tbl-nilai').textContent='Total nilai: '+rp(totalN);
   $('barang-sub').textContent=`Menampilkan ${items.length} dari ${S.items.length} barang`;
   const maxS=Math.max(...S.items.map(i=>parseInt(i.stok)||0),1);
-  // Ambil daftar filterGroups untuk render kolom custom per baris
-  const fGroups=S.filterGroups||[];
+  // Ambil daftar custom groups (non-builtin) untuk render kolom custom per baris
+  const BUILTIN_IDS_R=new Set(['kategori','merek','tipeMotor']);
+  const mgCustomR=(S.masterGroups||[]).filter(g=>!BUILTIN_IDS_R.has(g.id));
+  const mgCustomIdsR=new Set(mgCustomR.map(g=>g.id));
+  const fGroups=[...mgCustomR,...(S.filterGroups||[]).filter(g=>!mgCustomIdsR.has(g.id)&&!BUILTIN_IDS_R.has(g.id))];
   tbody.innerHTML=items.map((item,idx)=>{
     const st=stockSt(item),pct=Math.min(100,(parseInt(item.stok)||0)/maxS*100);
     const bc=st==='aman'?'var(--gr)':st==='menipis'?'var(--ye)':'var(--re)';
@@ -1414,7 +1457,8 @@ function renderBarang(filtered){
         :'<span style="color:var(--tm);font-size:10.5px">—</span>'
       }</td>`;
     }).join('');
-    return`<tr draggable="true" data-id="${item.id}" class="barang-row">
+    return`<tr draggable="true" data-id="${item.id}" class="barang-row${S._selected&&S._selected.has(item.id)?' row-selected':''}">
+      <td class="cb-col" style="padding:0 6px 0 8px"><input type="checkbox" class="row-cb" data-id="${item.id}" ${S._selected&&S._selected.has(item.id)?'checked':''} onchange="onRowCbChange(this)"></td>
       <td style="padding:0 4px"><div class="drag-handle" title="Drag untuk urutkan">⠿</div></td>
       <td class="cm" style="color:var(--tm)">${idx+1}</td>
       <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
@@ -1448,6 +1492,8 @@ function renderBarang(filtered){
   }).join('');
   updateSortIcons();
   setTimeout(initRowDrag,0);
+  // Refresh multi-select bar count after render
+  setTimeout(updateMsBar,0);
 }
 function updateSortIcons(){document.querySelectorAll('#page-barang thead th[data-sort]').forEach(th=>{th.classList.remove('asc','desc');if(th.dataset.sort===S.sortKey)th.classList.add(S.sortDir);});}
 
@@ -1530,13 +1576,12 @@ function initRowDrag(){
 const BUILTIN_FIELD={'kategori':'kategori','merek':'merek','tipeMotor':'tipeMotors'};
 
 function getFilterOrder(){
-  // Gabungkan masterGroups + filterGroups (custom), tanpa duplikat
-  const masterIds=(S.masterGroups||[]).map(g=>g.id);
-  const customIds=(S.filterGroups||[]).map(g=>g.id);
-  // Pastikan tidak ada id yang sama di kedua array (jaga-jaga)
-  const allIds=[...new Set([...masterIds,...customIds])];
+  // Gunakan masterGroups sebagai sumber utama (sudah mencakup semua daftar)
+  mdSeedBuiltins();
+  const mgIds=(S.masterGroups||[]).map(g=>g.id);
+  const fgExtra=(S.filterGroups||[]).filter(g=>!mgIds.includes(g.id)).map(g=>g.id);
+  const allIds=[...mgIds,...fgExtra];
   if(!S.filterOrder)return allIds;
-  // Bersihkan filterOrder dari id yang tidak ada lagi
   const cleanOrder=[...new Set(S.filterOrder)].filter(id=>allIds.includes(id));
   const extra=allIds.filter(id=>!cleanOrder.includes(id));
   return[...cleanOrder,...extra];
@@ -1566,9 +1611,9 @@ function buildDynamicFilters(){
       const mdO=g.items,itO=[...new Set(S.items.flatMap(i=>Array.isArray(i.tipeMotors)&&i.tipeMotors.length?i.tipeMotors:(i.tipeMotor?[i.tipeMotor]:[])))];
       opts=[...mdO,...itO.filter(t=>!mdO.includes(t))];
     }else{
-      // Cari di filterGroups (custom)
-      const fg=(S.filterGroups||[]).find(x=>x.id===gid);
-      opts=fg?fg.items:(g?g.items:[]);
+      // Cari di masterGroups dulu (unified), lalu filterGroups
+      const gg=_fkFindGroup(gid);
+      opts=gg?gg.items:[];
     }
     const cur=saved[gid]||'';
     const optsHtml=opts.map(v=>`<option value="${esc(v)}"${cur===v?' selected':''}>${esc(v)}</option>`).join('');
@@ -2382,23 +2427,39 @@ let _fkDragGid=null, _fkDragItemIdx=null, _fkDragItemGid=null;
 function renderFilterKat(){
   const board=$('fk-board'), empty=$('fk-empty');
   if(!board)return;
-  S.filterGroups=S.filterGroups||[];
+  mdSeedBuiltins();
+  // Gabungkan masterGroups + filterGroups (no dup ids)
+  const mgIds=(S.masterGroups||[]).map(g=>g.id);
+  const fgExtra=(S.filterGroups||[]).filter(g=>!mgIds.includes(g.id));
+  const allGroups=[...(S.masterGroups||[]),...fgExtra];
 
-  if(!S.filterGroups.length){
+  if(!allGroups.length){
     board.innerHTML='';
     empty.style.display='block';
     return;
   }
   empty.style.display='none';
-
-  board.innerHTML=S.filterGroups.map(g=>fkGroupHtml(g)).join('');
+  board.innerHTML=allGroups.map(g=>fkGroupHtml(g)).join('');
   fkInitDrag();
+}
+
+function _fkFindGroup(gid){
+  // Cari di masterGroups dulu, lalu filterGroups
+  return (S.masterGroups||[]).find(x=>x.id===gid)||(S.filterGroups||[]).find(x=>x.id===gid)||null;
+}
+
+function _fkSaveGroup(gid,updates){
+  // Simpan perubahan ke masterGroups atau filterGroups sesuai lokasi
+  const mg=(S.masterGroups||[]).find(x=>x.id===gid);
+  if(mg){Object.assign(mg,updates);mdSyncLegacy();}
+  else{const fg=(S.filterGroups||[]).find(x=>x.id===gid);if(fg)Object.assign(fg,updates);}
 }
 
 function fkGroupHtml(g){
   const items=g.items||[];
   const colors=['#4f7cff','#2dd4a0','#f5c542','#ff8c42','#a78bfa','#ff5c5c','#06b6d4','#ec4899'];
   const color=g.color||colors[Math.abs(g.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%colors.length];
+  const isBuiltin=['tipeMotor','merek','kategori'].includes(g.id);
   const itemsHtml=items.length
     ?items.map((item,idx)=>`
       <div class="fk-item" data-gid="${g.id}" data-idx="${idx}" draggable="false">
@@ -2411,18 +2472,22 @@ function fkGroupHtml(g){
   return`<div class="fk-group" id="fkg-${g.id}" data-gid="${g.id}">
     <div class="fk-color-strip" style="background:${color};height:3px;border-radius:var(--r) var(--r) 0 0"></div>
     <div class="fk-group-hdr">
-      <span class="fk-group-drag-handle" data-gid="${g.id}" title="Tahan & drag untuk urutkan grup">⠿</span>
+      <span class="fk-group-drag-handle" data-gid="${g.id}" title="Drag untuk urutkan">⠿</span>
       <span class="fk-group-icon">${g.icon||'🏷️'}</span>
       <span class="fk-group-name">${esc(g.name)}</span>
       <span class="fk-group-count">${items.length} item</span>
+      ${isBuiltin?'<span style="font-size:9px;color:var(--tm);background:var(--bg-3);padding:1px 6px;border-radius:99px;border:1px solid var(--bdr)">bawaan</span>':''}
       <div class="fk-group-acts">
+        <div class="ib" onclick="fkOpenTemplate('${g.id}')" title="Salin item dari daftar lain" style="width:27px;height:27px;border-radius:5px;background:var(--cy-d);border:1px solid rgba(6,182,212,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cy);transition:all .15s">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+        </div>
         <div class="ib e" onclick="fkEditGroup('${g.id}')" title="Edit nama & ikon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-        <div class="ib d" onclick="fkDeleteGroup('${g.id}')" title="Hapus grup"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+        ${isBuiltin?'':`<div class="ib d" onclick="fkDeleteGroup('${g.id}')" title="Hapus daftar"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>`}
       </div>
     </div>
     <div class="fk-items" id="fki-${g.id}">${itemsHtml}</div>
     <div class="fk-add-row">
-      <input type="text" class="fi fk-add-inp" id="fki-inp-${g.id}" placeholder="Tambah item..." maxlength="60"
+      <input type="text" class="fi fk-add-inp" id="fki-inp-${g.id}" placeholder="Tambah item ke ${esc(g.name)}..." maxlength="60"
         onkeydown="if(event.key==='Enter')fkAddItem('${g.id}')">
       <button class="btn btn-p btn-sm fk-add-btn" onclick="fkAddItem('${g.id}')">+ Tambah</button>
     </div>
@@ -2471,19 +2536,27 @@ function fkInitDrag(){
       e.preventDefault();e.stopPropagation();
       const toGid=group.dataset.gid;
       if(!_fkDragGid||toGid===_fkDragGid)return;
-      const fi=S.filterGroups.findIndex(x=>x.id===_fkDragGid);
-      const ti=S.filterGroups.findIndex(x=>x.id===toGid);
-      if(fi<0||ti<0)return;
-      const moved=S.filterGroups.splice(fi,1)[0];
-      S.filterGroups.splice(ti,0,moved);
-      // Sinkronkan filterOrder juga
+      // Reorder dalam masterGroups (unified)
+      const mgIds=(S.masterGroups||[]).map(g=>g.id);
+      const fi=mgIds.indexOf(_fkDragGid);
+      const ti=mgIds.indexOf(toGid);
+      if(fi>=0&&ti>=0){
+        const moved=S.masterGroups.splice(fi,1)[0];
+        S.masterGroups.splice(ti,0,moved);
+      } else {
+        // Fallback: filterGroups
+        const ffi=(S.filterGroups||[]).findIndex(x=>x.id===_fkDragGid);
+        const fti=(S.filterGroups||[]).findIndex(x=>x.id===toGid);
+        if(ffi>=0&&fti>=0){const moved=S.filterGroups.splice(ffi,1)[0];S.filterGroups.splice(fti,0,moved);}
+      }
+      // Sinkronkan filterOrder
       if(S.filterOrder){
         const foi=S.filterOrder.indexOf(_fkDragGid);
         const toi=S.filterOrder.indexOf(toGid);
         if(foi>=0&&toi>=0){S.filterOrder.splice(foi,1);S.filterOrder.splice(toi,0,_fkDragGid);}
       }
       storeSave();renderFilterKat();buildDynamicFilters();
-      toast('Urutan grup diperbarui','success');
+      toast('Urutan daftar diperbarui','success');
     });
   });
 
@@ -2527,10 +2600,10 @@ function fkInitDrag(){
       const toIdx=parseInt(item.dataset.idx);
       const gid=item.dataset.gid;
       if(!_fkDragItemGid||gid!==_fkDragItemGid||toIdx===_fkDragItemIdx)return;
-      const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+      const g=_fkFindGroup(gid);if(!g)return;
       const moved=g.items.splice(_fkDragItemIdx,1)[0];
       g.items.splice(toIdx,0,moved);
-      storeSave();renderFilterKat();buildDynamicFilters();
+      mdSyncLegacy();storeSave();renderFilterKat();buildDynamicFilters();
       toast('Urutan item diperbarui','success');
     });
   });
@@ -2543,41 +2616,43 @@ function fkInitDrag(){
 }
 
 function fkAddItem(gid){
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const g=_fkFindGroup(gid);if(!g)return;
   const inp=$('fki-inp-'+gid);if(!inp)return;
   const val=inp.value.trim();
   if(!val){toast('Item tidak boleh kosong','error');return;}
   if((g.items||[]).map(v=>v.toLowerCase()).includes(val.toLowerCase())){toast('Sudah ada','error');return;}
   g.items=g.items||[];
   g.items.push(val);
-  storeSave();renderFilterKat();buildDynamicFilters();
+  mdSyncLegacy();storeSave();renderFilterKat();buildDynamicFilters();
   toast(`"${val}" ditambahkan`,'success');
   setTimeout(()=>{const el=$('fki-inp-'+gid);if(el)el.focus();},50);
 }
 
 function fkDeleteItem(gid,idx){
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const g=_fkFindGroup(gid);if(!g)return;
   const val=g.items[idx];
-  confirm2(`Hapus "${val}" dari grup ${g.name}?`,()=>{
+  confirm2(`Hapus "${val}" dari ${g.name}?`,()=>{
     g.items.splice(idx,1);
-    storeSave();renderFilterKat();buildDynamicFilters();
+    mdSyncLegacy();storeSave();renderFilterKat();buildDynamicFilters();
     toast(`"${val}" dihapus`,'success');
   });
 }
 
 function fkDeleteGroup(gid){
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
-  confirm2(`Hapus grup filter "${g.name}" beserta ${(g.items||[]).length} item-nya?`,()=>{
-    S.filterGroups=S.filterGroups.filter(x=>x.id!==gid);
-    // Hapus juga dari filterOrder jika ada
+  const g=_fkFindGroup(gid);if(!g)return;
+  const isBuiltin=['tipeMotor','merek','kategori'].includes(gid);
+  if(isBuiltin){toast('Daftar bawaan tidak bisa dihapus','error');return;}
+  confirm2(`Hapus daftar "${g.name}" beserta ${(g.items||[]).length} item-nya?`,()=>{
+    S.masterGroups=(S.masterGroups||[]).filter(x=>x.id!==gid);
+    S.filterGroups=(S.filterGroups||[]).filter(x=>x.id!==gid);
     if(S.filterOrder)S.filterOrder=S.filterOrder.filter(id=>id!==gid);
     storeSave();renderFilterKat();buildDynamicFilters();
-    toast(`Grup "${g.name}" dihapus`,'success');
+    toast(`Daftar "${g.name}" dihapus`,'success');
   });
 }
 
 function fkEditGroup(gid){
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const g=_fkFindGroup(gid);if(!g)return;
   const nameEl=document.querySelector(`#fkg-${gid} .fk-group-name`);
   const iconEl=document.querySelector(`#fkg-${gid} .fk-group-icon`);
   const actsEl=document.querySelector(`#fkg-${gid} .fk-group-acts`);
@@ -2585,18 +2660,18 @@ function fkEditGroup(gid){
   const oldName=g.name,oldIcon=g.icon||'🏷️';
   nameEl.outerHTML=`<input class="fi fk-rename-inp" id="fkr-name-${gid}" value="${esc(oldName)}" maxlength="40" style="flex:1;padding:3px 7px;font-size:13px;font-weight:700">`;
   iconEl.outerHTML=`<input class="fi fk-rename-inp" id="fkr-icon-${gid}" value="${esc(oldIcon)}" maxlength="4" style="width:42px;font-size:16px;text-align:center;padding:3px 5px">`;
-  actsEl.innerHTML=`<button class="btn btn-p btn-sm" onclick="fkSaveEdit('${gid}')">✓</button><button class="btn btn-g btn-sm" onclick="renderFilterKat()">✕</button>`;
+  actsEl.innerHTML=`<button class="btn btn-p btn-sm" onclick="fkSaveEdit('${gid}')">✓ Simpan</button><button class="btn btn-g btn-sm" onclick="renderFilterKat()">✕</button>`;
   const ri=$('fkr-name-'+gid);if(ri){ri.focus();ri.addEventListener('keydown',e=>{if(e.key==='Enter')fkSaveEdit(gid);if(e.key==='Escape')renderFilterKat();});}
 }
 
 function fkSaveEdit(gid){
-  const g=S.filterGroups.find(x=>x.id===gid);if(!g)return;
+  const g=_fkFindGroup(gid);if(!g)return;
   const name=($('fkr-name-'+gid)||{}).value?.trim();
   const icon=($('fkr-icon-'+gid)||{}).value?.trim()||'🏷️';
   if(!name){toast('Nama tidak boleh kosong','error');return;}
-  g.name=name;g.icon=icon;
+  _fkSaveGroup(gid,{name,icon});
   storeSave();renderFilterKat();buildDynamicFilters();
-  toast('Grup diperbarui','success');
+  toast('Daftar diperbarui','success');
 }
 
 function fkNewGroupOpen(){
@@ -2610,20 +2685,21 @@ function fkNewGroupClose(){$('fk-create-form').style.display='none';}
 function fkNewGroupSave(){
   const name=$('fk-ng-name').value.trim();
   const icon=$('fk-ng-icon').value.trim()||'🏷️';
-  if(!name){toast('Nama grup wajib diisi','error');$('fk-ng-name').classList.add('err');return;}
+  if(!name){toast('Nama daftar wajib diisi','error');$('fk-ng-name').classList.add('err');return;}
   $('fk-ng-name').classList.remove('err');
-  S.filterGroups=S.filterGroups||[];
-  // Cek duplikat nama
-  if(S.filterGroups.some(g=>g.name.toLowerCase()===name.toLowerCase())){
-    toast('Nama grup sudah ada','error');return;
+  mdSeedBuiltins();
+  const allGroups=[...(S.masterGroups||[]),...(S.filterGroups||[])];
+  if(allGroups.some(g=>g.name.toLowerCase()===name.toLowerCase())){
+    toast('Nama daftar sudah ada','error');return;
   }
-  const id='fkg_'+Date.now().toString(36);
-  S.filterGroups.push({id,icon,name,items:[]});
-  // Tambah ke filterOrder agar langsung muncul di filter bar
+  const id='grp_'+Date.now().toString(36);
+  // Simpan ke masterGroups (unified)
+  S.masterGroups=S.masterGroups||[];
+  S.masterGroups.push({id,icon,name,items:[]});
   if(!S.filterOrder)S.filterOrder=getFilterOrder();
   if(!S.filterOrder.includes(id))S.filterOrder.push(id);
   storeSave();fkNewGroupClose();renderFilterKat();buildDynamicFilters();
-  toast(`Grup "${name}" dibuat!`,'success');
+  toast(`Daftar "${name}" dibuat!`,'success');
   setTimeout(()=>{const el=$('fkg-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
 }
 
@@ -2640,7 +2716,7 @@ function mdDelete(prop,val){
 // ═══════════════════════════════════════
 //  MODAL BARANG
 // ═══════════════════════════════════════
-function openModal(editId){
+function openModal(editId, tmplSrc){
   S.editingId=editId||null;$('modal-ov').classList.add('open');
   const ks=$('f-kat-sel');
   const _katG=S.masterGroups&&S.masterGroups.find(x=>x.id==='kategori');
@@ -2667,6 +2743,25 @@ function openModal(editId){
     const tipes=Array.isArray(item.tipeMotors)?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);
     tipePicker.setSelected(tipes);
     buildModalCustomFields(item);
+  }else if(tmplSrc){
+    // Template mode: copy data from source, clear name & stok
+    const src=tmplSrc;
+    $('modal-title').textContent='✨ Barang Baru dari Template';$('modal-save').textContent='\u{1F4BE} Simpan';
+    $('f-nama').value='';  // kosongkan nama agar user isi sendiri
+    $('f-kat-sel').value=src.kategori||'';
+    $('f-merek-inp').value=src.merek||'';
+    $('f-stok').value='0'; // stok awal 0
+    $('f-harga').value=src.harga||'';
+    $('f-harga-grosir').value=src.hargaGrosir||'';$('f-min-grosir').value=src.minGrosir||'';
+    $('f-min-stok').value=src.minStok||'';$('f-supplier').value=src.supplier||'';
+    $('f-lokasi').value=src.lokasi||'';$('f-tgl').value=new Date().toISOString().slice(0,10);
+    $('f-harga-modal').value=src.hargaModal||'';
+    $('f-catatan').value=src.catatan||'';populateLblPicker(src.labels||[]);
+    const tipes=Array.isArray(src.tipeMotors)?src.tipeMotors:(src.tipeMotor?[src.tipeMotor]:[]);
+    tipePicker.setSelected(tipes);
+    buildModalCustomFields(src);
+    // Highlight nama field
+    setTimeout(()=>{const el=$('f-nama');if(el){el.focus();el.classList.add('tmpl-highlight');}},200);
   }else{
     $('modal-title').textContent='Tambah Barang Baru';$('modal-save').textContent='\u{1F4BE} Simpan';
     clearForm();$('f-tgl').value=new Date().toISOString().slice(0,10);populateLblPicker([]);
@@ -3233,6 +3328,210 @@ function emptyTrash(){
 }
 
 // ═══════════════════════════════════════
+//  MULTI-SELECT TOGGLE
+// ═══════════════════════════════════════
+let _msActive=false;
+
+function toggleMultiSelect(){
+  _msActive=!_msActive;
+  const btn=$('btn-multiselect-toggle');
+  if(_msActive){
+    document.body.classList.add('ms-active');
+    btn.classList.add('ms-on');
+    btn.innerHTML=`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg> Multi Pilih: ON`;
+    toast('Mode multi pilih aktif — centang barang yang ingin dipilih','info');
+  } else {
+    document.body.classList.remove('ms-active');
+    btn.classList.remove('ms-on');
+    btn.innerHTML=`<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px"><rect x="3" y="5" width="4" height="4" rx="1"/><rect x="3" y="11" width="4" height="4" rx="1"/><rect x="3" y="17" width="4" height="4" rx="1"/><line x1="10" y1="7" x2="21" y2="7"/><line x1="10" y1="13" x2="21" y2="13"/><line x1="10" y1="19" x2="21" y2="19"/></svg> Multi Pilih`;
+    clearSelection();
+  }
+}
+
+// ═══════════════════════════════════════
+//  TEMPLATE PER DAFTAR (Filter Kategori)
+// ═══════════════════════════════════════
+let _fkTmplTargetGid=null;
+
+function fkOpenTemplate(targetGid){
+  _fkTmplTargetGid=targetGid;
+  const targetG=_fkFindGroup(targetGid);
+  if(!targetG){toast('Daftar tidak ditemukan','error');return;}
+
+  // Bangun semua grup sumber (kecuali diri sendiri)
+  mdSeedBuiltins();
+  const allGroups=[...(S.masterGroups||[]),...(S.filterGroups||[]).filter(g=>!(S.masterGroups||[]).find(m=>m.id===g.id))];
+  const sources=allGroups.filter(g=>g.id!==targetGid&&(g.items||[]).length>0);
+
+  if(!sources.length){
+    toast('Tidak ada daftar lain yang memiliki item','info');
+    return;
+  }
+
+  // Buat modal inline (overlay sederhana)
+  const existMo=$('fk-tmpl-overlay');if(existMo)existMo.remove();
+
+  const mo=document.createElement('div');
+  mo.id='fk-tmpl-overlay';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:250;display:flex;align-items:center;justify-content:center';
+  mo.innerHTML=`
+    <div style="background:var(--bg-1);border:1px solid var(--bdr-b);border-radius:var(--r);width:min(560px,95vw);max-height:82vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.7)">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px">
+        <div style="font-size:14px;font-weight:700;flex:1">📋 Salin Item ke <span style="color:var(--cy)">${esc(targetG.icon||'')} ${esc(targetG.name)}</span></div>
+        <div class="icon-btn" onclick="document.getElementById('fk-tmpl-overlay').remove()" style="flex-shrink:0"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+      </div>
+      <div style="padding:14px 18px;overflow-y:auto;flex:1">
+        <div style="font-size:11.5px;color:var(--tm);margin-bottom:12px">Pilih item dari daftar lain untuk ditambahkan ke <strong style="color:var(--tp)">${esc(targetG.name)}</strong>. Item yang sudah ada akan dilewati.</div>
+        ${sources.map(src=>`
+          <div style="margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--bdr)">
+              <span style="font-size:15px">${esc(src.icon||'📋')}</span>
+              <span style="font-size:12px;font-weight:700;color:var(--tp)">${esc(src.name)}</span>
+              <span style="font-size:10px;color:var(--tm);margin-left:auto;cursor:pointer;color:var(--ac)" onclick="fkTmplSelectAll('${src.id}',true)">Pilih Semua</span>
+              <span style="font-size:10px;color:var(--tm);cursor:pointer" onclick="fkTmplSelectAll('${src.id}',false)">Reset</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              ${(src.items||[]).map(val=>{
+                const exists=(targetG.items||[]).map(v=>v.toLowerCase()).includes(val.toLowerCase());
+                return`<label style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:${exists?'not-allowed':'pointer'};opacity:${exists?'.4':'1'};background:var(--bg-3);border:1px solid var(--bdr);transition:all .12s" class="fk-tmpl-chip" data-srcid="${src.id}" data-val="${esc(val)}">
+                  <input type="checkbox" class="fk-tmpl-cb" data-srcid="${src.id}" data-val="${esc(val)}" ${exists?'disabled checked':''} style="accent-color:var(--ac);width:12px;height:12px">
+                  ${esc(val)}${exists?' ✓':''}
+                </label>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="padding:12px 18px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <span style="font-size:11.5px;color:var(--tm)" id="fk-tmpl-count">0 item dipilih</span>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-g" onclick="document.getElementById('fk-tmpl-overlay').remove()">Batal</button>
+          <button class="btn btn-p" onclick="fkTmplApply()">✓ Tambahkan ke ${esc(targetG.name)}</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(mo);
+
+  // Bind checkbox change untuk update counter
+  mo.querySelectorAll('.fk-tmpl-cb:not([disabled])').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      const n=mo.querySelectorAll('.fk-tmpl-cb:not([disabled]):checked').length;
+      const cnt=$('fk-tmpl-count');if(cnt)cnt.textContent=n+' item dipilih';
+    });
+  });
+
+  // Close on overlay click
+  mo.addEventListener('click',e=>{if(e.target===mo)mo.remove();});
+}
+
+function fkTmplSelectAll(srcId,select){
+  const mo=$('fk-tmpl-overlay');if(!mo)return;
+  mo.querySelectorAll(`.fk-tmpl-cb[data-srcid="${srcId}"]:not([disabled])`).forEach(cb=>{cb.checked=select;});
+  const n=mo.querySelectorAll('.fk-tmpl-cb:not([disabled]):checked').length;
+  const cnt=$('fk-tmpl-count');if(cnt)cnt.textContent=n+' item dipilih';
+}
+
+function fkTmplApply(){
+  const mo=$('fk-tmpl-overlay');if(!mo)return;
+  const targetG=_fkFindGroup(_fkTmplTargetGid);if(!targetG)return;
+  const checked=mo.querySelectorAll('.fk-tmpl-cb:not([disabled]):checked');
+  if(!checked.length){toast('Pilih minimal 1 item','error');return;}
+  let added=0;
+  checked.forEach(cb=>{
+    const val=cb.dataset.val;
+    if(val&&!(targetG.items||[]).map(v=>v.toLowerCase()).includes(val.toLowerCase())){
+      targetG.items=targetG.items||[];
+      targetG.items.push(val);
+      added++;
+    }
+  });
+  mdSyncLegacy();storeSave();
+  mo.remove();
+  renderFilterKat();buildDynamicFilters();
+  toast(`${added} item berhasil ditambahkan ke ${targetG.name}`,'success');
+  // Scroll ke grup target
+  setTimeout(()=>{const el=$('fkg-'+_fkTmplTargetGid);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},150);
+}
+
+function onRowCbChange(cb){
+  const id=cb.dataset.id;
+  const tr=cb.closest('tr');
+  if(cb.checked){S._selected.add(id);tr.classList.add('row-selected');}
+  else{S._selected.delete(id);tr.classList.remove('row-selected');}
+  updateMsBar();
+}
+
+function toggleSelectAll(checked){
+  const rows=document.querySelectorAll('#main-tbody .row-cb');
+  rows.forEach(cb=>{
+    cb.checked=checked;
+    const tr=cb.closest('tr');
+    if(checked){S._selected.add(cb.dataset.id);tr.classList.add('row-selected');}
+    else{S._selected.delete(cb.dataset.id);tr.classList.remove('row-selected');}
+  });
+  updateMsBar();
+}
+
+function updateMsBar(){
+  const bar=$('ms-bar'),cnt=$('ms-count');
+  const n=S._selected.size;
+  if(n>0){bar.classList.add('show');cnt.textContent=n;}
+  else{bar.classList.remove('show');}
+  // Sync select-all checkbox
+  const allCbs=document.querySelectorAll('#main-tbody .row-cb');
+  const cbAll=$('cb-all');
+  if(cbAll&&allCbs.length){
+    const allChecked=[...allCbs].every(c=>c.checked);
+    const someChecked=[...allCbs].some(c=>c.checked);
+    cbAll.checked=allChecked;
+    cbAll.indeterminate=!allChecked&&someChecked;
+  }
+}
+
+function clearSelection(){
+  S._selected.clear();
+  document.querySelectorAll('#main-tbody .row-cb').forEach(cb=>{cb.checked=false;cb.closest('tr').classList.remove('row-selected');});
+  const cbAll=$('cb-all');if(cbAll){cbAll.checked=false;cbAll.indeterminate=false;}
+  $('ms-bar').classList.remove('show');
+}
+
+function msDeleteSelected(){
+  const ids=[...S._selected];
+  if(!ids.length){toast('Tidak ada barang dipilih','error');return;}
+  confirm2(`Hapus ${ids.length} barang yang dipilih? Akan dipindahkan ke tempat sampah.`,()=>{
+    const now=new Date().toISOString();
+    S.trashItems=S.trashItems||[];
+    ids.forEach(id=>{
+      const item=S.items.find(i=>i.id===id);
+      if(item){S.trashItems.unshift({...item,deletedAt:now});}
+    });
+    S.items=S.items.filter(i=>!ids.includes(i.id));
+    S._selected.clear();
+    storeSave();refreshAll();updateTrashBadge();
+    toast(`${ids.length} barang dipindahkan ke tempat sampah`,'info');
+  });
+}
+
+function msDuplicateSelected(){
+  const ids=[...S._selected];
+  if(!ids.length){toast('Tidak ada barang dipilih','error');return;}
+  if(ids.length>10){toast('Maksimal duplikat 10 barang sekaligus','error');return;}
+  const now=new Date().toISOString();
+  let added=0;
+  ids.forEach(id=>{
+    const item=S.items.find(i=>i.id===id);
+    if(item){
+      const copy={...JSON.parse(JSON.stringify(item)),id:uid(),nama:item.nama+' (Salinan)',createdAt:now,updatedAt:now};
+      S.items.push(copy);added++;
+    }
+  });
+  S._selected.clear();
+  storeSave();refreshAll();
+  toast(`${added} barang berhasil diduplikat`,'success');
+}
+
+// ═══════════════════════════════════════
 //  SIDEBAR
 // ═══════════════════════════════════════
 function toggleSidebar(){$('sidebar').classList.toggle('mob');$('sb-ov').classList.toggle('mob');}
@@ -3314,16 +3613,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('f-harga-range').addEventListener('change',doFilter);
   $('btn-reset').addEventListener('click',resetFilter);
   // Sort — dihandle di renderTableHeader() secara dinamis
-  // Master Data
-  $('md-new-group-btn').addEventListener('click',mdNewGroupOpen);
-  // Filter Kategori
+  // Filter Kategori / Kelola Daftar
   $('fk-new-group-btn').addEventListener('click',fkNewGroupOpen);
   $('fk-ng-save-btn').addEventListener('click',fkNewGroupSave);
   $('fk-ng-cancel-btn').addEventListener('click',fkNewGroupClose);
   $('fk-ng-name').addEventListener('keydown',e=>{if(e.key==='Enter')fkNewGroupSave();if(e.key==='Escape')fkNewGroupClose();});
-  $('md-ng-save-btn').addEventListener('click',mdNewGroupSave);
-  $('md-ng-cancel-btn').addEventListener('click',mdNewGroupClose);
-  $('md-ng-name').addEventListener('keydown',e=>{if(e.key==='Enter')mdNewGroupSave();if(e.key==='Escape')mdNewGroupClose();});
   // Labels
   $('btn-create-lbl').addEventListener('click',createLabel);$('nl-name').addEventListener('input',updateLblPreview);
   $('clr-palette').addEventListener('click',e=>{const sw=e.target.closest('.csw');if(sw)pickColor(sw.dataset.c,sw);});
@@ -3334,7 +3628,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   drop.addEventListener('dragleave',()=>drop.classList.remove('dv'));
   drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('dv');const f=e.dataTransfer.files[0];if(f&&(f.name.endsWith('.csv')||f.name.endsWith('.xlsx')||f.name.endsWith('.xls')))handleImport({target:{files:e.dataTransfer.files}});});
   // Keyboard
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeNotaModal();closeConfirm();const mo=$('fk-tmpl-overlay');if(mo)mo.remove();}if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();openModal();}});
+  // Multi-select
+  $('btn-multiselect-toggle').addEventListener('click',toggleMultiSelect);
+  $('ms-delete-btn').addEventListener('click',msDeleteSelected);
+  $('ms-duplicate-btn').addEventListener('click',msDuplicateSelected);
+  $('ms-clear-btn').addEventListener('click',()=>{clearSelection();});
+  // Template button on Data Barang now removed (template ada di Filter Kategori per grup)
+  const tmplBtn=$('btn-open-template');if(tmplBtn)tmplBtn.style.display='none';
 
   cleanupFilterOrder();refreshAll();updateTrashBadge();navigateTo('dashboard');
 });
