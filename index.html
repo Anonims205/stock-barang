@@ -165,8 +165,8 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 .fsl option{background:var(--bg-2)}
 
 /* TABLE */
-.tc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
-.tw{overflow-x:auto}
+.tc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r)}
+.tw{overflow-x:auto;border-radius:var(--r)}
 table{width:100%;border-collapse:collapse}
 thead th{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;
   padding:10px 12px;text-align:left;background:var(--bg-1);border-bottom:1px solid var(--bdr);white-space:nowrap;cursor:pointer;user-select:none}
@@ -243,6 +243,40 @@ tbody tr:last-child td{border-bottom:none}
 .drag-handle{width:18px;height:28px;display:flex;align-items:center;justify-content:center;
   cursor:grab;color:var(--tm);opacity:.5;transition:opacity .15s;font-size:15px;user-select:none;flex-shrink:0}
 .drag-handle:hover{opacity:1;color:var(--ts)}
+
+/* STICKY COLUMN - Nama Barang (col 1=drag, col 2=no, col 3=nama) */
+#main-tbody td:nth-child(1),
+#main-tbody td:nth-child(2),
+#main-tbody td:nth-child(3),
+#main-thead-tr th:nth-child(1),
+#main-thead-tr th:nth-child(2),
+#main-thead-tr th:nth-child(3){
+  position:sticky;
+  z-index:2;
+  background:var(--bg-2);
+}
+#main-thead-tr th:nth-child(1),
+#main-thead-tr th:nth-child(2),
+#main-thead-tr th:nth-child(3){
+  background:var(--bg-1);
+  z-index:3;
+}
+#main-thead-tr th:nth-child(1),#main-tbody td:nth-child(1){left:0;width:30px;min-width:30px}
+#main-thead-tr th:nth-child(2),#main-tbody td:nth-child(2){left:30px;width:30px;min-width:30px}
+#main-thead-tr th:nth-child(3),#main-tbody td:nth-child(3){left:60px;min-width:160px}
+#main-thead-tr th:nth-child(3),#main-tbody td:nth-child(3){
+  box-shadow:3px 0 8px -2px rgba(0,0,0,.5);
+}
+tbody tr:hover td:nth-child(1),
+tbody tr:hover td:nth-child(2),
+tbody tr:hover td:nth-child(3){background:rgba(255,255,255,.015)!important}
+tbody tr.row-selected td:nth-child(1),
+tbody tr.row-selected td:nth-child(2),
+tbody tr.row-selected td:nth-child(3){background:rgba(79,124,255,.07)!important}
+tbody tr.row-selected:hover td:nth-child(1),
+tbody tr.row-selected:hover td:nth-child(2),
+tbody tr.row-selected:hover td:nth-child(3){background:rgba(79,124,255,.11)!important}
+
 tbody tr.dragging-row{opacity:.35;background:var(--bg-3)!important}
 tbody tr.drag-over-row{border-top:2px solid var(--ac)!important;background:rgba(79,124,255,.06)!important}
 
@@ -256,6 +290,25 @@ tbody tr.row-selected:hover{background:rgba(79,124,255,.11)!important}
 .ms-bar-info{font-size:12.5px;font-weight:600;color:var(--ac);flex:1}
 .ms-bar-info span{font-family:var(--mono);font-size:14px}
 .th-cb{width:36px;cursor:default!important}
+body.ms-active #main-tbody td:nth-child(1),
+body.ms-active #main-thead-tr th:nth-child(1){position:sticky;left:0;width:36px;min-width:36px;z-index:2;background:var(--bg-2)}
+body.ms-active #main-thead-tr th:nth-child(1){background:var(--bg-1);z-index:3}
+body.ms-active #main-tbody td:nth-child(2),
+body.ms-active #main-thead-tr th:nth-child(2){position:sticky;left:36px;width:30px;min-width:30px;z-index:2;background:var(--bg-2)}
+body.ms-active #main-thead-tr th:nth-child(2){background:var(--bg-1);z-index:3}
+body.ms-active #main-tbody td:nth-child(3),
+body.ms-active #main-thead-tr th:nth-child(3){position:sticky;left:66px;width:30px;min-width:30px;z-index:2;background:var(--bg-2)}
+body.ms-active #main-thead-tr th:nth-child(3){background:var(--bg-1);z-index:3}
+body.ms-active #main-tbody td:nth-child(4),
+body.ms-active #main-thead-tr th:nth-child(4){position:sticky;left:96px;min-width:160px;z-index:2;background:var(--bg-2);box-shadow:3px 0 8px -2px rgba(0,0,0,.5)}
+body.ms-active #main-thead-tr th:nth-child(4){background:var(--bg-1);z-index:3}
+body.ms-active #main-tbody td:nth-child(1),
+body.ms-active #main-tbody td:nth-child(2),
+body.ms-active #main-tbody td:nth-child(3){box-shadow:none}
+body.ms-active tbody tr:hover td:nth-child(4){background:rgba(255,255,255,.015)!important}
+body.ms-active tbody tr.row-selected td:nth-child(4){background:rgba(79,124,255,.07)!important}
+body.ms-active tbody tr.row-selected:hover td:nth-child(4){background:rgba(79,124,255,.11)!important}
+
 /* Checkbox column hidden when multiselect off */
 .cb-col{display:none}
 body.ms-active .cb-col{display:table-cell}
