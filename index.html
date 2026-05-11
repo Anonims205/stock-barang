@@ -165,9 +165,9 @@ body{font-family:var(--sans);background:var(--bg-0);color:var(--tp);min-height:1
 .fsl option{background:var(--bg-2)}
 
 /* TABLE */
-.tc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r)}
+.tc{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
 .tw{overflow-x:auto;border-radius:var(--r)}
-table{width:100%;border-collapse:collapse}
+table{width:100%;border-collapse:separate;border-spacing:0}
 thead th{font-size:10px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;
   padding:10px 12px;text-align:left;background:var(--bg-1);border-bottom:1px solid var(--bdr);white-space:nowrap;cursor:pointer;user-select:none}
 thead th:hover{color:var(--tp)}
@@ -180,6 +180,40 @@ tbody tr{transition:background .1s}
 tbody tr:hover{background:rgba(255,255,255,.015)}
 tbody td{padding:11px 12px;font-size:12.5px;border-bottom:1px solid var(--bdr);vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
+
+/* STICKY COLUMNS — Nama Barang selalu terlihat saat scroll horizontal */
+/* Urutan kolom: [0]cb | [1]drag | [2]# | [3]Nama Barang */
+/* Mode normal (multiselect off): drag=col1, #=col2, Nama=col3 */
+thead th.th-sticky-drag, tbody td.td-sticky-drag{
+  position:sticky;left:0;z-index:3;background:var(--bg-1);
+  box-shadow:inset -1px 0 0 var(--bdr)}
+tbody td.td-sticky-drag{background:var(--bg-2)}
+tbody tr:hover td.td-sticky-drag{background:var(--bg-3)}
+
+thead th.th-sticky-num, tbody td.td-sticky-num{
+  position:sticky;left:30px;z-index:3;background:var(--bg-1);
+  box-shadow:inset -1px 0 0 var(--bdr)}
+tbody td.td-sticky-num{background:var(--bg-2)}
+tbody tr:hover td.td-sticky-num{background:var(--bg-3)}
+
+thead th.th-sticky-nama, tbody td.td-sticky-nama{
+  position:sticky;left:60px;z-index:4;background:var(--bg-1);
+  box-shadow:2px 0 8px rgba(0,0,0,.4),inset -1px 0 0 var(--bdr)}
+tbody td.td-sticky-nama{background:var(--bg-2)}
+tbody tr:hover td.td-sticky-nama{background:var(--bg-3)}
+tbody tr.row-selected td.td-sticky-nama{background:var(--ac-d)}
+
+/* Mode multiselect aktif — geser offset +36px untuk kolom cb */
+body.ms-active thead th.th-sticky-drag{left:36px}
+body.ms-active tbody td.td-sticky-drag{left:36px}
+body.ms-active thead th.th-sticky-num{left:66px}
+body.ms-active tbody td.td-sticky-num{left:66px}
+body.ms-active thead th.th-sticky-nama{left:96px}
+body.ms-active tbody td.td-sticky-nama{left:96px}
+/* cb column juga sticky saat multiselect */
+thead th.th-cb.cb-col-th{position:sticky;left:0;z-index:4;background:var(--bg-1);box-shadow:inset -1px 0 0 var(--bdr)}
+tbody td.cb-col{position:sticky;left:0;z-index:3;background:var(--bg-2);box-shadow:inset -1px 0 0 var(--bdr)}
+tbody tr:hover td.cb-col{background:var(--bg-3)}
 .cn{font-weight:500;color:var(--tp)}.csb{font-size:10.5px;color:var(--tm);margin-top:2px}
 .cm{font-family:var(--mono);font-size:11.5px}
 .ca{display:flex;gap:4px;justify-content:flex-end}
@@ -243,40 +277,6 @@ tbody tr:last-child td{border-bottom:none}
 .drag-handle{width:18px;height:28px;display:flex;align-items:center;justify-content:center;
   cursor:grab;color:var(--tm);opacity:.5;transition:opacity .15s;font-size:15px;user-select:none;flex-shrink:0}
 .drag-handle:hover{opacity:1;color:var(--ts)}
-
-/* STICKY COLUMN - Nama Barang (col 1=drag, col 2=no, col 3=nama) */
-#main-tbody td:nth-child(1),
-#main-tbody td:nth-child(2),
-#main-tbody td:nth-child(3),
-#main-thead-tr th:nth-child(1),
-#main-thead-tr th:nth-child(2),
-#main-thead-tr th:nth-child(3){
-  position:sticky;
-  z-index:2;
-  background:var(--bg-2);
-}
-#main-thead-tr th:nth-child(1),
-#main-thead-tr th:nth-child(2),
-#main-thead-tr th:nth-child(3){
-  background:var(--bg-1);
-  z-index:3;
-}
-#main-thead-tr th:nth-child(1),#main-tbody td:nth-child(1){left:0;width:30px;min-width:30px}
-#main-thead-tr th:nth-child(2),#main-tbody td:nth-child(2){left:30px;width:30px;min-width:30px}
-#main-thead-tr th:nth-child(3),#main-tbody td:nth-child(3){left:60px;min-width:160px}
-#main-thead-tr th:nth-child(3),#main-tbody td:nth-child(3){
-  box-shadow:3px 0 8px -2px rgba(0,0,0,.5);
-}
-tbody tr:hover td:nth-child(1),
-tbody tr:hover td:nth-child(2),
-tbody tr:hover td:nth-child(3){background:rgba(255,255,255,.015)!important}
-tbody tr.row-selected td:nth-child(1),
-tbody tr.row-selected td:nth-child(2),
-tbody tr.row-selected td:nth-child(3){background:rgba(79,124,255,.07)!important}
-tbody tr.row-selected:hover td:nth-child(1),
-tbody tr.row-selected:hover td:nth-child(2),
-tbody tr.row-selected:hover td:nth-child(3){background:rgba(79,124,255,.11)!important}
-
 tbody tr.dragging-row{opacity:.35;background:var(--bg-3)!important}
 tbody tr.drag-over-row{border-top:2px solid var(--ac)!important;background:rgba(79,124,255,.06)!important}
 
@@ -290,25 +290,6 @@ tbody tr.row-selected:hover{background:rgba(79,124,255,.11)!important}
 .ms-bar-info{font-size:12.5px;font-weight:600;color:var(--ac);flex:1}
 .ms-bar-info span{font-family:var(--mono);font-size:14px}
 .th-cb{width:36px;cursor:default!important}
-body.ms-active #main-tbody td:nth-child(1),
-body.ms-active #main-thead-tr th:nth-child(1){position:sticky;left:0;width:36px;min-width:36px;z-index:2;background:var(--bg-2)}
-body.ms-active #main-thead-tr th:nth-child(1){background:var(--bg-1);z-index:3}
-body.ms-active #main-tbody td:nth-child(2),
-body.ms-active #main-thead-tr th:nth-child(2){position:sticky;left:36px;width:30px;min-width:30px;z-index:2;background:var(--bg-2)}
-body.ms-active #main-thead-tr th:nth-child(2){background:var(--bg-1);z-index:3}
-body.ms-active #main-tbody td:nth-child(3),
-body.ms-active #main-thead-tr th:nth-child(3){position:sticky;left:66px;width:30px;min-width:30px;z-index:2;background:var(--bg-2)}
-body.ms-active #main-thead-tr th:nth-child(3){background:var(--bg-1);z-index:3}
-body.ms-active #main-tbody td:nth-child(4),
-body.ms-active #main-thead-tr th:nth-child(4){position:sticky;left:96px;min-width:160px;z-index:2;background:var(--bg-2);box-shadow:3px 0 8px -2px rgba(0,0,0,.5)}
-body.ms-active #main-thead-tr th:nth-child(4){background:var(--bg-1);z-index:3}
-body.ms-active #main-tbody td:nth-child(1),
-body.ms-active #main-tbody td:nth-child(2),
-body.ms-active #main-tbody td:nth-child(3){box-shadow:none}
-body.ms-active tbody tr:hover td:nth-child(4){background:rgba(255,255,255,.015)!important}
-body.ms-active tbody tr.row-selected td:nth-child(4){background:rgba(79,124,255,.07)!important}
-body.ms-active tbody tr.row-selected:hover td:nth-child(4){background:rgba(79,124,255,.11)!important}
-
 /* Checkbox column hidden when multiselect off */
 .cb-col{display:none}
 body.ms-active .cb-col{display:table-cell}
@@ -1539,9 +1520,9 @@ function renderTableHeader(){
   // Kolom tetap sebelum kolom custom
   const fixedBefore=`
     <th class="th-cb cb-col-th"><input type="checkbox" id="cb-all" class="row-cb" title="Pilih semua" onchange="toggleSelectAll(this.checked)"></th>
-    <th style="width:30px;cursor:default"></th>
-    <th style="width:30px;cursor:default">#</th>
-    <th data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
+    <th class="th-sticky-drag" style="width:30px;cursor:default"></th>
+    <th class="th-sticky-num" style="width:30px;cursor:default">#</th>
+    <th class="th-sticky-nama" data-sort="nama">Nama Barang<span class="sort-ic"></span></th>
     <th data-sort="kategori">Kategori<span class="sort-ic"></span></th>
     <th data-sort="merek">Merek<span class="sort-ic"></span></th>
     <th data-sort="tipeMotor">Tipe Motor<span class="sort-ic"></span></th>`;
@@ -1620,9 +1601,9 @@ function renderBarang(filtered){
     }).join('');
     return`<tr draggable="true" data-id="${item.id}" class="barang-row${S._selected&&S._selected.has(item.id)?' row-selected':''}">
       <td class="cb-col" style="padding:0 6px 0 8px"><input type="checkbox" class="row-cb" data-id="${item.id}" ${S._selected&&S._selected.has(item.id)?'checked':''} onchange="onRowCbChange(this)"></td>
-      <td style="padding:0 4px"><div class="drag-handle" title="Drag untuk urutkan">⠿</div></td>
-      <td class="cm" style="color:var(--tm)">${idx+1}</td>
-      <td><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
+      <td class="td-sticky-drag" style="padding:0 4px"><div class="drag-handle" title="Drag untuk urutkan">⠿</div></td>
+      <td class="td-sticky-num cm" style="color:var(--tm)">${idx+1}</td>
+      <td class="td-sticky-nama"><div class="cn">${esc(item.nama)}</div><div class="csb">${esc(item.lokasi||'')}${item.supplier?' · '+esc(item.supplier):''}</div></td>
       <td><span class="ct">${esc(item.kategori||'—')}</span></td>
       <td style="color:var(--ts);font-size:12px">${esc(item.merek||'—')}</td>
       <td>${(()=>{const tipes=Array.isArray(item.tipeMotors)&&item.tipeMotors.length?item.tipeMotors:(item.tipeMotor?[item.tipeMotor]:[]);return tipes.length?`<div style="display:flex;flex-wrap:wrap;gap:3px">${tipes.map(t=>`<span style="background:var(--cy-d);color:var(--cy);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:600;white-space:nowrap">${esc(t)}</span>`).join('')}</div>`:'<span style="color:var(--tm);font-size:10.5px">—</span>';})()}</td>
