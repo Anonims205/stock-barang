@@ -9,11 +9,12 @@
 :root {
   --bg-0:#07090e;--bg-1:#0d1017;--bg-2:#131720;--bg-3:#1a1f2c;--bg-4:#222838;
   --bdr:rgba(255,255,255,.06);--bdr-b:rgba(255,255,255,.12);
-  --tp:#e8ecf5;--ts:#7a869e;--tm:#485165;
+  --tp:#e8ecf5;--ts:#a8b3c9;--tm:#5c6780;
   --ac:#4f7cff;--ac-g:rgba(79,124,255,.22);--ac-d:rgba(79,124,255,.1);
   --gr:#2dd4a0;--gr-d:rgba(45,212,160,.1);
   --ye:#f5c542;--ye-d:rgba(245,197,66,.1);
   --re:#ff5c5c;--re-d:rgba(255,92,92,.1);
+  --bl:#5eb3ff;--bl-d:rgba(94,179,255,.1);
   --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
   --r:12px;--rs:8px;
 }
@@ -246,6 +247,12 @@ tbody tr:hover td.td-sticky{background:#171c27}
 .chk-empty{font-size:11.5px;color:var(--tm)}
 .type-badge{font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--bg-4);color:var(--ts);margin-left:6px;text-transform:none;letter-spacing:0}
 .col-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;margin:1px 3px 1px 0;white-space:nowrap}
+.h-modal{color:var(--ye);font-weight:700}
+.h-jual{color:var(--gr);font-weight:700}
+.h-grosir{color:var(--bl);font-weight:700}
+th.th-modal{color:var(--ye)}
+th.th-jual{color:var(--gr)}
+th.th-grosir{color:var(--bl)}
 
 @media(max-width:640px){
   .sg{grid-template-columns:1fr 1fr}
@@ -406,9 +413,9 @@ tbody tr:hover td.td-sticky{background:#171c27}
         <div class="fg"><label class="flbl">Lokasi</label><input type="text" class="fi" id="f-lokasi" placeholder="Rak A1, Gudang B..."></div>
         <div class="fg"><label class="flbl">Jumlah Stok</label><input type="number" class="fi" id="f-stok" placeholder="0" min="0"></div>
         <div class="fg"><label class="flbl">Stok Minimal</label><input type="number" class="fi" id="f-minstok" placeholder="5" min="0"></div>
-        <div class="fg"><label class="flbl">Harga Modal</label><input type="number" class="fi" id="f-hargamodal" placeholder="0" min="0"></div>
-        <div class="fg"><label class="flbl">Harga Jual</label><input type="number" class="fi" id="f-hargajual" placeholder="0" min="0"></div>
-        <div class="fg"><label class="flbl">Harga Grosir</label><input type="number" class="fi" id="f-hargagrosir" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl h-modal">Harga Modal</label><input type="number" class="fi" id="f-hargamodal" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl h-jual">Harga Jual</label><input type="number" class="fi" id="f-hargajual" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl h-grosir">Harga Grosir</label><input type="number" class="fi" id="f-hargagrosir" placeholder="0" min="0"></div>
         <div class="fg full"><label class="flbl">Label</label><div class="lbl-pick" id="lbl-pick"></div></div>
       </div>
     </div>
@@ -507,6 +514,7 @@ const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const rp=n=>'Rp '+(parseInt(n)||0).toLocaleString('id-ID');
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const fmtDate=d=>{ try{ return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return '-'; } };
+const fmtDateOnly=d=>{ if(!d) return '—'; try{ return new Date(d).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return '—'; } };
 const PALETTE=['#4f7cff','#2dd4a0','#f5c542','#ff5c5c','#a855f7','#06b6d4','#f97316','#ec4899'];
 
 /* ============================= STATE ============================= */
@@ -553,6 +561,7 @@ function migrate(){
     if(!it.labelIds) it.labelIds=[];
     if(typeof it.deleted==='undefined') it.deleted=false;
     if(!it.createdAt) it.createdAt=Date.now();
+    if(!it.updatedAt) it.updatedAt=it.createdAt;
     // migrasi harga tunggal lama -> hargaModal
     if(typeof it.hargaModal==='undefined'){
       it.hargaModal = typeof it.harga!=='undefined' ? it.harga : 0;
@@ -657,13 +666,14 @@ function renderTheadBarang(){
     ${dynTh}
     <th>Stok</th>
     <th>Min Stok</th>
-    <th>Harga Modal</th>
-    <th>Harga Jual</th>
-    <th>Harga Grosir</th>
+    <th class="th-modal">Harga Modal</th>
+    <th class="th-jual">Harga Jual</th>
+    <th class="th-grosir">Harga Grosir</th>
     <th>Nilai Stok</th>
     <th>Lokasi</th>
     <th>Label</th>
     <th>Status</th>
+    <th>Update Terakhir</th>
     <th>Aksi</th>
   </tr>`;
 }
@@ -708,13 +718,14 @@ function render(){
       ${dynTd}
       <td class="cm">${item.stok||0}</td>
       <td class="cm" style="color:var(--tm)">${item.minStok||5}</td>
-      <td class="cm">${rp(item.hargaModal)}</td>
-      <td class="cm">${rp(item.hargaJual)}</td>
-      <td class="cm">${rp(item.hargaGrosir)}</td>
+      <td class="cm h-modal">${rp(item.hargaModal)}</td>
+      <td class="cm h-jual">${rp(item.hargaJual)}</td>
+      <td class="cm h-grosir">${rp(item.hargaGrosir)}</td>
       <td class="cm" style="color:var(--ts)">${rp(nilai)}</td>
       <td style="font-size:12px;color:var(--ts)">${esc(item.lokasi||'—')}</td>
       <td>${labelChips(item)||'<span style="color:var(--tm)">—</span>'}</td>
       <td>${badgeHtml(st)}</td>
+      <td style="font-size:12px;color:var(--ts);white-space:nowrap">${fmtDateOnly(item.updatedAt||item.createdAt)}</td>
       <td><div class="ca">
         <div class="ib e" onclick="openModal('${item.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
         <div class="ib d" onclick="deleteItem('${item.id}')" title="Hapus"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
@@ -822,10 +833,10 @@ function saveItem(){
   };
   if(editingId){
     const idx=items.findIndex(i=>i.id===editingId);
-    if(idx>-1) items[idx]={...items[idx],...data};
+    if(idx>-1) items[idx]={...items[idx],...data,updatedAt:Date.now()};
     toast('Barang diperbarui','success');
   }else{
-    items.unshift({id:uid(),deleted:false,createdAt:Date.now(),...data});
+    items.unshift({id:uid(),deleted:false,createdAt:Date.now(),updatedAt:Date.now(),...data});
     toast('Barang ditambahkan','success');
   }
   storeSaveAll();
@@ -1214,8 +1225,9 @@ function saveNota(){
     if(item){
       item.stok=(parseInt(item.stok)||0)+qty;
       if(harga>0) item.hargaModal=harga;
+      item.updatedAt=Date.now();
     }else{
-      items.unshift({id:uid(),nama,fields:{},lokasi:'',stok:qty,minStok:5,hargaModal:harga,hargaJual:0,hargaGrosir:0,labelIds:[],deleted:false,createdAt:Date.now()});
+      items.unshift({id:uid(),nama,fields:{},lokasi:'',stok:qty,minStok:5,hargaModal:harga,hargaJual:0,hargaGrosir:0,labelIds:[],deleted:false,createdAt:Date.now(),updatedAt:Date.now()});
     }
   });
   const data={
@@ -1313,12 +1325,13 @@ function importItemsFile(file){
         if(m.hargaGrosir!==undefined && m.hargaGrosir!=='') item.hargaGrosir=parseInt(m.hargaGrosir)||0;
         if(m.lokasi) item.lokasi=String(m.lokasi).trim();
         item.fields={...item.fields,...fields};
+        item.updatedAt=Date.now();
         updated++;
       }else{
         items.unshift({id:uid(),nama,fields,lokasi:String(m.lokasi||'').trim(),
           stok:parseInt(m.stok)||0, minStok:parseInt(m.minStok)||5,
           hargaModal:parseInt(m.hargaModal)||0, hargaJual:parseInt(m.hargaJual)||0, hargaGrosir:parseInt(m.hargaGrosir)||0,
-          labelIds:[], deleted:false, createdAt:Date.now()});
+          labelIds:[], deleted:false, createdAt:Date.now(), updatedAt:Date.now()});
         added++;
       }
     });
@@ -1341,6 +1354,7 @@ function exportItemsXLSX(){
     row['Harga Jual']=i.hargaJual||0;
     row['Harga Grosir']=i.hargaGrosir||0;
     row['Status']=stockSt(i);
+    row['Update Terakhir']=fmtDateOnly(i.updatedAt||i.createdAt);
     return row;
   });
   const ws=XLSX.utils.json_to_sheet(rows);
