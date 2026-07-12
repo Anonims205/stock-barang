@@ -236,6 +236,17 @@ tbody tr:hover td.td-sticky{background:#171c27}
 
 .mini-empty{padding:24px;text-align:center;color:var(--tm);font-size:12px}
 
+/* CHECKLIST (kolom Pilihan Banyak) */
+.chk-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chk-item{display:flex;align-items:center;gap:6px;font-size:12px;background:var(--bg-1);border:1px solid var(--bdr);
+  border-radius:6px;padding:6px 9px;cursor:pointer;transition:all .15s}
+.chk-item:hover{border-color:var(--bdr-b)}
+.chk-item input{accent-color:var(--ac);width:13px;height:13px;cursor:pointer}
+.chk-item.on{border-color:var(--ac);background:var(--ac-d);color:var(--ac)}
+.chk-empty{font-size:11.5px;color:var(--tm)}
+.type-badge{font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--bg-4);color:var(--ts);margin-left:6px;text-transform:none;letter-spacing:0}
+.col-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500;margin:1px 3px 1px 0;white-space:nowrap}
+
 @media(max-width:640px){
   .sg{grid-template-columns:1fr 1fr}
   .fg2{grid-template-columns:1fr}
@@ -258,7 +269,7 @@ tbody tr:hover td.td-sticky{background:#171c27}
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="barang">📦 Data Barang</button>
     <button class="tab" data-tab="masuk">📥 Barang Masuk</button>
-    <button class="tab" data-tab="daftar">🗂️ Kelola Daftar</button>
+    <button class="tab" data-tab="daftar">🗂️ Kelola Kolom</button>
     <button class="tab" data-tab="label">🏷️ Label</button>
     <button class="tab" data-tab="menipis">⚠️ Stok Menipis</button>
     <button class="tab" data-tab="trash">🗑️ Sampah</button>
@@ -288,21 +299,7 @@ tbody tr:hover td.td-sticky{background:#171c27}
     <div class="tc">
       <div class="tw">
         <table>
-          <thead id="thead-barang">
-            <tr>
-              <th class="th-sticky">Nama Barang</th>
-              <th>Stok</th>
-              <th>Min Stok</th>
-              <th>Harga Modal</th>
-              <th>Harga Jual</th>
-              <th>Harga Grosir</th>
-              <th>Nilai Stok</th>
-              <th>Lokasi</th>
-              <th>Label</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
+          <thead id="thead-barang"></thead>
           <tbody id="tbody"></tbody>
         </table>
         <div class="empty" id="empty" style="display:none">
@@ -332,7 +329,7 @@ tbody tr:hover td.td-sticky{background:#171c27}
   <!-- PANE: KELOLA DAFTAR -->
   <div class="pane" id="pane-daftar">
     <div class="panel">
-      <div class="ph"><div><div class="ph-t">🗂️ Kelola Daftar & Filter</div><div class="ph-s">Bikin daftar custom (master data) selain Kategori/Merek/Tipe Motor bawaan. Semua daftar otomatis jadi filter di Data Barang.</div></div></div>
+      <div class="ph"><div><div class="ph-t">🗂️ Kelola Kolom</div><div class="ph-s">Tambahkan kolom custom di samping Nama Barang. Pilih tipe: Teks Bebas, Pilihan Tunggal (dropdown), atau Pilihan Banyak (checklist) — barang bisa punya lebih dari satu nilai. Kolom baru otomatis muncul di tabel Data Barang &amp; form Tambah/Edit Barang.</div></div></div>
       <div class="lm-wrap">
         <div class="lm-side" id="lm-side"></div>
         <div id="lm-main"></div>
@@ -428,9 +425,16 @@ tbody tr:hover td.td-sticky{background:#171c27}
     <div class="mh"><div class="mt" id="modal-list-title">Daftar Baru</div>
       <div class="ib" id="modal-list-close"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
     <div class="mb">
-      <div class="fg full"><label class="flbl">Nama Daftar <span class="req">*</span></label><input type="text" class="fi" id="f-list-nama" placeholder="Contoh: Ukuran Ban"><span class="ferr" id="e-list-nama"></span></div>
+      <div class="fg full"><label class="flbl">Nama Kolom <span class="req">*</span></label><input type="text" class="fi" id="f-list-nama" placeholder="Contoh: Ukuran Ban, Supplier, Catatan"><span class="ferr" id="e-list-nama"></span></div>
+      <div class="fg full" style="margin-top:12px"><label class="flbl">Tipe Kolom</label>
+        <select class="fs2" id="f-list-tipe">
+          <option value="single">Pilihan Tunggal (dropdown)</option>
+          <option value="multi">Pilihan Banyak (checklist)</option>
+          <option value="text">Teks Bebas (isi manual per barang)</option>
+        </select>
+      </div>
       <div class="fg full" style="margin-top:12px"><label class="flbl">Warna</label><div class="swrow" id="list-swrow"></div></div>
-      <div class="fg full" style="margin-top:12px"><label class="flbl">Template — salin nilai dari daftar lain (opsional)</label>
+      <div class="fg full" style="margin-top:12px" id="fg-list-copyfrom"><label class="flbl">Template — salin nilai dari kolom lain (opsional)</label>
         <select class="fs2" id="f-list-copyfrom"><option value="">— Tidak salin —</option></select>
       </div>
     </div>
@@ -537,9 +541,11 @@ function migrate(){
   const builtinDefs=[{field:'kategori',nama:'Kategori'},{field:'merek',nama:'Merek'},{field:'tipeMotor',nama:'Tipe Motor'}];
   builtinDefs.forEach((d,i)=>{
     if(!lists.find(l=>l.field===d.field)){
-      lists.push({id:uid(),nama:d.nama,field:d.field,warna:PALETTE[i%PALETTE.length],builtin:true,values:[]});
+      lists.push({id:uid(),nama:d.nama,field:d.field,warna:PALETTE[i%PALETTE.length],builtin:true,type:'single',values:[]});
     }
   });
+  // pastikan semua kolom (lama & baru) punya tipe yang valid
+  lists.forEach(l=>{ if(!l.type) l.type='single'; });
   // migrasi item versi lama (field kategori string lepas) -> fields{}
   items.forEach(it=>{
     if(!it.fields) it.fields={};
@@ -555,10 +561,24 @@ function migrate(){
     if(typeof it.hargaGrosir==='undefined') it.hargaGrosir=0;
   });
   notes.forEach(n=>{ if(typeof n.deleted==='undefined') n.deleted=false; });
-  // pastikan setiap nilai field yang dipakai barang tercatat di list.values
+  // normalisasi nilai field barang sesuai tipe kolom (multi harus array, single/text harus string)
+  items.forEach(it=>{
+    lists.forEach(l=>{
+      const v=(it.fields||{})[l.field];
+      if(v===undefined || v===null) return;
+      if(l.type==='multi' && !Array.isArray(v)) it.fields[l.field]=v?[v]:[];
+      if(l.type!=='multi' && Array.isArray(v)) it.fields[l.field]=v[0]||'';
+    });
+  });
+  // pastikan setiap nilai field yang dipakai barang tercatat di list.values (kecuali kolom teks bebas)
   lists.forEach(l=>{
+    if(l.type==='text') return;
     const set=new Set(l.values||[]);
-    items.forEach(it=>{ const v=(it.fields||{})[l.field]; if(v) set.add(v); });
+    items.forEach(it=>{
+      const v=(it.fields||{})[l.field];
+      if(Array.isArray(v)) v.forEach(x=>x&&set.add(x));
+      else if(v) set.add(v);
+    });
     l.values=[...set];
   });
 }
@@ -610,7 +630,7 @@ function renderStats(){
 }
 function renderDynFilters(){
   const wrap=$('dyn-filters');
-  wrap.innerHTML=lists.map(l=>{
+  wrap.innerHTML=lists.filter(l=>l.type!=='text').map(l=>{
     const opts=l.values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');
     return `<select class="fsl" data-field="${l.field}" onchange="render()"><option value="">Semua ${esc(l.nama)}</option>${opts}</select>`;
   }).join('');
@@ -621,20 +641,51 @@ function labelChips(item){
     return `<span class="lbl-chip" style="background:${l.warna}22;color:${l.warna};border:1px solid ${l.warna}55">${esc(l.nama)}</span>`;
   }).join('');
 }
+function colCellHtml(item,l){
+  const v=(item.fields||{})[l.field];
+  if(l.type==='multi'){
+    const arr=Array.isArray(v)?v:(v?[v]:[]);
+    if(!arr.length) return '<span style="color:var(--tm)">—</span>';
+    return arr.map(x=>`<span class="col-chip" style="background:${l.warna}22;color:${l.warna};border:1px solid ${l.warna}55">${esc(x)}</span>`).join('');
+  }
+  return v ? `<span style="font-size:12px;color:var(--ts)">${esc(v)}</span>` : '<span style="color:var(--tm)">—</span>';
+}
+function renderTheadBarang(){
+  const dynTh=lists.map(l=>`<th>${esc(l.nama)}${l.type==='multi'?' 🗹':''}</th>`).join('');
+  $('thead-barang').innerHTML=`<tr>
+    <th class="th-sticky">Nama Barang</th>
+    ${dynTh}
+    <th>Stok</th>
+    <th>Min Stok</th>
+    <th>Harga Modal</th>
+    <th>Harga Jual</th>
+    <th>Harga Grosir</th>
+    <th>Nilai Stok</th>
+    <th>Lokasi</th>
+    <th>Label</th>
+    <th>Status</th>
+    <th>Aksi</th>
+  </tr>`;
+}
 function render(){
   renderDynFilters();
+  renderTheadBarang();
   const q=$('srch').value.toLowerCase();
   const stFilter=$('f-status').value;
   const dynSelects=[...document.querySelectorAll('#dyn-filters select')];
   const filtered=activeItems().filter(i=>{
     const fields=i.fields||{};
     if(q){
-      const hay=[i.nama,i.lokasi,...Object.values(fields)].join(' ').toLowerCase();
+      const flatVals=Object.values(fields).flatMap(v=>Array.isArray(v)?v:[v]);
+      const hay=[i.nama,i.lokasi,...flatVals].join(' ').toLowerCase();
       if(!hay.includes(q)) return false;
     }
     if(stFilter && stockSt(i)!==stFilter) return false;
     for(const sel of dynSelects){
-      if(sel.value && fields[sel.dataset.field]!==sel.value) return false;
+      if(!sel.value) continue;
+      const v=fields[sel.dataset.field];
+      const match=Array.isArray(v) ? v.includes(sel.value) : v===sel.value;
+      if(!match) return false;
     }
     return true;
   });
@@ -651,10 +702,10 @@ function render(){
   tbody.innerHTML=filtered.map(item=>{
     const st=stockSt(item);
     const nilai=(parseInt(item.stok)||0)*(parseInt(item.hargaModal)||0);
-    const fields=item.fields||{};
-    const sub=lists.map(l=>fields[l.field]).filter(Boolean).join(' · ');
+    const dynTd=lists.map(l=>`<td>${colCellHtml(item,l)}</td>`).join('');
     return `<tr>
-      <td class="td-sticky"><div class="cn">${esc(item.nama)}</div>${sub?`<div class="csb">${esc(sub)}</div>`:''}</td>
+      <td class="td-sticky"><div class="cn">${esc(item.nama)}</div></td>
+      ${dynTd}
       <td class="cm">${item.stok||0}</td>
       <td class="cm" style="color:var(--tm)">${item.minStok||5}</td>
       <td class="cm">${rp(item.hargaModal)}</td>
@@ -674,9 +725,22 @@ function render(){
 }
 
 /* ============================= MODAL: ITEM ============================= */
-function renderDynListFields(){
+function renderDynListFields(activeFields){
+  activeFields=activeFields||{};
   const wrap=$('dyn-list-fields');
   wrap.innerHTML=lists.map(l=>{
+    if(l.type==='multi'){
+      const sel=Array.isArray(activeFields[l.field])?activeFields[l.field]:[];
+      const boxes=l.values.length ? l.values.map(v=>{
+        const on=sel.includes(v);
+        return `<label class="chk-item ${on?'on':''}" data-mfield="${l.field}"><input type="checkbox" value="${esc(v)}" ${on?'checked':''} onchange="this.closest('.chk-item').classList.toggle('on',this.checked)">${esc(v)}</label>`;
+      }).join('') : '<span class="chk-empty">Belum ada nilai. Tambahkan di tab 🗂️ Kelola Kolom.</span>';
+      return `<div class="fg full"><label class="flbl">${esc(l.nama)} <span class="type-badge">checklist</span></label><div class="chk-list" data-mlist="${l.field}">${boxes}</div></div>`;
+    }
+    if(l.type==='text'){
+      return `<div class="fg"><label class="flbl">${esc(l.nama)}</label>
+        <input type="text" class="fi" id="f-list-${l.id}" placeholder="Ketik ${esc(l.nama).toLowerCase()}"></div>`;
+    }
     return `<div class="fg"><label class="flbl">${esc(l.nama)}</label>
       <input type="text" class="fi" id="f-list-${l.id}" list="dl-${l.id}" placeholder="Pilih atau ketik baru">
       <datalist id="dl-${l.id}">${l.values.map(v=>`<option value="${esc(v)}">`).join('')}</datalist></div>`;
@@ -695,13 +759,13 @@ function toggleLabelPick(lid){
 }
 function openModal(editId){
   editingId=editId||null;
-  renderDynListFields();
   $('modal-ov').classList.add('open');
   $('f-nama').classList.remove('err');
   $('e-nama').textContent='';
   if(editId){
     const item=items.find(i=>i.id===editId);
     if(!item) return;
+    renderDynListFields(item.fields||{});
     $('modal-title').textContent='Edit Barang';
     $('f-nama').value=item.nama;
     $('f-lokasi').value=item.lokasi||'';
@@ -710,12 +774,13 @@ function openModal(editId){
     $('f-hargamodal').value=item.hargaModal||'';
     $('f-hargajual').value=item.hargaJual||'';
     $('f-hargagrosir').value=item.hargaGrosir||'';
-    lists.forEach(l=>{ const el=$('f-list-'+l.id); if(el) el.value=(item.fields||{})[l.field]||''; });
+    lists.forEach(l=>{ if(l.type==='multi') return; const el=$('f-list-'+l.id); if(el) el.value=(item.fields||{})[l.field]||''; });
     renderLabelPicker(item.labelIds||[]);
   }else{
+    renderDynListFields({});
     $('modal-title').textContent='Tambah Barang Baru';
     ['f-nama','f-lokasi','f-stok','f-minstok','f-hargamodal','f-hargajual','f-hargagrosir'].forEach(id=>$(id).value='');
-    lists.forEach(l=>{ const el=$('f-list-'+l.id); if(el) el.value=''; });
+    lists.forEach(l=>{ if(l.type==='multi') return; const el=$('f-list-'+l.id); if(el) el.value=''; });
     renderLabelPicker([]);
   }
   setTimeout(()=>$('f-nama').focus(),50);
@@ -731,11 +796,17 @@ function saveItem(){
   }
   const fields={};
   lists.forEach(l=>{
+    if(l.type==='multi'){
+      const boxes=[...document.querySelectorAll(`.chk-list[data-mlist="${l.field}"] input:checked`)];
+      const vals=boxes.map(b=>b.value);
+      if(vals.length) fields[l.field]=vals;
+      return;
+    }
     const el=$('f-list-'+l.id);
     const v=el?el.value.trim():'';
     if(v){
       fields[l.field]=v;
-      if(!l.values.includes(v)) l.values.push(v);
+      if(l.type!=='text' && !l.values.includes(v)) l.values.push(v);
     }
   });
   const labelIds=[...document.querySelectorAll('#lbl-pick .lp.on')].map(el=>el.dataset.lid);
@@ -802,25 +873,29 @@ function renderListManager(){
     return `<div class="lm-item ${l.id===editingListId?'active':''}" onclick="selectList('${l.id}')">
       <span class="lm-dot" style="background:${l.warna}"></span>${esc(l.nama)}${l.builtin?' <span style="color:var(--tm);font-size:10px">(bawaan)</span>':''}
       <span class="lm-badge">${l.values.length}</span></div>`;
-  }).join('') + `<div class="lm-item" style="color:var(--ac)" onclick="openListModal()">+ Daftar Baru</div>`;
+  }).join('') + `<div class="lm-item" style="color:var(--ac)" onclick="openListModal()">+ Kolom Baru</div>`;
   renderListMain();
 }
 function selectList(id){ editingListId=id; renderListManager(); }
+const TYPE_LABEL={single:'Pilihan Tunggal',multi:'Pilihan Banyak (Checklist)',text:'Teks Bebas'};
 function renderListMain(){
   const main=$('lm-main');
   const l=lists.find(x=>x.id===editingListId);
-  if(!l){ main.innerHTML='<div class="mini-empty">Belum ada daftar. Klik "+ Daftar Baru".</div>'; return; }
+  if(!l){ main.innerHTML='<div class="mini-empty">Belum ada kolom. Klik "+ Kolom Baru".</div>'; return; }
+  const isText=l.type==='text';
   main.innerHTML=`
-    <div class="ph"><div><div class="ph-t" style="display:flex;align-items:center;gap:8px"><span class="lm-dot" style="background:${l.warna};width:10px;height:10px"></span>${esc(l.nama)}</div>
-      <div class="ph-s">${l.values.length} nilai · dipakai sebagai kolom filter otomatis di Data Barang</div></div>
+    <div class="ph"><div><div class="ph-t" style="display:flex;align-items:center;gap:8px"><span class="lm-dot" style="background:${l.warna};width:10px;height:10px"></span>${esc(l.nama)}<span class="type-badge">${TYPE_LABEL[l.type]||'Pilihan Tunggal'}</span></div>
+      <div class="ph-s">${isText?'Diisi manual per barang, tidak muncul sebagai filter dropdown':`${l.values.length} nilai · muncul otomatis sebagai filter di Data Barang${l.type==='multi'?' · barang bisa pilih lebih dari satu':''}`}</div></div>
       <div class="ph-spacer"></div>
       ${l.builtin?'':`<button class="btn btn-g" onclick="openListModal('${l.id}')">Edit</button><button class="btn btn-d" onclick="deleteList('${l.id}')">Hapus</button>`}
     </div>
+    ${isText?'':`
     <div class="inline-add">
       <input type="text" class="fi" id="new-val-input" placeholder="Tambah nilai baru, contoh: Aki Kering">
       <button class="btn btn-p" onclick="addListValue('${l.id}')">+ Tambah</button>
     </div>
     <div class="lm-values">${l.values.map(v=>`<span class="val-chip">${esc(v)}<span class="x" onclick="removeListValue('${l.id}','${esc(v).replace(/'/g,"\\'")}')">✕</span></span>`).join('') || '<span style="color:var(--tm);font-size:12px">Belum ada nilai</span>'}</div>
+    `}
   `;
 }
 function addListValue(listId){
@@ -833,6 +908,7 @@ function addListValue(listId){
   storeSaveAll();
   renderListMain();
   renderListManager();
+  if(activeTab==='barang') render();
 }
 function removeListValue(listId,v){
   const l=lists.find(x=>x.id===listId);
@@ -841,6 +917,7 @@ function removeListValue(listId,v){
   storeSaveAll();
   renderListMain();
   renderListManager();
+  if(activeTab==='barang') render();
 }
 function openListModal(editId){
   editingId=null;
@@ -850,18 +927,28 @@ function openListModal(editId){
   const swrow=$('list-swrow');
   swrow.innerHTML=PALETTE.map(c=>`<span class="sw-dot" style="background:${c}" data-c="${c}" onclick="pickSwatch(this)"></span>`).join('');
   const copySel=$('f-list-copyfrom');
-  copySel.innerHTML='<option value="">— Tidak salin —</option>'+lists.map(l=>`<option value="${l.id}">${esc(l.nama)} (${l.values.length} nilai)</option>`).join('');
+  copySel.innerHTML='<option value="">— Tidak salin —</option>'+lists.filter(l=>l.type!=='text').map(l=>`<option value="${l.id}">${esc(l.nama)} (${l.values.length} nilai)</option>`).join('');
+  const tipeSel=$('f-list-tipe');
   if(editId){
     const l=lists.find(x=>x.id===editId);
-    $('modal-list-title').textContent='Edit Daftar';
+    $('modal-list-title').textContent='Edit Kolom';
     $('f-list-nama').value=l.nama;
+    tipeSel.value=l.type||'single';
+    tipeSel.disabled=!!l.builtin;
     const dot=swrow.querySelector(`[data-c="${l.warna}"]`);
     if(dot) dot.classList.add('on'); else swrow.children[0].classList.add('on');
   }else{
-    $('modal-list-title').textContent='Daftar Baru';
+    $('modal-list-title').textContent='Kolom Baru';
     $('f-list-nama').value='';
+    tipeSel.value='single';
+    tipeSel.disabled=false;
     swrow.children[0].classList.add('on');
   }
+  toggleCopyfromVisibility();
+}
+function toggleCopyfromVisibility(){
+  const isText=$('f-list-tipe').value==='text';
+  $('fg-list-copyfrom').style.display=isText?'none':'';
 }
 function pickSwatch(el){
   el.parentElement.querySelectorAll('.sw-dot').forEach(d=>d.classList.remove('on'));
@@ -873,16 +960,18 @@ function saveListModal(){
   if(!nama){ $('f-list-nama').classList.add('err'); $('e-list-nama').textContent='Nama daftar wajib diisi'; return; }
   const warnaEl=$('list-swrow').querySelector('.sw-dot.on');
   const warna=warnaEl?warnaEl.dataset.c:PALETTE[0];
-  const copyFromId=$('f-list-copyfrom').value;
+  const tipe=$('f-list-tipe').value;
+  const copyFromId=tipe==='text' ? '' : $('f-list-copyfrom').value;
   const editId=window._editListId;
   if(editId){
     const l=lists.find(x=>x.id===editId);
     l.nama=nama; l.warna=warna;
+    if(!l.builtin) l.type=tipe;
     if(copyFromId){
       const src=lists.find(x=>x.id===copyFromId);
       if(src) l.values=[...new Set([...l.values,...src.values])];
     }
-    toast('Daftar diperbarui','success');
+    toast('Kolom diperbarui','success');
   }else{
     const field='custom_'+uid();
     let values=[];
@@ -890,24 +979,26 @@ function saveListModal(){
       const src=lists.find(x=>x.id===copyFromId);
       if(src) values=[...src.values];
     }
-    const newList={id:uid(),nama,field,warna,builtin:false,values};
+    const newList={id:uid(),nama,field,warna,builtin:false,type:tipe,values};
     lists.push(newList);
     editingListId=newList.id;
-    toast('Daftar dibuat','success');
+    toast('Kolom dibuat','success');
   }
   storeSaveAll();
   closeListModal();
   renderListManager();
+  render();
 }
 function deleteList(id){
   const l=lists.find(x=>x.id===id);
   if(!l || l.builtin) return;
-  openConfirm(`Hapus daftar "${l.nama}"? Nilai pada barang yang memakai daftar ini akan tetap tersimpan sebagai teks biasa.`,()=>{
+  openConfirm(`Hapus kolom "${l.nama}"? Nilai barang yang memakai kolom ini akan ikut hilang dari tampilan.`,()=>{
     lists=lists.filter(x=>x.id!==id);
     if(editingListId===id) editingListId=lists[0]?lists[0].id:null;
     storeSaveAll();
     renderListManager();
-    toast('Daftar dihapus','success');
+    render();
+    toast('Kolom dihapus','success');
   });
 }
 
@@ -1237,11 +1328,21 @@ function importItemsFile(file){
   });
 }
 function exportItemsXLSX(){
-  const rows=activeItems().map(i=>({
-    'Nama Barang':i.nama,'Kategori':(i.fields||{}).kategori||'','Merek':(i.fields||{}).merek||'','Tipe Motor':(i.fields||{}).tipeMotor||'',
-    'Lokasi':i.lokasi||'','Stok':i.stok||0,'Min Stok':i.minStok||5,
-    'Harga Modal':i.hargaModal||0,'Harga Jual':i.hargaJual||0,'Harga Grosir':i.hargaGrosir||0,'Status':stockSt(i)
-  }));
+  const rows=activeItems().map(i=>{
+    const row={'Nama Barang':i.nama};
+    lists.forEach(l=>{
+      const v=(i.fields||{})[l.field];
+      row[l.nama]=Array.isArray(v)?v.join(', '):(v||'');
+    });
+    row['Lokasi']=i.lokasi||'';
+    row['Stok']=i.stok||0;
+    row['Min Stok']=i.minStok||5;
+    row['Harga Modal']=i.hargaModal||0;
+    row['Harga Jual']=i.hargaJual||0;
+    row['Harga Grosir']=i.hargaGrosir||0;
+    row['Status']=stockSt(i);
+    return row;
+  });
   const ws=XLSX.utils.json_to_sheet(rows);
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Data Barang');
@@ -1346,6 +1447,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('modal-list-cancel').addEventListener('click',closeListModal);
   $('modal-list-ov').addEventListener('click',e=>{ if(e.target===$('modal-list-ov')) closeListModal(); });
   $('modal-list-save').addEventListener('click',saveListModal);
+  $('f-list-tipe').addEventListener('change',toggleCopyfromVisibility);
 
   // Label
   $('btn-label-add').addEventListener('click',()=>openLabelModal());
