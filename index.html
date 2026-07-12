@@ -293,7 +293,9 @@ tbody tr:hover td.td-sticky{background:#171c27}
               <th class="th-sticky">Nama Barang</th>
               <th>Stok</th>
               <th>Min Stok</th>
-              <th>Harga</th>
+              <th>Harga Modal</th>
+              <th>Harga Jual</th>
+              <th>Harga Grosir</th>
               <th>Nilai Stok</th>
               <th>Lokasi</th>
               <th>Label</th>
@@ -407,7 +409,9 @@ tbody tr:hover td.td-sticky{background:#171c27}
         <div class="fg"><label class="flbl">Lokasi</label><input type="text" class="fi" id="f-lokasi" placeholder="Rak A1, Gudang B..."></div>
         <div class="fg"><label class="flbl">Jumlah Stok</label><input type="number" class="fi" id="f-stok" placeholder="0" min="0"></div>
         <div class="fg"><label class="flbl">Stok Minimal</label><input type="number" class="fi" id="f-minstok" placeholder="5" min="0"></div>
-        <div class="fg full"><label class="flbl">Harga Satuan</label><input type="number" class="fi" id="f-harga" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl">Harga Modal</label><input type="number" class="fi" id="f-hargamodal" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl">Harga Jual</label><input type="number" class="fi" id="f-hargajual" placeholder="0" min="0"></div>
+        <div class="fg"><label class="flbl">Harga Grosir</label><input type="number" class="fi" id="f-hargagrosir" placeholder="0" min="0"></div>
         <div class="fg full"><label class="flbl">Label</label><div class="lbl-pick" id="lbl-pick"></div></div>
       </div>
     </div>
@@ -468,7 +472,7 @@ tbody tr:hover td.td-sticky{background:#171c27}
       </div>
       <div class="nota-lines">
         <table>
-          <thead><tr><th style="width:44%">Nama Barang</th><th style="width:18%">Qty</th><th style="width:24%">Harga Beli</th><th style="width:14%"></th></tr></thead>
+          <thead><tr><th style="width:44%">Nama Barang</th><th style="width:18%">Qty</th><th style="width:24%">Harga Beli (Modal)</th><th style="width:14%"></th></tr></thead>
           <tbody id="nota-lines-body"></tbody>
         </table>
         <div class="nota-total" id="nota-total">Total: Rp 0</div>
@@ -502,7 +506,7 @@ const fmtDate=d=>{ try{ return new Date(d).toLocaleString('id-ID',{day:'2-digit'
 const PALETTE=['#4f7cff','#2dd4a0','#f5c542','#ff5c5c','#a855f7','#06b6d4','#f97316','#ec4899'];
 
 /* ============================= STATE ============================= */
-let items=[];      // barang: {id,nama,fields:{[fieldKey]:val},lokasi,stok,minStok,harga,labelIds:[],deleted,deletedAt,createdAt}
+let items=[];      // barang: {id,nama,fields:{[fieldKey]:val},lokasi,stok,minStok,hargaModal,hargaJual,hargaGrosir,labelIds:[],deleted,deletedAt,createdAt}
 let lists=[];       // {id,nama,field,warna,builtin,values:[str,...]}
 let notes=[];        // nota: {id,nomor,tanggal,supplier,keterangan,lines:[{nama,qty,harga}],deleted,deletedAt,createdAt}
 let labels=[];       // {id,nama,warna}
@@ -543,6 +547,12 @@ function migrate(){
     if(!it.labelIds) it.labelIds=[];
     if(typeof it.deleted==='undefined') it.deleted=false;
     if(!it.createdAt) it.createdAt=Date.now();
+    // migrasi harga tunggal lama -> hargaModal
+    if(typeof it.hargaModal==='undefined'){
+      it.hargaModal = typeof it.harga!=='undefined' ? it.harga : 0;
+    }
+    if(typeof it.hargaJual==='undefined') it.hargaJual=0;
+    if(typeof it.hargaGrosir==='undefined') it.hargaGrosir=0;
   });
   notes.forEach(n=>{ if(typeof n.deleted==='undefined') n.deleted=false; });
   // pastikan setiap nilai field yang dipakai barang tercatat di list.values
@@ -590,7 +600,7 @@ function activeNotes(){ return notes.filter(n=>!n.deleted); }
 /* ============================= RENDER: DATA BARANG ============================= */
 function renderStats(){
   const list=activeItems();
-  const nilai=list.reduce((s,i)=>s+(parseInt(i.stok)||0)*(parseInt(i.harga)||0),0);
+  const nilai=list.reduce((s,i)=>s+(parseInt(i.stok)||0)*(parseInt(i.hargaModal)||0),0);
   const menipis=list.filter(i=>stockSt(i)==='menipis').length;
   const habis=list.filter(i=>stockSt(i)==='habis').length;
   $('st-total').textContent=list.length;
@@ -640,14 +650,16 @@ function render(){
 
   tbody.innerHTML=filtered.map(item=>{
     const st=stockSt(item);
-    const nilai=(parseInt(item.stok)||0)*(parseInt(item.harga)||0);
+    const nilai=(parseInt(item.stok)||0)*(parseInt(item.hargaModal)||0);
     const fields=item.fields||{};
     const sub=lists.map(l=>fields[l.field]).filter(Boolean).join(' · ');
     return `<tr>
       <td class="td-sticky"><div class="cn">${esc(item.nama)}</div>${sub?`<div class="csb">${esc(sub)}</div>`:''}</td>
       <td class="cm">${item.stok||0}</td>
       <td class="cm" style="color:var(--tm)">${item.minStok||5}</td>
-      <td class="cm">${rp(item.harga)}</td>
+      <td class="cm">${rp(item.hargaModal)}</td>
+      <td class="cm">${rp(item.hargaJual)}</td>
+      <td class="cm">${rp(item.hargaGrosir)}</td>
       <td class="cm" style="color:var(--ts)">${rp(nilai)}</td>
       <td style="font-size:12px;color:var(--ts)">${esc(item.lokasi||'—')}</td>
       <td>${labelChips(item)||'<span style="color:var(--tm)">—</span>'}</td>
@@ -695,12 +707,14 @@ function openModal(editId){
     $('f-lokasi').value=item.lokasi||'';
     $('f-stok').value=item.stok||'';
     $('f-minstok').value=item.minStok||'';
-    $('f-harga').value=item.harga||'';
+    $('f-hargamodal').value=item.hargaModal||'';
+    $('f-hargajual').value=item.hargaJual||'';
+    $('f-hargagrosir').value=item.hargaGrosir||'';
     lists.forEach(l=>{ const el=$('f-list-'+l.id); if(el) el.value=(item.fields||{})[l.field]||''; });
     renderLabelPicker(item.labelIds||[]);
   }else{
     $('modal-title').textContent='Tambah Barang Baru';
-    ['f-nama','f-lokasi','f-stok','f-minstok','f-harga'].forEach(id=>$(id).value='');
+    ['f-nama','f-lokasi','f-stok','f-minstok','f-hargamodal','f-hargajual','f-hargagrosir'].forEach(id=>$(id).value='');
     lists.forEach(l=>{ const el=$('f-list-'+l.id); if(el) el.value=''; });
     renderLabelPicker([]);
   }
@@ -730,7 +744,9 @@ function saveItem(){
     lokasi:$('f-lokasi').value.trim(),
     stok:Math.max(0,parseInt($('f-stok').value)||0),
     minStok:Math.max(0,parseInt($('f-minstok').value)||5),
-    harga:Math.max(0,parseInt($('f-harga').value)||0),
+    hargaModal:Math.max(0,parseInt($('f-hargamodal').value)||0),
+    hargaJual:Math.max(0,parseInt($('f-hargajual').value)||0),
+    hargaGrosir:Math.max(0,parseInt($('f-hargagrosir').value)||0),
     labelIds,
   };
   if(editingId){
@@ -1106,9 +1122,9 @@ function saveNota(){
     let item=items.find(i=>!i.deleted && i.nama.toLowerCase()===nama.toLowerCase());
     if(item){
       item.stok=(parseInt(item.stok)||0)+qty;
-      if(harga>0) item.harga=harga;
+      if(harga>0) item.hargaModal=harga;
     }else{
-      items.unshift({id:uid(),nama,fields:{},lokasi:'',stok:qty,minStok:5,harga,labelIds:[],deleted:false,createdAt:Date.now()});
+      items.unshift({id:uid(),nama,fields:{},lokasi:'',stok:qty,minStok:5,hargaModal:harga,hargaJual:0,hargaGrosir:0,labelIds:[],deleted:false,createdAt:Date.now()});
     }
   });
   const data={
@@ -1157,7 +1173,9 @@ const COLMAP={
   lokasi:['lokasi','location','rak','gudang'],
   stok:['stok','stock','qty','quantity','jumlah'],
   minStok:['min stok','minimal stok','min stock','minimum','stok minimal'],
-  harga:['harga','price','harga satuan','unit price','harga beli'],
+  hargaModal:['harga modal','harga beli','modal','cost','purchase price','harga','harga satuan'],
+  hargaJual:['harga jual','harga ecer','harga eceran','jual','sell price','retail price'],
+  hargaGrosir:['harga grosir','grosir','wholesale','wholesale price'],
 };
 function detectCol(header){
   const h=String(header||'').toLowerCase().trim();
@@ -1199,13 +1217,16 @@ function importItemsFile(file){
       let item=items.find(i=>!i.deleted && i.nama.toLowerCase()===nama.toLowerCase());
       if(item){
         if(m.stok!==undefined && m.stok!=='') item.stok=parseInt(m.stok)||0;
-        if(m.harga!==undefined && m.harga!=='') item.harga=parseInt(m.harga)||0;
+        if(m.hargaModal!==undefined && m.hargaModal!=='') item.hargaModal=parseInt(m.hargaModal)||0;
+        if(m.hargaJual!==undefined && m.hargaJual!=='') item.hargaJual=parseInt(m.hargaJual)||0;
+        if(m.hargaGrosir!==undefined && m.hargaGrosir!=='') item.hargaGrosir=parseInt(m.hargaGrosir)||0;
         if(m.lokasi) item.lokasi=String(m.lokasi).trim();
         item.fields={...item.fields,...fields};
         updated++;
       }else{
         items.unshift({id:uid(),nama,fields,lokasi:String(m.lokasi||'').trim(),
-          stok:parseInt(m.stok)||0, minStok:parseInt(m.minStok)||5, harga:parseInt(m.harga)||0,
+          stok:parseInt(m.stok)||0, minStok:parseInt(m.minStok)||5,
+          hargaModal:parseInt(m.hargaModal)||0, hargaJual:parseInt(m.hargaJual)||0, hargaGrosir:parseInt(m.hargaGrosir)||0,
           labelIds:[], deleted:false, createdAt:Date.now()});
         added++;
       }
@@ -1218,7 +1239,8 @@ function importItemsFile(file){
 function exportItemsXLSX(){
   const rows=activeItems().map(i=>({
     'Nama Barang':i.nama,'Kategori':(i.fields||{}).kategori||'','Merek':(i.fields||{}).merek||'','Tipe Motor':(i.fields||{}).tipeMotor||'',
-    'Lokasi':i.lokasi||'','Stok':i.stok||0,'Min Stok':i.minStok||5,'Harga':i.harga||0,'Status':stockSt(i)
+    'Lokasi':i.lokasi||'','Stok':i.stok||0,'Min Stok':i.minStok||5,
+    'Harga Modal':i.hargaModal||0,'Harga Jual':i.hargaJual||0,'Harga Grosir':i.hargaGrosir||0,'Status':stockSt(i)
   }));
   const ws=XLSX.utils.json_to_sheet(rows);
   const wb=XLSX.utils.book_new();
@@ -1233,7 +1255,7 @@ function importNotaFile(file){
       const m=mapRow(row);
       const nama=String(m.nama||'').trim();
       if(!nama) return;
-      notaLines.push({nama,qty:parseInt(m.stok)||1,harga:parseInt(m.harga)||0});
+      notaLines.push({nama,qty:parseInt(m.stok)||1,harga:parseInt(m.hargaModal)||0});
       n++;
     });
     renderNotaLines();
