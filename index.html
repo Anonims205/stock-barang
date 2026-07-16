@@ -1428,9 +1428,11 @@ function renderJualList(){
     const totalQty=s.lines.reduce((a,l)=>a+(parseInt(l.qty)||0),0);
     const totalVal=s.lines.reduce((a,l)=>a+(parseInt(l.qty)||0)*(parseInt(l.harga)||0),0);
     const totalProfit=s.lines.reduce((a,l)=>a+(parseInt(l.qty)||0)*((parseInt(l.harga)||0)-(parseInt(l.modal)||0)),0);
+    const itemChips=s.lines.map(l=>`<span class="col-chip" style="background:var(--ac-d);color:var(--ac);border:1px solid rgba(79,124,255,.2)">${esc(l.nama)} <b>×${l.qty}</b></span>`).join('');
     return `<div class="nota-card">
       <div class="nc-main"><div class="nc-no">${esc(s.nomor)}</div>
-        <div class="nc-sub">${esc(s.tanggal||'-')} · ${esc(s.customer||'Tanpa pelanggan')} · ${s.lines.length} item · ${totalQty} pcs</div></div>
+        <div class="nc-sub">${esc(s.tanggal||'-')} · ${esc(s.customer||'Tanpa pelanggan')} · ${s.lines.length} item · ${totalQty} pcs</div>
+        <div style="margin-top:6px">${itemChips}</div></div>
       <div style="text-align:right"><div class="cm h-sale">${rp(totalVal)}</div><div class="cm" style="color:var(--gr);font-size:11px">Profit ${rp(totalProfit)}</div></div>
       <button class="ib" onclick="printSale('${s.id}')" title="Cetak"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
       <button class="ib e" onclick="openJualModal('${s.id}')" title="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
