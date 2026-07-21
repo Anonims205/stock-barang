@@ -8,8 +8,8 @@
 <style>
 :root {
   --bg-0:#07090e;--bg-1:#0d1017;--bg-2:#131720;--bg-3:#1a1f2c;--bg-4:#222838;
-  --bdr:rgba(255,255,255,.06);--bdr-b:rgba(255,255,255,.12);
-  --tp:#e8ecf5;--ts:#a8b3c9;--tm:#5c6780;
+  --bdr:rgba(255,255,255,.1);--bdr-b:rgba(255,255,255,.18);
+  --tp:#ffffff;--ts:#f4f6fb;--tm:#dde2ee;
   --ac:#4f7cff;--ac-g:rgba(79,124,255,.22);--ac-d:rgba(79,124,255,.1);
   --gr:#2dd4a0;--gr-d:rgba(45,212,160,.1);
   --ye:#f5c542;--ye-d:rgba(245,197,66,.1);
@@ -164,15 +164,53 @@ tbody tr:hover td.td-sticky{background:#171c27}
 .toast.e{border-color:rgba(255,92,92,.3)}.toast.e svg{color:var(--re)}
 .toast svg{width:14px;height:14px;flex-shrink:0}
 
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
-.tabs::-webkit-scrollbar{height:0}
-.tab{padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ts);
-  background:transparent;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--sans)}
-.tab:hover{background:var(--bg-2);color:var(--tp)}
-.tab.active{background:var(--bg-3);color:var(--tp);border-color:var(--bdr-b)}
+/* APP SHELL / SIDEBAR NAVIGATION */
+.app-shell{display:flex;align-items:flex-start;min-height:100vh}
+.sidebar{width:230px;flex-shrink:0;background:var(--bg-1);border-right:1px solid var(--bdr);
+  padding:20px 12px;display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  overflow-x:hidden;transition:width .2s ease,padding .2s ease}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:0 6px}
+.side-nav{display:flex;flex-direction:column;gap:2px}
+.side-nav::-webkit-scrollbar{height:0}
+.side-section-label{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;
+  letter-spacing:.08em;padding:12px 12px 4px;white-space:nowrap}
+.side-section-label:first-child{padding-top:2px}
+.side-divider{height:1px;background:var(--bdr);margin:10px 8px}
+.side-tab{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:var(--ts);background:transparent;border:1px solid transparent;
+  cursor:pointer;text-align:left;width:100%;font-family:var(--sans);transition:all .15s}
+.side-tab .sti{font-size:15px;line-height:1;flex-shrink:0}
+.side-tab .stx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.side-tab:hover{background:var(--bg-2);color:var(--tp)}
+.side-tab.active{background:var(--ac-d);color:var(--ac);border-color:rgba(79,124,255,.25)}
+.main-content{flex:1;min-width:0}
+.main-content .wrap{max-width:1200px}
 .pane{display:none}
 .pane.active{display:block}
+
+/* Sidebar mode ringkas (ikon saja) — dipicu manual lewat tombol toggle, bukan otomatis oleh lebar layar */
+.sidebar.collapsed{width:64px;padding:20px 8px}
+.sidebar.collapsed .sidebar-logo{justify-content:center}
+.sidebar.collapsed .sidebar-logo .hd-s,
+.sidebar.collapsed .sidebar-logo .hd-t{display:none}
+.sidebar.collapsed .side-section-label{display:none}
+.sidebar.collapsed .side-tab{justify-content:center;padding:10px 6px}
+.sidebar.collapsed .side-tab .stx{display:none}
+.sidebar.collapsed .side-divider{margin:8px 4px}
+
+/* Handle toggle — tab kecil rapi menempel di tepi kanan sidebar, ikut mengikuti lebar sidebar */
+.sidebar-handle{position:fixed;top:38px;left:230px;transform:translate(-50%,-50%);z-index:60;
+  width:22px;height:44px;border-radius:8px;background:var(--bg-3);border:1px solid var(--bdr-b);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ts);
+  box-shadow:0 2px 12px rgba(0,0,0,.35);transition:left .2s ease,background .15s,color .15s,border-color .15s}
+.sidebar-handle:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
+.sidebar-handle svg{width:12px;height:12px;transition:transform .2s ease}
+.sidebar.collapsed ~ .sidebar-handle{left:64px}
+.sidebar.collapsed ~ .sidebar-handle svg{transform:rotate(180deg)}
+
+@media(max-width:640px){
+  .sidebar-logo{gap:6px}
+}
 
 /* PANEL */
 .panel{background:var(--bg-2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px}
@@ -342,26 +380,41 @@ th.th-profit{color:var(--ts)}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="hd-ic"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div><div class="hd-t">StockPro Lite</div><div class="hd-s">Inventory + Master Data</div></div>
+    </div>
+    <nav class="side-nav" id="tabs">
+      <div class="side-section-label">Data</div>
+      <button class="side-tab active" data-tab="barang"><span class="sti">📦</span><span class="stx">Data Barang</span></button>
+      <button class="side-tab" data-tab="masuk"><span class="sti">📥</span><span class="stx">Barang Masuk</span></button>
+      <button class="side-tab" data-tab="dashboard-barang"><span class="sti">📦📈</span><span class="stx">Dashboard Barang</span></button>
+      <button class="side-tab" data-tab="daftar"><span class="sti">🗂️</span><span class="stx">Kelola Kolom</span></button>
+      <button class="side-tab" data-tab="label"><span class="sti">🏷️</span><span class="stx">Label</span></button>
+      <button class="side-tab" data-tab="menipis"><span class="sti">⚠️</span><span class="stx">Stok Menipis</span></button>
+      <button class="side-tab" data-tab="trash"><span class="sti">🗑️</span><span class="stx">Sampah</span></button>
+      <div class="side-divider"></div>
+      <div class="side-section-label">Penjualan</div>
+      <button class="side-tab" data-tab="jual"><span class="sti">💰</span><span class="stx">Kelola Penjualan</span></button>
+      <button class="side-tab" data-tab="dashboard"><span class="sti">📊</span><span class="stx">Dashboard Penjualan</span></button>
+      <div class="side-divider"></div>
+      <button class="side-tab" data-tab="backup"><span class="sti">🛡️</span><span class="stx">Backup</span></button>
+    </nav>
+  </aside>
 
-  <div class="hd">
-    <div class="hd-ic"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-    <div><div class="hd-t">StockPro Lite</div><div class="hd-s">Inventory + Master Data</div></div>
-    <div class="hd-spacer"></div>
-    <button class="btn btn-p" id="btn-add"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
+  <div class="sidebar-handle" id="sidebar-toggle" title="Sembunyikan/Tampilkan Sidebar">
+    <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
   </div>
 
-  <div class="tabs" id="tabs">
-    <button class="tab active" data-tab="barang">📦 Data Barang</button>
-    <button class="tab" data-tab="masuk">📥 Barang Masuk</button>
-    <button class="tab" data-tab="jual">💰 Kelola Penjualan</button>
-    <button class="tab" data-tab="dashboard">📊 Dashboard Penjualan</button>
-    <button class="tab" data-tab="dashboard-barang">📦📈 Dashboard Barang</button>
-    <button class="tab" data-tab="daftar">🗂️ Kelola Kolom</button>
-    <button class="tab" data-tab="label">🏷️ Label</button>
-    <button class="tab" data-tab="menipis">⚠️ Stok Menipis</button>
-    <button class="tab" data-tab="trash">🗑️ Sampah</button>
-    <button class="tab" data-tab="backup">🛡️ Backup</button>
+  <main class="main-content">
+  <div class="wrap">
+
+  <div class="hd">
+    <div class="hd-t" id="page-title">📦 Data Barang</div>
+    <div class="hd-spacer"></div>
+    <button class="btn btn-p" id="btn-add"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah Barang</button>
   </div>
 
   <!-- PANE: DATA BARANG -->
@@ -411,6 +464,112 @@ th.th-profit{color:var(--ts)}
         <button class="btn btn-p" id="btn-nota-add">+ Nota Baru</button>
       </div>
       <div id="nota-list"></div>
+    </div>
+  </div>
+
+  <!-- PANE: DASHBOARD DATA BARANG -->
+  <div class="pane" id="pane-dashboard-barang">
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">📦📈 Dashboard Data Barang</div><div class="ph-s">Ringkasan kondisi inventori saat ini — nilai stok, distribusi kategori, dan status stok</div></div></div>
+      <div class="sg">
+        <div class="sc"><div class="sc-lbl">Total Barang Aktif</div><div class="sc-v" id="db2-total">0</div></div>
+        <div class="sc"><div class="sc-lbl">Total Nilai Modal</div><div class="sc-v" id="db2-modal" style="font-size:15px">Rp 0</div></div>
+        <div class="sc revenue"><div class="sc-lbl">Total Nilai Jual Potensial</div><div class="sc-v" id="db2-jual" style="font-size:15px">Rp 0</div></div>
+        <div class="sc profit"><div class="sc-lbl">Estimasi Profit Potensial</div><div class="sc-v" id="db2-profit" style="font-size:15px">Rp 0</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🚦 Distribusi Status Stok</div><div class="ph-s">Proporsi barang berdasarkan status stok saat ini</div></div></div>
+      <div class="seg-bar" id="db2-status-bar"></div>
+      <div class="seg-legend" id="db2-status-legend"></div>
+    </div>
+
+    <div class="an-grid">
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">🗂️ Distribusi per Kategori</div><div class="ph-s">Jumlah barang per kategori</div></div></div>
+        <div class="chart-wrap" id="chart-kategori-count"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">💰 Nilai Stok per Kategori</div><div class="ph-s">Total nilai modal stok per kategori</div></div></div>
+        <div class="chart-wrap" id="chart-kategori-value"></div>
+      </div>
+    </div>
+
+    <div class="an-grid">
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">🥇 Barang Bernilai Stok Tertinggi</div><div class="ph-s">Seluruh barang, diurutkan dari nilai stok (stok × harga modal) tertinggi</div></div></div>
+        <div class="mini-list" id="db2-top-value"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">📦 Stok Terbanyak</div><div class="ph-s">Seluruh barang, diurutkan dari jumlah unit stok terbanyak</div></div></div>
+        <div class="mini-list" id="db2-top-qty"></div>
+      </div>
+    </div>
+
+    <div class="an-grid">
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">💎 Estimasi Profit per Unit (Rp)</div><div class="ph-s">Seluruh barang, diurutkan dari estimasi profit per 1 unit (Harga Jual − Harga Modal) tertinggi</div></div></div>
+        <div class="mini-list" id="db2-profit-per-item"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="ph-t">💯 Estimasi Profit per Unit (%)</div><div class="ph-s">Seluruh barang, diurutkan dari margin profit tertinggi — (Jual − Modal) ÷ Jual × 100%</div></div></div>
+        <div class="mini-list" id="db2-profit-per-item-pct"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANE: KELOLA DAFTAR -->
+  <div class="pane" id="pane-daftar">
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🗂️ Kelola Kolom</div><div class="ph-s">Tambahkan kolom custom di samping Nama Barang. Pilih tipe: Teks Bebas, Pilihan Tunggal (dropdown), atau Pilihan Banyak (checklist) — barang bisa punya lebih dari satu nilai. Kolom baru otomatis muncul di tabel Data Barang &amp; form Tambah/Edit Barang.</div></div></div>
+      <div class="lm-wrap">
+        <div class="lm-side" id="lm-side"></div>
+        <div id="lm-main"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANE: LABEL -->
+  <div class="pane" id="pane-label">
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🏷️ Label Barang</div><div class="ph-s">Label custom berwarna untuk tagging barang, bisa dipasang lewat form Tambah/Edit Barang</div></div>
+        <div class="ph-spacer"></div>
+        <button class="btn btn-p" id="btn-label-add">+ Label Baru</button>
+      </div>
+      <div id="label-list"></div>
+    </div>
+  </div>
+
+  <!-- PANE: STOK MENIPIS -->
+  <div class="pane" id="pane-menipis">
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">⚠️ Stok Menipis</div><div class="ph-s">Barang yang stoknya sudah di bawah atau sama dengan batas minimal</div></div></div>
+      <div class="tc">
+        <div class="tw">
+          <table>
+            <thead><tr><th class="th-sticky">Nama Barang</th><th>Stok</th><th>Min Stok</th><th>Kurang</th><th>Lokasi</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tbody-menipis"></tbody>
+          </table>
+          <div class="mini-empty" id="empty-menipis" style="display:none">🎉 Semua stok aman, tidak ada yang menipis.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANE: TRASH -->
+  <div class="pane" id="pane-trash">
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Barang</div><div class="ph-s">Barang yang dihapus bisa dipulihkan atau dihapus permanen</div></div></div>
+      <div id="trash-items"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Nota</div><div class="ph-s">Nota barang masuk yang dihapus</div></div></div>
+      <div id="trash-notes"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Penjualan</div><div class="ph-s">Transaksi penjualan yang dihapus</div></div></div>
+      <div id="trash-sales"></div>
     </div>
   </div>
 
@@ -526,112 +685,6 @@ th.th-profit{color:var(--ts)}
     </div>
   </div>
 
-  <!-- PANE: DASHBOARD DATA BARANG -->
-  <div class="pane" id="pane-dashboard-barang">
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">📦📈 Dashboard Data Barang</div><div class="ph-s">Ringkasan kondisi inventori saat ini — nilai stok, distribusi kategori, dan status stok</div></div></div>
-      <div class="sg">
-        <div class="sc"><div class="sc-lbl">Total Barang Aktif</div><div class="sc-v" id="db2-total">0</div></div>
-        <div class="sc"><div class="sc-lbl">Total Nilai Modal</div><div class="sc-v" id="db2-modal" style="font-size:15px">Rp 0</div></div>
-        <div class="sc revenue"><div class="sc-lbl">Total Nilai Jual Potensial</div><div class="sc-v" id="db2-jual" style="font-size:15px">Rp 0</div></div>
-        <div class="sc profit"><div class="sc-lbl">Estimasi Profit Potensial</div><div class="sc-v" id="db2-profit" style="font-size:15px">Rp 0</div></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🚦 Distribusi Status Stok</div><div class="ph-s">Proporsi barang berdasarkan status stok saat ini</div></div></div>
-      <div class="seg-bar" id="db2-status-bar"></div>
-      <div class="seg-legend" id="db2-status-legend"></div>
-    </div>
-
-    <div class="an-grid">
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">🗂️ Distribusi per Kategori</div><div class="ph-s">Jumlah barang per kategori</div></div></div>
-        <div class="chart-wrap" id="chart-kategori-count"></div>
-      </div>
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">💰 Nilai Stok per Kategori</div><div class="ph-s">Total nilai modal stok per kategori</div></div></div>
-        <div class="chart-wrap" id="chart-kategori-value"></div>
-      </div>
-    </div>
-
-    <div class="an-grid">
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">🥇 Barang Bernilai Stok Tertinggi</div><div class="ph-s">Seluruh barang, diurutkan dari nilai stok (stok × harga modal) tertinggi</div></div></div>
-        <div class="mini-list" id="db2-top-value"></div>
-      </div>
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">📦 Stok Terbanyak</div><div class="ph-s">Seluruh barang, diurutkan dari jumlah unit stok terbanyak</div></div></div>
-        <div class="mini-list" id="db2-top-qty"></div>
-      </div>
-    </div>
-
-    <div class="an-grid">
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">💎 Estimasi Profit per Unit (Rp)</div><div class="ph-s">Seluruh barang, diurutkan dari estimasi profit per 1 unit (Harga Jual − Harga Modal) tertinggi</div></div></div>
-        <div class="mini-list" id="db2-profit-per-item"></div>
-      </div>
-      <div class="panel">
-        <div class="ph"><div><div class="ph-t">💯 Estimasi Profit per Unit (%)</div><div class="ph-s">Seluruh barang, diurutkan dari margin profit tertinggi — (Jual − Modal) ÷ Jual × 100%</div></div></div>
-        <div class="mini-list" id="db2-profit-per-item-pct"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PANE: KELOLA DAFTAR -->
-  <div class="pane" id="pane-daftar">
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🗂️ Kelola Kolom</div><div class="ph-s">Tambahkan kolom custom di samping Nama Barang. Pilih tipe: Teks Bebas, Pilihan Tunggal (dropdown), atau Pilihan Banyak (checklist) — barang bisa punya lebih dari satu nilai. Kolom baru otomatis muncul di tabel Data Barang &amp; form Tambah/Edit Barang.</div></div></div>
-      <div class="lm-wrap">
-        <div class="lm-side" id="lm-side"></div>
-        <div id="lm-main"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PANE: LABEL -->
-  <div class="pane" id="pane-label">
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🏷️ Label Barang</div><div class="ph-s">Label custom berwarna untuk tagging barang, bisa dipasang lewat form Tambah/Edit Barang</div></div>
-        <div class="ph-spacer"></div>
-        <button class="btn btn-p" id="btn-label-add">+ Label Baru</button>
-      </div>
-      <div id="label-list"></div>
-    </div>
-  </div>
-
-  <!-- PANE: STOK MENIPIS -->
-  <div class="pane" id="pane-menipis">
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">⚠️ Stok Menipis</div><div class="ph-s">Barang yang stoknya sudah di bawah atau sama dengan batas minimal</div></div></div>
-      <div class="tc">
-        <div class="tw">
-          <table>
-            <thead><tr><th class="th-sticky">Nama Barang</th><th>Stok</th><th>Min Stok</th><th>Kurang</th><th>Lokasi</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="tbody-menipis"></tbody>
-          </table>
-          <div class="mini-empty" id="empty-menipis" style="display:none">🎉 Semua stok aman, tidak ada yang menipis.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PANE: TRASH -->
-  <div class="pane" id="pane-trash">
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Barang</div><div class="ph-s">Barang yang dihapus bisa dipulihkan atau dihapus permanen</div></div></div>
-      <div id="trash-items"></div>
-    </div>
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Nota</div><div class="ph-s">Nota barang masuk yang dihapus</div></div></div>
-      <div id="trash-notes"></div>
-    </div>
-    <div class="panel">
-      <div class="ph"><div><div class="ph-t">🗑️ Tempat Sampah — Penjualan</div><div class="ph-s">Transaksi penjualan yang dihapus</div></div></div>
-      <div id="trash-sales"></div>
-    </div>
-  </div>
-
   <!-- PANE: BACKUP -->
   <div class="pane" id="pane-backup">
     <div class="panel">
@@ -646,6 +699,8 @@ th.th-profit{color:var(--ts)}
     </div>
   </div>
 
+  </div>
+  </main>
 </div>
 
 <!-- MODAL ADD/EDIT -->
@@ -887,11 +942,24 @@ function makeSnapshot(){
 }
 
 /* ============================= TABS ============================= */
+const TAB_LABELS={
+  barang:'📦 Data Barang',
+  masuk:'📥 Barang Masuk',
+  'dashboard-barang':'📦📈 Dashboard Barang',
+  daftar:'🗂️ Kelola Kolom',
+  label:'🏷️ Label',
+  menipis:'⚠️ Stok Menipis',
+  trash:'🗑️ Sampah',
+  jual:'💰 Kelola Penjualan',
+  dashboard:'📊 Dashboard Penjualan',
+  backup:'🛡️ Backup',
+};
 function showTab(name){
   activeTab=name;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.side-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   $('pane-'+name).classList.add('active');
+  $('page-title').textContent=TAB_LABELS[name]||'';
   if(name==='barang') render();
   if(name==='masuk') renderNotaList();
   if(name==='jual') renderJualList();
@@ -2389,7 +2457,21 @@ document.addEventListener('DOMContentLoaded',()=>{
   storeLoad();
   render();
 
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+  document.querySelectorAll('.side-tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+
+  // Toggle Sidebar — satu handle rapi di tepi sidebar untuk memperlihatkan/menyembunyikan
+  const sidebarEl=$('sidebar');
+  const sidebarToggleBtn=$('sidebar-toggle');
+  function setSidebarCollapsed(collapsed){
+    sidebarEl.classList.toggle('collapsed',collapsed);
+    if(sidebarToggleBtn) sidebarToggleBtn.title = collapsed ? 'Tampilkan Sidebar' : 'Sembunyikan Sidebar';
+    try{ localStorage.setItem('spl_sidebar_collapsed', collapsed?'1':'0'); }catch(e){}
+  }
+  if(sidebarToggleBtn) sidebarToggleBtn.addEventListener('click',()=>setSidebarCollapsed(!sidebarEl.classList.contains('collapsed')));
+  let initialCollapsed=false;
+  try{ initialCollapsed = localStorage.getItem('spl_sidebar_collapsed')==='1'; }catch(e){}
+  if(!initialCollapsed && window.innerWidth<860) initialCollapsed=true;
+  setSidebarCollapsed(initialCollapsed);
 
   $('btn-add').addEventListener('click',()=>openModal());
   $('modal-close').addEventListener('click',closeModal);
